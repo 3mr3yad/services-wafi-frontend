@@ -5,7 +5,7 @@ import { manifest as xleader } from '@/features/xleader/manifest';
 import { manifest as customerSupportRequest } from '@/features/customer-support-request/manifest';
 import { manifest as protection } from '@/features/protection/manifest';
 import { manifest as followerGifts } from '@/features/follower-gifts/manifest';
-import { manifest as ovfle } from '@/features/ovfle/manifest';
+import { manifest as installments } from '@/features/installments/manifest';
 
 /**
  * Every service on the platform. Adding a service = one import + one entry here.
@@ -17,7 +17,7 @@ export const services: readonly ServiceManifest[] = [
   customerSupportRequest,
   protection,
   followerGifts,
-  ovfle,
+  installments,
 ];
 
 export const enabledServices = services.filter((service) => service.enabled);

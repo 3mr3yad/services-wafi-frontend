@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '100mb',
     },
   },
+  async redirects() {
+    return [
+      // The old wafii.sa Ovfle page 301s to /{locale}/services/ovfle (wafi-service FrontendRedirect);
+      // the page lives at /services/installments here. Query strings are kept automatically.
+      { source: '/:locale(ar|en)/services/ovfle', destination: '/:locale/services/installments', permanent: true },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

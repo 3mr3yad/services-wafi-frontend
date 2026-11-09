@@ -2,10 +2,10 @@
 
 import { useEffect } from 'react';
 
-/** Scroll reveal for `.ovfle [data-ov-reveal]`: adds data-shown once an element enters the viewport. */
-export function OvfleReveal() {
+/** Scroll reveal for `.installments [data-ov-reveal]`: adds data-shown once an element enters the viewport. */
+export function ScrollReveal() {
   useEffect(() => {
-    const elements = Array.from(document.querySelectorAll<HTMLElement>('.ovfle [data-ov-reveal]'));
+    const elements = Array.from(document.querySelectorAll<HTMLElement>('.installments [data-ov-reveal]'));
     if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       elements.forEach((el) => el.setAttribute('data-shown', ''));
       return;

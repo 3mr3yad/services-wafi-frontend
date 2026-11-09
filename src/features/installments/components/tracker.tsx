@@ -3,9 +3,9 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { type FormEvent, useRef, useState } from 'react';
 import { PhoneInput, type PhoneInputHandle } from '@/components/portal';
-import { lookupOvfleRequest } from '../api/ovfle.actions';
-import type { OvfleLookupRecord } from '../api/schemas';
-import { Icon } from './ovfle-art';
+import { lookupInstallmentRequest } from '../api/actions';
+import type { InstallmentLookupRecord } from '../api/schemas';
+import { Icon } from './art';
 
 const STATUS_KEYS = {
   processing: 'status_processing',
@@ -50,9 +50,9 @@ const DOT: Record<StageState, string> = {
   todo: 'bg-white/10 text-white/40',
 };
 
-function Result({ record }: { record: OvfleLookupRecord }) {
-  const t = useTranslations('Ovfle');
-  const tl = useTranslations('Ovfle.landing');
+function Result({ record }: { record: InstallmentLookupRecord }) {
+  const t = useTranslations('Installments');
+  const tl = useTranslations('Installments.landing');
   const statusKey = STATUS_KEYS[record.status as keyof typeof STATUS_KEYS] as (typeof STATUS_KEYS)[keyof typeof STATUS_KEYS] | undefined;
   const typeLabel = record.installmentType === 'car' ? t('type_car') : record.installmentType === 'phone' ? t('type_phone') : record.installmentType;
   const stages = stagesFor(record.status);
@@ -114,12 +114,12 @@ function Result({ record }: { record: OvfleLookupRecord }) {
 }
 
 /** Status lookup by mobile number (GET /api/v1/public/ovfle/lookup/{phone} via a Server Action). */
-export function OvfleTracker() {
+export function RequestTracker() {
   const phoneLocale = useLocale() === 'ar' ? 'ar' : 'en';
-  const t = useTranslations('Ovfle');
-  const tl = useTranslations('Ovfle.landing');
+  const t = useTranslations('Installments');
+  const tl = useTranslations('Installments.landing');
   const phoneRef = useRef<PhoneInputHandle>(null);
-  const [record, setRecord] = useState<OvfleLookupRecord | null>(null);
+  const [record, setRecord] = useState<InstallmentLookupRecord | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -131,7 +131,7 @@ export function OvfleTracker() {
     setNotFound(false);
     setRecord(null);
     try {
-      const result = await lookupOvfleRequest(phone);
+      const result = await lookupInstallmentRequest(phone);
       if (result.status === 'found') setRecord(result.record);
       else setNotFound(true);
     } catch {

@@ -14,19 +14,19 @@ export const E164_PHONE = /^\+[1-9]\d{7,14}$/;
  *
  * GET /api/v1/public/ovfle/lookup/{value} (request number or phone) → 200 below, 404 { found: false, message }.
  */
-export const OVFLE_SUBMIT_PATH = 'api/v1/public/ovfle';
-export const OVFLE_LOOKUP_PATH = 'api/v1/public/ovfle/lookup';
+export const SUBMIT_PATH = 'ovfle';
+export const LOOKUP_PATH = 'ovfle/lookup';
 
-export const OvfleSubmitResponseSchema = z.object({
+export const InstallmentSubmitResponseSchema = z.object({
   data: z.object({
     request_number: z.string(),
     message: z.string().optional(),
   }),
 });
 
-export type OvfleSubmitResponse = z.infer<typeof OvfleSubmitResponseSchema>;
+export type InstallmentSubmitResponse = z.infer<typeof InstallmentSubmitResponseSchema>;
 
-export const OvfleLookupResponseSchema = z.object({
+export const InstallmentLookupResponseSchema = z.object({
   found: z.literal(true),
   request_number: z.string(),
   full_name: z.string().nullable(),
@@ -39,7 +39,7 @@ export const OvfleLookupResponseSchema = z.object({
 });
 
 /** What the lookup Server Action hands to the browser. */
-export interface OvfleLookupRecord {
+export interface InstallmentLookupRecord {
   fullName: string;
   installmentType: string;
   status: string;
@@ -47,4 +47,4 @@ export interface OvfleLookupRecord {
   adminNote: string | null;
 }
 
-export type OvfleLookupResult = { status: 'found'; record: OvfleLookupRecord } | { status: 'not_found' };
+export type InstallmentLookupResult = { status: 'found'; record: InstallmentLookupRecord } | { status: 'not_found' };

@@ -1,5 +1,5 @@
-/** Every CTA on the Ovfle landing page opens the request dialog through this window event. */
-export const OPEN_EVENT = 'ovfle:open';
+/** Every CTA on the installments landing page opens the request dialog through this window event. */
+export const OPEN_EVENT = 'installments:open';
 
 export type DialogTab = 'apply' | 'track';
 
@@ -9,6 +9,6 @@ export interface OpenDetail {
   type?: 'phone' | 'car';
 }
 
-export function openOvfleDialog(detail: OpenDetail) {
+export function openRequestDialog(detail: OpenDetail) {
   window.dispatchEvent(new CustomEvent<OpenDetail>(OPEN_EVENT, { detail }));
 }

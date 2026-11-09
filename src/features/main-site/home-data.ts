@@ -14,44 +14,83 @@ export const SOCIAL_LINKS = [
   { label: 'Facebook', icon: 'facebook', href: 'https://www.facebook.com/profile.php?id=61558475500942' },
 ] as const;
 
-/**
- * Display order and layout: 3 narrow cards then 2 wide ones. Ovfle has no card art (no $serviceArt entry on the old site).
- * Xleader was removed from the homepage on request (2026-11-09); its page /services/xleader still exists.
- */
-export const HOME_SERVICES = [
-  {
+export interface PortalService {
+  id: string;
+  href: string;
+  wide: boolean;
+  art: string | null;
+  icon: string;
+}
+
+type ServiceInfo = Omit<PortalService, 'wide'>;
+
+/** Every portal service. Texts live in the message files (Home.services.<id>). */
+const CATALOG = {
+  xleader: {
+    id: 'xleader',
+    href: '/services/xleader',
+    art: '/images/landing/xleader.png',
+    icon: 'M12 2 3 6v6c0 5 3.8 8.7 9 10 5.2-1.3 9-5 9-10V6l-9-4zm-3 10 2 2 4-4',
+  },
+  resale: {
     id: 'resale',
     href: '/services/resale',
-    wide: false,
     art: '/images/landing/tradein.png',
     icon: 'M20 7h-7l-1-2H4a2 2 0 0 0-2 2v10a3 3 0 0 0 3 3h13a3 3 0 0 0 3-3V9a2 2 0 0 0-2-2zM7 15h6',
   },
-  {
+  refund: {
     id: 'refund',
     href: '/services/refund',
-    wide: false,
     art: '/images/landing/invoice.png',
     icon: 'M9 12h6M12 9v6M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z',
   },
-  {
-    id: 'ovfle',
-    href: '/services/ovfle',
-    wide: false,
-    art: null,
+  installments: {
+    id: 'installments',
+    href: '/services/installments',
+    art: null, // like the old site's ovfle card
     icon: 'M3 10h18M7 15h2m4 0h4M5 6h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z',
   },
-  {
+  protection: {
     id: 'protection',
     href: '/services/protection',
-    wide: true,
     art: '/images/landing/protection.png',
     icon: 'M12 2 3 6v6c0 5 3.8 8.7 9 10 5.2-1.3 9-5 9-10V6l-9-4z',
   },
-  {
+  customer_support: {
     id: 'customer_support',
     href: '/services/customer-support-request',
-    wide: true,
     art: '/images/landing/headset.png',
     icon: 'M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0',
   },
-] as const;
+  follower_gifts: {
+    id: 'follower_gifts',
+    href: '/services/follower-gifts',
+    art: null,
+    icon: 'M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z',
+  },
+} satisfies Record<string, ServiceInfo>;
+
+const place = (id: keyof typeof CATALOG, wide: boolean): PortalService => ({ ...CATALOG[id], wide });
+
+/**
+ * Homepage: 3 narrow cards then 2 wide ones.
+ * Xleader was removed from the homepage on request (2026-11-09); it is still listed on /services.
+ */
+export const HOME_SERVICES: PortalService[] = [
+  place('resale', false),
+  place('refund', false),
+  place('installments', false),
+  place('protection', true),
+  place('customer_support', true),
+];
+
+/** /services: every service — 3 narrow cards, then two rows of 2 wide cards. */
+export const ALL_SERVICES: PortalService[] = [
+  place('xleader', false),
+  place('resale', false),
+  place('refund', false),
+  place('installments', true),
+  place('protection', true),
+  place('customer_support', true),
+  place('follower_gifts', true),
+];

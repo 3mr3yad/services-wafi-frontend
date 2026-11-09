@@ -50,7 +50,7 @@ export function PortalHeader({ labels }: { labels: PortalNavLabels }) {
 
         <nav className="hidden items-center gap-1 md:flex">
           <Link href="/" className={link}>{labels.home}</Link>
-          <Link href="/#services" className={link}>{labels.services}</Link>
+          <Link href="/services" className={link}>{labels.services}</Link>
           <Link href="/services/protection" className={link}>{labels.protection}</Link>
           <Link href="/#how" className={link}>{labels.how}</Link>
         </nav>
@@ -84,7 +84,7 @@ export function PortalHeader({ labels }: { labels: PortalNavLabels }) {
       <nav className={`${open ? '' : 'hidden '}border-t border-white/5 bg-ink-950 px-4 py-4 sm:px-6 md:hidden lg:px-12`}>
         <div className="flex flex-col gap-1">
           <Link href="/" className={mobileLink}>{labels.home}</Link>
-          <Link href="/#services" className={mobileLink}>{labels.services}</Link>
+          <Link href="/services" className={mobileLink}>{labels.services}</Link>
           <Link href="/services/protection" className={mobileLink}>{labels.protection}</Link>
           <Link href="/#how" className={mobileLink}>{labels.how}</Link>
           <Link href="/#tracker" className={mobileLink}>{labels.trackNow}</Link>

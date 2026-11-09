@@ -16,7 +16,7 @@ export async function trackRequest(query: string): Promise<TrackRequestOutcome> 
   if (!value) return { ok: true, results: [] };
 
   try {
-    const data = await api.get('/track-request', {
+    const data = await api.get('track', {
       query: { query: value },
       schema: TrackResponseSchema,
       cache: 'no-store',

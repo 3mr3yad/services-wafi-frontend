@@ -125,7 +125,22 @@ function ResaleForm({ data, state, onSubmit }: ResaleFormProps) {
       {data.questions.map((question, index) => (
         <WizardStep key={question.id} index={index + 1} id={`step${index + 1}`}>
           <p className="mb-3 text-lg font-extrabold text-accent-600">{question.question}</p>
-          <input type="text" name={`answers[${question.id}]`} placeholder={t('answer_placeholder')} className={FIELD} required />
+          {/* API contract: questions with predefined answers render as a dropdown and send the answer's TEXT;
+              questions without answers keep the old free-text input. */}
+          {question.answers.length > 0 ? (
+            <select name={`answers[${question.id}]`} className={FIELD} required defaultValue="">
+              <option value="" disabled>
+                {tp('choose')}
+              </option>
+              {question.answers.map((answer) => (
+                <option key={answer.id} value={answer.answer}>
+                  {answer.answer}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input type="text" name={`answers[${question.id}]`} placeholder={t('answer_placeholder')} className={FIELD} required />
+          )}
           <FieldError messages={errors[`answers.${question.id}`]} />
 
           <div className="mt-7 flex justify-between">

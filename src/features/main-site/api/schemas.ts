@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * Contract of GET /track-request (wafi-service TrackRequestController::search).
+ * Contract of GET /track?query= (public API; same shape as the old TrackRequestController::search).
  * Verified against the Laravel source: one item per matching refund, resale,
  * xleader or customer-support request. Optional fields are lenient on purpose.
  */

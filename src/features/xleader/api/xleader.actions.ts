@@ -16,7 +16,7 @@ import {
  * customer_name, customer_phone (E.164), brand (xleader_brands.id), model, imei (15 digits), terms_accepted (=1),
  * device_images[screen|back|right_edge|left_edge|top|bottom|battery] (battery = purchase invoice photo).
  */
-const SUBMIT_PATH: string | null = null; // TODO(backend-contract): set when /api/v1/public is delivered
+const SUBMIT_PATH: string | null = 'xleader'; // POST /xleader (multipart)
 
 export async function submitXleaderRequest(formData: FormData): Promise<FormResult<XleaderSubmitResponse>> {
   if (SUBMIT_PATH === null) {

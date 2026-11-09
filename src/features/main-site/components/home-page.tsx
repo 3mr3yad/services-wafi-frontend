@@ -1,22 +1,16 @@
 import { getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
-import { HOME_SERVICES, POLICY_URL, R2_BASE, SOCIAL_LINKS } from '../home-data';
+import { HOME_SERVICES, R2_BASE } from '../home-data';
 import '../styles/home.css';
 import { HomeHeader } from './home-header';
 import { Icon, IconSprite } from './icon-sprite';
 import { QuickTracker } from './quick-tracker';
 import { RevealObserver } from './reveal-observer';
-
-/** Splits "Name (Suffix)" into its parts, like home.blade.php. */
-function splitName(name: string): [string, string | null] {
-  const match = name.match(/^(.*?)\s*\(([^)]+)\)$/u);
-  return match ? [match[1] ?? name, `(${match[2]})`] : [name, null];
-}
+import { ServiceCard } from './service-card';
+import { SiteFooter } from './site-footer';
 
 /** The wafiservices homepage, ported 1:1 from resources/views/home.blade.php. */
 export async function HomePage() {
   const [t, tl] = await Promise.all([getTranslations('Home'), getTranslations('Layout')]);
-  const year = new Date().getFullYear();
 
   return (
     <div className="wafi-home" id="wafi-home-root">
@@ -90,35 +84,17 @@ export async function HomePage() {
             </div>
 
             <div className="services-grid">
-              {HOME_SERVICES.map((service) => {
-                const [nameMain, nameSuffix] = splitName(t(`services.${service.id}.name`));
-                return (
-                  <article key={service.id} id={`service-${service.id}`} className={`service${service.wide ? ' wide' : ''}`} data-reveal="">
-                    <div className="service-body">
-                      <div className="service-title">
-                        <div className="icon-bubble">
-                          <svg className="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                            <path d={service.icon} />
-                          </svg>
-                        </div>
-                        <h3>
-                          {nameMain}
-                          {nameSuffix && <span>{nameSuffix}</span>}
-                        </h3>
-                      </div>
-                      <p>{t(`services.${service.id}.short_desc`)}</p>
-                      <div className="service-requirements">
-                        {t('requirements_label')} {t(`services.${service.id}.requirements`)}
-                      </div>
-                      <Link href={service.href} className="service-link">
-                        {service.id === 'protection' ? t('explore_showcase') : t('start_now')}
-                        <Icon name="arrow" />
-                      </Link>
-                    </div>
-                    {service.art && <img className="service-art" src={service.art} alt="" loading="lazy" />}
-                  </article>
-                );
-              })}
+              {HOME_SERVICES.map((service) => (
+                <ServiceCard
+                  key={service.id}
+                  service={service}
+                  name={t(`services.${service.id}.name`)}
+                  description={t(`services.${service.id}.short_desc`)}
+                  requirementsLabel={t('requirements_label')}
+                  requirements={t(`services.${service.id}.requirements`)}
+                  cta={service.id === 'protection' ? t('explore_showcase') : t('start_now')}
+                />
+              ))}
             </div>
           </div>
         </section>
@@ -181,50 +157,7 @@ export async function HomePage() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="site-footer">
-        <div className="container footer-grid">
-          <div>
-            <Link href="/" className="brand">
-              <img src="/images/logo.png" alt="" />
-            </Link>
-            <p style={{ margin: 0, maxWidth: '34ch' }}>{tl('footer_tagline')}</p>
-          </div>
-          <div>
-            <h3>{tl('nav_services')}</h3>
-            <ul>
-              <li><Link href="/services/xleader">{tl('nav_xleader')}</Link></li>
-              <li><Link href="/services/resale">{tl('nav_resale')}</Link></li>
-              <li><Link href="/services/refund">{tl('nav_refund')}</Link></li>
-              <li><Link href="/services/protection">{tl('nav_protection')}</Link></li>
-              <li><Link href="/services/customer-support-request">{tl('nav_customer_support')}</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3>{tl('footer_policies_label')}</h3>
-            <ul>
-              <li>
-                <a href={POLICY_URL} target="_blank" rel="noopener">
-                  {tl('footer_terms')}
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3>{tl('footer_contact')}</h3>
-            <div className="socials">
-              {SOCIAL_LINKS.map((social) => (
-                <a key={social.label} href={social.href} target="_blank" rel="noopener" aria-label={social.label}>
-                  <Icon name={social.icon} />
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          © {year} عالم وافي. {tl('footer_rights')}.
-        </div>
-      </footer>
+      <SiteFooter />
 
       <RevealObserver />
     </div>

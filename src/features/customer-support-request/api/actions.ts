@@ -17,13 +17,13 @@ import {
 // TODO(backend-contract): JSON submission endpoint (being built under /api/v1/public/*).
 // Fields (multipart, names as in the old Blade form): customer_name, customer_phone (E.164),
 // issue_type, order_number, issue_description, attachments[] (0..10 files).
-const SUBMIT_PATH: string | null = null;
+const SUBMIT_PATH: string | null = 'customer-support'; // POST /customer-support (multipart when attaching files)
 
 // TODO(backend-contract): the old POST /customer-support-request/rate is a web route behind CSRF,
 // so it can't be called server-to-server. Set once a JSON (CSRF-free) rate endpoint exists.
-const RATE_PATH: string | null = null;
+const RATE_PATH: string | null = 'customer-support/rate'; // POST JSON {phone, request_number, rating}
 
-const LOOKUP_PATH = '/customer-support-request/lookup';
+const LOOKUP_PATH = 'customer-support/lookup'; // GET ?phone=
 
 /** Submits a new support ticket. Returns not_configured until the backend contract exists. */
 export async function submitSupportRequest(formData: FormData): Promise<FormResult<SubmitResponse>> {

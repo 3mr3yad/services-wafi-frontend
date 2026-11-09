@@ -19,7 +19,7 @@ import {
 // right_edge|left_edge|top|bottom|battery].
 // TODO(backend-contract): no JSON submission endpoint yet (old POST /resale is a CSRF web route).
 // ---------------------------------------------------------------------------------------------
-const SUBMIT_PATH: string | null = null;
+const SUBMIT_PATH: string | null = 'resale'; // POST /resale (multipart)
 
 export async function submitResale(formData: FormData): Promise<FormResult<ResaleSubmitSuccess['data']>> {
   if (!SUBMIT_PATH) return { status: 'error', kind: 'not_configured' };
@@ -53,7 +53,7 @@ export async function lookupResale(value: string): Promise<ResaleLookupOutcome> 
 // Customer price decision. Old POST /resale/decide-price is a web route behind CSRF + session, so it cannot be
 // called server-to-server. TODO(backend-contract): set once a stateless JSON endpoint exists.
 // ---------------------------------------------------------------------------------------------
-const DECIDE_PRICE_PATH: string | null = null;
+const DECIDE_PRICE_PATH: string | null = 'resale/decide-price'; // POST JSON {phone, request_number, price_type, decision}
 
 export type DecidePriceOutcome = { status: 'success' } | { status: 'error'; kind: 'not_configured' | 'failed' };
 

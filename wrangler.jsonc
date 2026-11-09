@@ -13,7 +13,7 @@
   // Public, non-secret runtime config. Secrets (e.g. FRONTEND_API_KEY) are set with
   // `wrangler secret put <NAME>` or in the dashboard, never here.
   "vars": {
-    "API_BASE_URL": "https://wafii.sa/wafiservices",
+    "API_BASE_URL": "https://wafii.sa/wafiservices/api/v1/public",
     "API_TIMEOUT_MS": "15000",
     "API_MOCKS": "false"
   }

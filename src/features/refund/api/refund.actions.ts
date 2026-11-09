@@ -10,7 +10,7 @@ import { E164_PHONE, type RefundLookupResult, RefundLookupResponseSchema, type R
  * Field names (kept 1:1 with the Blade form): full_name, national_id, phone (E.164), finance_company,
  * finance_amount, finance_duration, product_name, attachment.
  */
-const SUBMIT_PATH: string | null = null; // TODO(backend-contract): set when /api/v1/public is delivered
+const SUBMIT_PATH: string | null = 'refund'; // POST /refund (multipart)
 
 export async function submitRefundRequest(formData: FormData): Promise<FormResult<RefundSubmitResponse>> {
   if (SUBMIT_PATH === null) {

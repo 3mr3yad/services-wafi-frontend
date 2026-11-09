@@ -3,9 +3,10 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { PhoneInput, type PhoneInputHandle, StepWizard, useWizard, WizardStep } from '@/components/portal';
-import { submitOvfleRequest } from '../api/ovfle.actions';
+import { submitInstallmentRequest } from '../api/actions';
 import { OPEN_EVENT, type OpenDetail } from './events';
-import { ForwardArrow, Icon } from './ovfle-art';
+import { BRAND } from '../brand';
+import { ForwardArrow, Icon } from './art';
 
 type InstallmentType = '' | 'phone' | 'car';
 type FieldErrors = Record<string, string[]>;
@@ -35,7 +36,7 @@ function Field({ name, label, errors, children, className }: { name: string; lab
 
 function StepHeader({ labels }: { labels: string[] }) {
   const { current, total } = useWizard();
-  const t = useTranslations('Ovfle.landing');
+  const t = useTranslations('Installments.landing');
   return (
     <div className="mb-7">
       <div className="flex items-center justify-between text-xs font-bold text-slate-500">
@@ -53,8 +54,8 @@ function StepHeader({ labels }: { labels: string[] }) {
 
 function StepNav({ submitting, last }: { submitting: boolean; last?: boolean }) {
   const { current, next, prev } = useWizard();
-  const t = useTranslations('Ovfle');
-  const tl = useTranslations('Ovfle.landing');
+  const t = useTranslations('Installments');
+  const tl = useTranslations('Installments.landing');
   return (
     <div className="mt-8 flex items-center justify-between gap-3">
       {current > 0 ? (
@@ -117,9 +118,9 @@ function PhoneStepJumper({ trigger }: { trigger: number }) {
   return null;
 }
 
-export function OvfleApplyForm() {
-  const t = useTranslations('Ovfle');
-  const tl = useTranslations('Ovfle.landing');
+export function ApplyForm() {
+  const t = useTranslations('Installments');
+  const tl = useTranslations('Installments.landing');
   const locale = useLocale();
   const phoneLocale = locale === 'ar' ? 'ar' : 'en';
 
@@ -154,7 +155,7 @@ export function OvfleApplyForm() {
     setSubmitting(true);
     setFormError(null);
     try {
-      const result = await submitOvfleRequest(new FormData(form));
+      const result = await submitInstallmentRequest(new FormData(form));
       if (result.status === 'success') {
         setErrors({});
         setSuccess({ number: result.data.data.request_number, message: result.data.data.message ?? t('api_submitted_message') });
@@ -197,6 +198,9 @@ export function OvfleApplyForm() {
           </div>
         </div>
         <p className="mt-3 text-xs text-slate-500">{tl('success_hint')}</p>
+        {BRAND.showApprovalDisclaimer && (
+          <p className="mt-4 max-w-sm rounded-xl bg-[#E6FAFC] px-4 py-3 text-xs leading-relaxed text-slate-600">{tl('disclaimer_short')}</p>
+        )}
         <button type="button" onClick={startOver} className="mt-7 text-sm font-bold text-[#11131A] underline decoration-[#3fc9d6] decoration-2 underline-offset-4">
           {tl('success_again')}
         </button>
@@ -359,6 +363,12 @@ export function OvfleApplyForm() {
                 {money.format(net)} <span className="text-xs text-[#E6FAFC]/60">{tl('currency')}</span>
               </div>
             </div>
+          )}
+          {BRAND.showApprovalDisclaimer && (
+            <p className="mt-6 flex items-start gap-2 rounded-xl border border-[#d5eef1] bg-[#f6fdfe] px-4 py-3 text-xs leading-relaxed text-slate-600">
+              <Icon name="shield" className="mt-0.5 h-4 w-4 shrink-0 text-[#3fc9d6]" />
+              {tl('disclaimer_full')}
+            </p>
           )}
           <StepNav submitting={submitting} last />
         </WizardStep>

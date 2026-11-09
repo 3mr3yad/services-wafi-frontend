@@ -95,12 +95,19 @@
         "short_desc": "Protection packages for electronic devices, giving you extra options and peace of mind after purchase.",
         "requirements": "Select device model and package"
       },
-      "ovfle": {
-        "name": "Phone & Car Installments (Ovfle)",
-        "short_desc": "Submit an installment-financing request for your phone or car and get a suitable offer.",
+      "installments": {
+        "name": "Car & Smartphone Installments (Ovfle)",
+        "short_desc": "Apply for car or smartphone installments in one place and track your request.",
         "requirements": "Income details + national ID"
+      },
+      "follower_gifts": {
+        "name": "Follower Gifts",
+        "short_desc": "For Wafi World giveaway winners: send your delivery details to receive your prize.",
+        "requirements": "Winning details + proof-of-win image"
       }
-    }
+    },
+    "services_page_subtitle": "Pick the service you need, check its requirements, and start your request right away.",
+    "services_count": "{count, plural, one {# service} other {# services}}"
   },
   "NotFound": {
     "title": "Page not found",

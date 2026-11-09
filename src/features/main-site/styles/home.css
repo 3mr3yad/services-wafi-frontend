@@ -200,3 +200,18 @@
 @media (prefers-reduced-motion:reduce){.wafi-home *{transition:none!important;scroll-behavior:auto!important}.wafi-home [data-reveal]{opacity:1!important;transform:none!important}}
 @keyframes wafi-spin{to{transform:rotate(360deg)}}
 .wafi-home{min-height:100dvh}
+
+/* ---------- /services page (same visual language as the homepage) ---------- */
+.wafi-home .page-hero{position:relative;background-color:var(--navy-800);background-size:cover;background-position:left center;color:var(--white);padding:40px 0 56px;overflow:hidden}
+.wafi-home .page-hero .container{position:relative}
+.wafi-home .breadcrumbs{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.65)}
+.wafi-home .breadcrumbs a:hover{color:var(--white)}
+.wafi-home .breadcrumbs [aria-current]{color:var(--cyan);font-weight:700}
+.wafi-home .page-hero h1{font-size:clamp(26px,3.4vw,42px);font-weight:800;line-height:1.3;margin:18px 0 10px;max-width:22ch}
+.wafi-home .page-hero p{font-size:clamp(15px,1.4vw,17px);color:rgba(255,255,255,.82);margin:0 0 22px;max-width:52ch}
+.wafi-home .services-track{padding-bottom:64px}
+.wafi-home .banner .banner-cta{margin-inline-start:auto;position:relative;z-index:1}
+@media (max-width:860px){
+  .wafi-home .banner{flex-direction:column;align-items:flex-start;gap:18px}
+  .wafi-home .banner .banner-cta{margin-inline-start:0}
+}

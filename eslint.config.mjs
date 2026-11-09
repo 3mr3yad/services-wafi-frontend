@@ -18,7 +18,7 @@ const FEATURE_MODULES = [
   'customer-support-request',
   'protection',
   'follower-gifts',
-  'ovfle',
+  'installments',
 ];
 
 const restrict = (regex, message) => ['error', { patterns: [{ regex, message }] }];

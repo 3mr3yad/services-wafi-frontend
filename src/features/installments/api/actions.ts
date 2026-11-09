@@ -5,32 +5,32 @@ import { isApiError } from '@/lib/api/errors';
 import { type FormResult, submitForm } from '@/lib/api/form-submit';
 import {
   E164_PHONE,
-  OVFLE_LOOKUP_PATH,
-  OVFLE_SUBMIT_PATH,
-  type OvfleLookupResult,
-  OvfleLookupResponseSchema,
-  type OvfleSubmitResponse,
-  OvfleSubmitResponseSchema,
+  LOOKUP_PATH,
+  SUBMIT_PATH,
+  type InstallmentLookupResult,
+  InstallmentLookupResponseSchema,
+  type InstallmentSubmitResponse,
+  InstallmentSubmitResponseSchema,
 } from './schemas';
 
 /** Submits the installment request to POST /api/v1/public/ovfle (field names = the old Blade form). */
-export async function submitOvfleRequest(formData: FormData): Promise<FormResult<OvfleSubmitResponse>> {
+export async function submitInstallmentRequest(formData: FormData): Promise<FormResult<InstallmentSubmitResponse>> {
   // Same as the old page: car fields are only sent for car installments.
   if (formData.get('installment_type') !== 'car') {
     formData.delete('car_type');
     formData.delete('car_model');
     formData.delete('car_value');
   }
-  return submitForm(OVFLE_SUBMIT_PATH, formData, OvfleSubmitResponseSchema);
+  return submitForm(SUBMIT_PATH, formData, InstallmentSubmitResponseSchema);
 }
 
 /** GET /api/v1/public/ovfle/lookup/{phone}: matches request number or phone. */
-export async function lookupOvfleRequest(phone: string): Promise<OvfleLookupResult> {
+export async function lookupInstallmentRequest(phone: string): Promise<InstallmentLookupResult> {
   if (typeof phone !== 'string' || !E164_PHONE.test(phone)) return { status: 'not_found' };
 
   try {
-    const data = await api.get(`${OVFLE_LOOKUP_PATH}/${encodeURIComponent(phone)}`, {
-      schema: OvfleLookupResponseSchema,
+    const data = await api.get(`${LOOKUP_PATH}/${encodeURIComponent(phone)}`, {
+      schema: InstallmentLookupResponseSchema,
       cache: 'no-store',
     });
     return {
@@ -46,7 +46,7 @@ export async function lookupOvfleRequest(phone: string): Promise<OvfleLookupResu
   } catch (error) {
     // Like the old page: every failure shows "not found".
     if (!isApiError(error) || error.kind !== 'not_found') {
-      console.error('[ovfle lookup]', isApiError(error) ? `${error.kind}: ${error.message}` : error);
+      console.error('[installments lookup]', isApiError(error) ? `${error.kind}: ${error.message}` : error);
     }
     return { status: 'not_found' };
   }

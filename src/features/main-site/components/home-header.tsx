@@ -52,7 +52,7 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
           <Link href="/" className={navClass('home')} onClick={close}>
             {labels.home}
           </Link>
-          <Link href="/#services" className={navClass('services')} onClick={close}>
+          <Link href="/services" className={navClass('services')} onClick={close}>
             {labels.services}
           </Link>
           <Link href="/services/protection" onClick={close}>

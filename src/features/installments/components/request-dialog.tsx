@@ -3,16 +3,16 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { type DialogTab, OPEN_EVENT, type OpenDetail } from './events';
-import { OvfleApplyForm } from './ovfle-apply-form';
-import { Icon, Wordmark } from './ovfle-art';
-import { OvfleTracker } from './ovfle-tracker';
+import { ApplyForm } from './apply-form';
+import { BrandLogo, Icon } from './art';
+import { RequestTracker } from './tracker';
 
 /**
  * The request dialog: every CTA on the page opens it (apply or track tab).
  * Form and tracker stay mounted while closed, so typed data survives closing and reopening.
  */
-export function OvfleDialog() {
-  const tl = useTranslations('Ovfle.landing');
+export function RequestDialog() {
+  const tl = useTranslations('Installments.landing');
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<DialogTab>('apply');
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -59,7 +59,7 @@ export function OvfleDialog() {
           {/* Brand header + tabs */}
           <div className="ov-texture relative shrink-0 bg-[#11131A] px-5 pt-5 pb-4 sm:px-8 sm:pt-6">
             <div className="flex items-center justify-between gap-3">
-              <Wordmark className="text-3xl" />
+              <BrandLogo className="text-3xl" />
               <button
                 ref={closeRef}
                 type="button"
@@ -91,12 +91,12 @@ export function OvfleDialog() {
 
           <div className="min-h-0 flex-1 overflow-y-auto">
             <div className={tab === 'apply' ? 'p-5 sm:p-8' : 'hidden'} role="tabpanel">
-              <OvfleApplyForm />
+              <ApplyForm />
             </div>
             <div className={tab === 'track' ? 'ov-texture min-h-full bg-[#11131A] p-5 sm:p-8' : 'hidden'} role="tabpanel">
               <h3 className="text-xl font-extrabold text-white">{tl('track_title')}</h3>
               <p className="mt-1.5 mb-6 text-sm text-[#E6FAFC]/60">{tl('track_subtitle')}</p>
-              <OvfleTracker />
+              <RequestTracker />
             </div>
           </div>
         </div>

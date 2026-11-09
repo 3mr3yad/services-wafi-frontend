@@ -18,7 +18,7 @@ pnpm dev                     # http://localhost:3000 → redirects to /ar
 | `/{ar,en}/services/xleader` | Full protection warranty (Xleader) |
 | `/{ar,en}/services/customer-support-request` | Customer support + tracking |
 | `/{ar,en}/services/follower-gifts` | Follower gifts form |
-| `/{ar,en}/services/ovfle` | Phone & car installments (Ovfle) — first service on `/api/v1/public` |
+| `/{ar,en}/services/installments` | Ovfle — car & smartphone installments brand (config: `features/installments/brand.ts`); backend: `/api/v1/public/ovfle` |
 | `/{ar,en}/services/protection` | Protection packages landing (Arabic only, own design) |
 
 Other scripts: `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm cf:preview` (runs the Cloudflare Worker locally), `pnpm cf:deploy`.
@@ -73,9 +73,11 @@ The homepage keeps its original hand-written CSS (scoped under `.wafi-home`). Se
 
 ## Backend
 
-- Production backend: the Laravel app `wafi-service`, base URL in `API_BASE_URL`. All calls go through `src/lib/api/client.ts`, server-side only (Server Actions / Server Components); the browser never calls the backend. The client forwards `X-Client-IP` and, if set, `X-Frontend-Key` (`FRONTEND_API_KEY`, secret).
-- Wired today: Ovfle submit + lookup (`/api/v1/public/ovfle`), and the existing JSON lookups (`/track-request`, `/refund|resale|xleader/lookup/{v}`, `/customer-support-request/lookup`).
-- Pending `/api/v1/public/*` (being built in the Laravel project): form submissions, resale price decision, support rating, resale form data, xleader brands. Each is marked `TODO(backend-contract)` with its path set to `null`; until then the UI shows a "not available yet" message, and missing render-time data uses labelled mocks in development only.
+- Production API: the Laravel app `wafi-service`, public API at `API_BASE_URL` = `https://wafii.sa/wafiservices/api/v1/public` (contract: "Public Services API" doc). Every path in the code is relative to it.
+- All calls go through `src/lib/api/client.ts`, server-side only (Server Actions / Server Components). The client sends `Accept: application/json`, `Accept-Language`, `X-Client-IP` and, when `FRONTEND_API_KEY` is set (secret), `X-Frontend-Key` — required so the API rate-limits per visitor (20 req/min) instead of per server.
+- Endpoints used: `track`, `refund`, `resale` (+ `brands`, `questions`, `decide-price`), `xleader` (+ `brands`), `customer-support` (+ `lookup`, `rate`), `follower-gifts`, `ovfle` (+ `lookup`) and each service's `lookup/{value}`.
+- In local development, `API_MOCKS=true` falls back to labelled mocks for resale/xleader form data when the API isn't reachable.
+- The old wafii.sa pages 301 to `services.wafi.sa/ar/services/{slug}`; `/services/ovfle` redirects to `/services/installments` (next.config.ts).
 - Protection page videos still stream from the old site (`/new-home/media/videos`); move them to R2 before the old site is retired.
 
 Full architecture: see the architecture document shared with the team.
