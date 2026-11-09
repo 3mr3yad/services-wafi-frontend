@@ -55,9 +55,9 @@ export function RequestDialog() {
     <div className={`fixed inset-0 z-50 ${open ? '' : 'hidden'}`} role="dialog" aria-modal="true" aria-label={tl('dialog_label')}>
       <div className="absolute inset-0 bg-[#0b0d12]/80 backdrop-blur-md" onClick={() => setOpen(false)} />
       <div className="relative flex min-h-full items-end justify-center sm:items-center sm:p-6">
-        <div className="ov-pop relative flex max-h-[94dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[2rem] bg-white shadow-[0_40px_120px_-30px_rgb(0_0_0/0.8)] sm:rounded-[2rem]">
+        <div className="ov-pop relative flex max-h-[94dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[2rem] border border-[#7DE6EE]/20 bg-[#11131A] shadow-[0_40px_120px_-30px_rgb(0_0_0/0.8),0_0_60px_-20px_rgb(125_230_238/0.35)] sm:rounded-[2rem]">
           {/* Brand header + tabs */}
-          <div className="ov-texture relative shrink-0 bg-[#11131A] px-5 pt-5 pb-4 sm:px-8 sm:pt-6">
+          <div className="ov-texture relative shrink-0 border-b border-white/5 bg-[#11131A] px-5 pt-5 pb-4 sm:px-8 sm:pt-6">
             <div className="flex items-center justify-between gap-3">
               <BrandLogo className="text-3xl" />
               <button
@@ -90,7 +90,7 @@ export function RequestDialog() {
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto">
-            <div className={tab === 'apply' ? 'p-5 sm:p-8' : 'hidden'} role="tabpanel">
+            <div className={tab === 'apply' ? 'ov-texture min-h-full bg-[#11131A] p-5 sm:p-8' : 'hidden'} role="tabpanel">
               <ApplyForm />
             </div>
             <div className={tab === 'track' ? 'ov-texture min-h-full bg-[#11131A] p-5 sm:p-8' : 'hidden'} role="tabpanel">

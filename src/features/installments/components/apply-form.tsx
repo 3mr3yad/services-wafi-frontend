@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
+import { createContext, type FormEvent, type ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { PhoneInput, type PhoneInputHandle, StepWizard, useWizard, WizardStep } from '@/components/portal';
 import { submitInstallmentRequest } from '../api/actions';
 import { OPEN_EVENT, type OpenDetail } from './events';
@@ -17,15 +17,18 @@ const STEP_FIELDS: string[][] = [
   ['salary', 'obligations', 'employer_type', 'employment_duration'],
 ];
 
+/** Prefix for field ids, so the dialog form and the inline page form can coexist. */
+const IdPrefix = createContext('ov');
+
 function FieldError({ errors, name }: { errors: FieldErrors; name: string }) {
   const message = errors[name]?.[0];
-  return message ? <p className="wafi-field-error mt-1.5 text-xs font-medium text-rose-600">{message}</p> : null;
+  return message ? <p className="wafi-field-error mt-1.5 text-xs font-medium text-rose-300">{message}</p> : null;
 }
 
 function Field({ name, label, errors, children, className }: { name: string; label: string; errors: FieldErrors; children: ReactNode; className?: string }) {
   return (
     <div className={className}>
-      <label className="ov-label" htmlFor={`ov-${name}`}>
+      <label className="ov-label" htmlFor={`${useContext(IdPrefix)}-${name}`}>
         {label}
       </label>
       {children}
@@ -39,13 +42,13 @@ function StepHeader({ labels }: { labels: string[] }) {
   const t = useTranslations('Installments.landing');
   return (
     <div className="mb-7">
-      <div className="flex items-center justify-between text-xs font-bold text-slate-500">
+      <div className="flex items-center justify-between text-xs font-bold text-[#E6FAFC]/55">
         <span>{t('step_counter', { current: current + 1, total })}</span>
-        <span className="text-[#11131A]">{labels[current]}</span>
+        <span className="text-[#7DE6EE]">{labels[current]}</span>
       </div>
       <div className="mt-3 grid grid-cols-3 gap-2">
         {labels.map((label, i) => (
-          <span key={label} className={`h-1.5 rounded-full transition-colors duration-300 ${i <= current ? 'bg-[#3fc9d6]' : 'bg-slate-200'}`} />
+          <span key={label} className={`h-1.5 rounded-full transition-colors duration-300 ${i <= current ? 'bg-[#7DE6EE] shadow-[0_0_12px_rgb(125_230_238/0.6)]' : 'bg-white/10'}`} />
         ))}
       </div>
     </div>
@@ -59,7 +62,7 @@ function StepNav({ submitting, last }: { submitting: boolean; last?: boolean }) 
   return (
     <div className="mt-8 flex items-center justify-between gap-3">
       {current > 0 ? (
-        <button type="button" onClick={prev} className="inline-flex h-12 items-center gap-2 rounded-full px-5 text-sm font-bold text-slate-600 hover:bg-slate-100">
+        <button type="button" onClick={prev} className="inline-flex h-12 items-center gap-2 rounded-full px-5 text-sm font-bold text-[#E6FAFC]/70 hover:bg-white/5 hover:text-white">
           <Icon name="arrow" className="h-4 w-4 rtl:rotate-180" strokeWidth={2.2} />
           {tl('previous')}
         </button>
@@ -118,7 +121,11 @@ function PhoneStepJumper({ trigger }: { trigger: number }) {
   return null;
 }
 
-export function ApplyForm() {
+/**
+ * The 3-step installments form. `idPrefix` keeps ids unique when the form appears twice on the page;
+ * `listenToOpen` lets only the dialog copy react to the page's "open" buttons.
+ */
+export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?: string; listenToOpen?: boolean } = {}) {
   const t = useTranslations('Installments');
   const tl = useTranslations('Installments.landing');
   const locale = useLocale();
@@ -186,22 +193,22 @@ export function ApplyForm() {
   if (success) {
     return (
       <div className="flex flex-col items-center py-6 text-center" role="status">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E6FAFC] text-[#11131A] ring-8 ring-[#E6FAFC]/40">
+        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#7DE6EE] text-[#11131A] ring-8 ring-[#7DE6EE]/15">
           <Icon name="check" className="h-8 w-8" strokeWidth={2.6} />
         </span>
-        <h3 className="mt-5 text-2xl font-extrabold text-[#11131A]">{tl('success_title')}</h3>
-        <p className="mt-2 max-w-sm text-sm text-slate-500">{success.message}</p>
-        <div className="mt-6 w-full max-w-xs rounded-2xl border border-dashed border-[#3fc9d6] bg-[#E6FAFC] px-5 py-4">
-          <div className="text-xs font-bold text-slate-500">{tl('success_number')}</div>
-          <div className="mt-1 text-3xl font-semibold tracking-tight text-[#11131A]" dir="ltr">
+        <h3 className="mt-5 text-2xl font-extrabold text-white">{tl('success_title')}</h3>
+        <p className="mt-2 max-w-sm text-sm text-[#E6FAFC]/55">{success.message}</p>
+        <div className="mt-6 w-full max-w-xs rounded-2xl border border-dashed border-[#7DE6EE]/60 bg-[#7DE6EE]/[0.06] px-5 py-4">
+          <div className="text-xs font-bold text-[#E6FAFC]/55">{tl('success_number')}</div>
+          <div className="mt-1 text-3xl font-semibold tracking-tight text-[#7DE6EE]" dir="ltr">
             {success.number}
           </div>
         </div>
-        <p className="mt-3 text-xs text-slate-500">{tl('success_hint')}</p>
+        <p className="mt-3 text-xs text-[#E6FAFC]/55">{tl('success_hint')}</p>
         {BRAND.showApprovalDisclaimer && (
-          <p className="mt-4 max-w-sm rounded-xl bg-[#E6FAFC] px-4 py-3 text-xs leading-relaxed text-slate-600">{tl('disclaimer_short')}</p>
+          <p className="mt-4 max-w-sm rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xs leading-relaxed text-[#E6FAFC]/65">{tl('disclaimer_short')}</p>
         )}
-        <button type="button" onClick={startOver} className="mt-7 text-sm font-bold text-[#11131A] underline decoration-[#3fc9d6] decoration-2 underline-offset-4">
+        <button type="button" onClick={startOver} className="mt-7 text-sm font-bold text-white underline decoration-[#7DE6EE] decoration-2 underline-offset-4">
           {tl('success_again')}
         </button>
       </div>
@@ -209,18 +216,19 @@ export function ApplyForm() {
   }
 
   return (
+    <IdPrefix.Provider value={idPrefix}>
     <StepWizard key={formKey} total={3}>
       <form onSubmit={onSubmit}>
-        <ChooseListener onChoose={setType} />
+        {listenToOpen && <ChooseListener onChoose={setType} />}
         <ErrorJumper errors={errors} />
         <PhoneStepJumper trigger={phoneInvalidAt} />
         <StepHeader labels={stepLabels} />
 
         {formError && (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">
+          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200" role="alert">
             <Icon name="x" className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2.4} />
             <div>
-              <div className="font-bold text-rose-800">{tl('error_title')}</div>
+              <div className="font-bold text-rose-100">{tl('error_title')}</div>
               {formError}
             </div>
           </div>
@@ -247,11 +255,11 @@ export function ApplyForm() {
                     checked={type === value}
                     onChange={() => setType(value)}
                   />
-                  <span className="ov-choice-body flex flex-col items-center gap-3 rounded-2xl border-[1.5px] border-[#d5eef1] bg-[#f6fdfe] px-3 py-6 text-center transition">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#11131A] text-[#7DE6EE]">
+                  <span className="ov-choice-body flex flex-col items-center gap-3 rounded-2xl border-[1.5px] border-[#7DE6EE]/15 bg-white/[0.03] px-3 py-6 hover:border-[#7DE6EE]/40 text-center transition">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#7DE6EE]/10 text-[#7DE6EE]">
                       <Icon name={icon} className="h-6 w-6" />
                     </span>
-                    <span className="text-sm font-extrabold text-[#11131A]">{label}</span>
+                    <span className="text-sm font-extrabold text-white">{label}</span>
                   </span>
                 </label>
               ))}
@@ -260,20 +268,20 @@ export function ApplyForm() {
           </fieldset>
 
           {type === 'car' && (
-            <div className="mt-6 rounded-2xl border border-[#d5eef1] bg-[#f6fdfe]/60 p-4">
-              <div className="mb-4 flex items-center gap-2 text-sm font-extrabold text-[#11131A]">
-                <Icon name="car" className="h-5 w-5 text-[#3fc9d6]" />
+            <div className="mt-6 rounded-2xl border border-[#7DE6EE]/15 bg-white/[0.03] p-4">
+              <div className="mb-4 flex items-center gap-2 text-sm font-extrabold text-white">
+                <Icon name="car" className="h-5 w-5 text-[#7DE6EE]" />
                 {tl('car_details')}
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <Field name="car_type" label={t('car_type')} errors={errors}>
-                  <input id="ov-car_type" name="car_type" type="text" required maxLength={255} className="ov-field" />
+                  <input id={`${idPrefix}-car_type`} name="car_type" type="text" required maxLength={255} className="ov-field" />
                 </Field>
                 <Field name="car_model" label={t('car_model')} errors={errors}>
-                  <input id="ov-car_model" name="car_model" type="text" required maxLength={255} className="ov-field" />
+                  <input id={`${idPrefix}-car_model`} name="car_model" type="text" required maxLength={255} className="ov-field" />
                 </Field>
                 <Field name="car_value" label={t('car_value')} errors={errors}>
-                  <input id="ov-car_value" name="car_value" type="number" inputMode="decimal" min="0" step="0.01" required className="ov-field" dir="ltr" />
+                  <input id={`${idPrefix}-car_value`} name="car_value" type="number" inputMode="decimal" min="0" step="0.01" required className="ov-field" dir="ltr" />
                 </Field>
               </div>
             </div>
@@ -285,19 +293,19 @@ export function ApplyForm() {
         <WizardStep index={1}>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Field name="full_name" label={t('full_name')} errors={errors}>
-              <input id="ov-full_name" name="full_name" type="text" required maxLength={255} autoComplete="name" className="ov-field" />
+              <input id={`${idPrefix}-full_name`} name="full_name" type="text" required maxLength={255} autoComplete="name" className="ov-field" />
             </Field>
             <Field name="email" label={t('email')} errors={errors}>
-              <input id="ov-email" name="email" type="email" required maxLength={255} autoComplete="email" className="ov-field" dir="ltr" />
+              <input id={`${idPrefix}-email`} name="email" type="email" required maxLength={255} autoComplete="email" className="ov-field" dir="ltr" />
             </Field>
             <Field name="phone" label={t('phone')} errors={errors}>
-              <PhoneInput ref={phoneRef} id="ov-phone" name="phone" errorId="ov-phone-error" required dropdownInBody locale={phoneLocale} className="ov-field" />
-              <p id="ov-phone-error" className="mt-1.5 hidden text-xs font-medium text-rose-600">
+              <PhoneInput ref={phoneRef} id={`${idPrefix}-phone`} name="phone" errorId={`${idPrefix}-phone-error`} required dropdownInBody locale={phoneLocale} className="ov-field" />
+              <p id={`${idPrefix}-phone-error`} className="mt-1.5 hidden text-xs font-medium text-rose-300">
                 {t('phone_invalid')}
               </p>
             </Field>
             <Field name="national_id" label={t('national_id')} errors={errors}>
-              <input id="ov-national_id" name="national_id" type="text" required maxLength={255} inputMode="numeric" className="ov-field" dir="ltr" />
+              <input id={`${idPrefix}-national_id`} name="national_id" type="text" required maxLength={255} inputMode="numeric" className="ov-field" dir="ltr" />
             </Field>
           </div>
           <StepNav submitting={submitting} />
@@ -308,7 +316,7 @@ export function ApplyForm() {
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Field name="salary" label={t('salary')} errors={errors}>
               <input
-                id="ov-salary"
+                id={`${idPrefix}-salary`}
                 name="salary"
                 type="number"
                 inputMode="decimal"
@@ -323,7 +331,7 @@ export function ApplyForm() {
             </Field>
             <Field name="obligations" label={t('obligations')} errors={errors}>
               <input
-                id="ov-obligations"
+                id={`${idPrefix}-obligations`}
                 name="obligations"
                 type="number"
                 inputMode="decimal"
@@ -337,7 +345,7 @@ export function ApplyForm() {
               />
             </Field>
             <Field name="employer_type" label={t('employer_type')} errors={errors}>
-              <select id="ov-employer_type" name="employer_type" required defaultValue="" className="ov-field">
+              <select id={`${idPrefix}-employer_type`} name="employer_type" required defaultValue="" className="ov-field">
                 <option value="">{t('choose_employer_type')}</option>
                 <option value="government">{t('employer_type_government')}</option>
                 <option value="employee">{t('employer_type_employee')}</option>
@@ -345,7 +353,7 @@ export function ApplyForm() {
               </select>
             </Field>
             <Field name="employment_duration" label={t('employment_duration')} errors={errors}>
-              <select id="ov-employment_duration" name="employment_duration" required defaultValue="" className="ov-field">
+              <select id={`${idPrefix}-employment_duration`} name="employment_duration" required defaultValue="" className="ov-field">
                 <option value="">{t('choose_employment_duration')}</option>
                 <option value="under_3_months">{t('employment_duration_under_3_months')}</option>
                 <option value="over_3_months">{t('employment_duration_over_3_months')}</option>
@@ -354,7 +362,7 @@ export function ApplyForm() {
           </div>
 
           {showNet && (
-            <div className="mt-6 flex items-center justify-between gap-4 rounded-2xl bg-[#11131A] px-5 py-4 text-[#E6FAFC]">
+            <div className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-[#7DE6EE]/20 bg-[#7DE6EE]/[0.06] px-5 py-4 text-[#E6FAFC]">
               <div>
                 <div className="text-xs font-bold text-[#E6FAFC]/70">{tl('net_income_label')}</div>
                 <div className="mt-0.5 text-[11px] text-[#E6FAFC]/45">{tl('net_income_note')}</div>
@@ -365,8 +373,8 @@ export function ApplyForm() {
             </div>
           )}
           {BRAND.showApprovalDisclaimer && (
-            <p className="mt-6 flex items-start gap-2 rounded-xl border border-[#d5eef1] bg-[#f6fdfe] px-4 py-3 text-xs leading-relaxed text-slate-600">
-              <Icon name="shield" className="mt-0.5 h-4 w-4 shrink-0 text-[#3fc9d6]" />
+            <p className="mt-6 flex items-start gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs leading-relaxed text-[#E6FAFC]/60">
+              <Icon name="shield" className="mt-0.5 h-4 w-4 shrink-0 text-[#7DE6EE]" />
               {tl('disclaimer_full')}
             </p>
           )}
@@ -374,5 +382,6 @@ export function ApplyForm() {
         </WizardStep>
       </form>
     </StepWizard>
+    </IdPrefix.Provider>
   );
 }

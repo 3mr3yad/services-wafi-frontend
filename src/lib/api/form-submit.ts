@@ -21,10 +21,17 @@ const LaravelValidationSchema = z.object({
 
 const MessageSchema = z.object({ message: z.string() });
 
+/**
+ * Form posts can carry several photos (resale / xleader: 7 x 5MB), so they get a much longer timeout than reads
+ * (API_TIMEOUT_MS). Aborting early is worse than waiting: the backend keeps going and saves the request anyway,
+ * while the customer sees an error and submits it again (duplicate requests).
+ */
+const SUBMIT_TIMEOUT_MS = 120_000;
+
 /** POSTs a FormData (files included) to the backend and maps the outcome to a FormResult. */
 export async function submitForm<S extends z.ZodType>(path: string, formData: FormData, schema: S): Promise<FormResult<z.infer<S>>> {
   try {
-    const data = await api.post(path, { body: formData, schema, cache: 'no-store' });
+    const data = await api.post(path, { body: formData, schema, cache: 'no-store', timeoutMs: SUBMIT_TIMEOUT_MS });
     return { status: 'success', data };
   } catch (error) {
     if (isApiError(error)) {

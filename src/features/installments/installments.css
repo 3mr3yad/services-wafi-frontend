@@ -93,30 +93,38 @@
   background: rgb(125 230 238 / 0.08);
 }
 
-/* Form controls on the light form card. */
+/* Form controls (dark, on the navy dialog and the inline form card). */
 .installments .ov-field {
   width: 100%;
   height: 3.25rem;
   border-radius: 0.9rem;
-  border: 1.5px solid #d5eef1;
-  background: #f6fdfe;
+  border: 1.5px solid rgb(125 230 238 / 0.16);
+  background: rgb(255 255 255 / 0.04);
   padding-inline: 1rem;
-  color: var(--ov-navy);
+  color: var(--ov-ice);
   font-size: 0.95rem;
   transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 .installments .ov-field:focus {
   outline: none;
-  border-color: var(--ov-sky-deep);
-  background: #fff;
-  box-shadow: 0 0 0 4px rgb(125 230 238 / 0.25);
+  border-color: var(--ov-sky);
+  background: rgb(255 255 255 / 0.07);
+  box-shadow: 0 0 0 4px rgb(125 230 238 / 0.14);
 }
 .installments .ov-field::placeholder {
-  color: #94a3b8;
+  color: rgb(230 250 252 / 0.35);
+}
+.installments .ov-field option {
+  background: var(--ov-navy-2);
+  color: var(--ov-ice);
+}
+.installments .ov-field:-webkit-autofill {
+  -webkit-text-fill-color: var(--ov-ice);
+  box-shadow: 0 0 0 100px var(--ov-navy-3) inset;
 }
 .installments select.ov-field {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2311131a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237de6ee' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: 1.1rem;
   background-position: left 0.9rem center;
@@ -129,7 +137,7 @@
   margin-bottom: 0.45rem;
   font-size: 0.875rem;
   font-weight: 700;
-  color: var(--ov-navy);
+  color: rgb(230 250 252 / 0.85);
 }
 
 /* intl-tel-input inside the brand form. */
@@ -140,9 +148,9 @@
 
 /* Choice cards (phone / car) inside the form. */
 .installments .ov-choice input:checked + .ov-choice-body {
-  border-color: var(--ov-sky-deep);
-  background: var(--ov-ice);
-  box-shadow: 0 0 0 4px rgb(125 230 238 / 0.25);
+  border-color: var(--ov-sky);
+  background: rgb(125 230 238 / 0.1);
+  box-shadow: 0 0 0 4px rgb(125 230 238 / 0.12), 0 0 30px -6px rgb(125 230 238 / 0.45);
 }
 .installments .ov-choice input:focus-visible + .ov-choice-body {
   outline: 3px solid var(--ov-sky-deep);
@@ -175,10 +183,14 @@
 }
 .installments .iti__selected-dial-code,
 .installments .iti__arrow {
-  color: var(--ov-navy);
+  color: var(--ov-ice);
 }
 .installments .iti__arrow {
-  border-top-color: var(--ov-navy);
+  border-top-color: var(--ov-sky);
+}
+.installments .iti__selected-country:hover,
+.installments .iti__selected-country-primary:hover {
+  background: rgb(255 255 255 / 0.06);
 }
 
 /* Request dialog entrance. */
@@ -380,3 +392,128 @@
   .installments .ov-rise, .installments .ov-shine-text, .installments .ov-drive-in, .installments .ov-bob, .installments .ov-wheel, .installments .ov-lane, .installments .ov-beam, .installments .ov-headlight, .installments .ov-window, .installments .ov-chip, .installments .ov-pop-in, .installments .ov-tile, .installments .ov-spin-slow, .installments .ov-marquee, .installments .ov-neon-border::before { animation: none; }
   .installments .ov-lift:hover { transform: none; }
 }
+
+/* ================================================================== */
+/* Photo hero (generated night-drive image in /images/ovfle)          */
+/* ================================================================== */
+.installments .ov-hero-img {
+  transform-origin: 30% 70%;
+  animation: ov-kenburns 22s ease-in-out infinite alternate;
+}
+@keyframes ov-kenburns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.12) translate3d(1.5%, -1%, 0); }
+}
+/* Mobile: photo on top, fade into the copy below. */
+.installments .ov-hero-scrim {
+  background:
+    linear-gradient(0deg, var(--ov-navy) 0%, rgb(17 19 26 / 0.55) 30%, transparent 60%),
+    linear-gradient(180deg, rgb(17 19 26 / 0.6) 0%, transparent 25%);
+}
+/* Desktop: copy sits on the start side, so darken that side. */
+@media (min-width: 64rem) {
+  .installments .ov-hero-scrim {
+    background:
+      linear-gradient(0deg, var(--ov-navy) 0%, transparent 28%),
+      linear-gradient(90deg, rgb(17 19 26 / 0.94) 0%, rgb(17 19 26 / 0.75) 34%, transparent 62%);
+  }
+  .installments[dir='rtl'] .ov-hero-scrim,
+  [dir='rtl'] .installments .ov-hero-scrim {
+    background:
+      linear-gradient(0deg, var(--ov-navy) 0%, transparent 28%),
+      linear-gradient(270deg, rgb(17 19 26 / 0.94) 0%, rgb(17 19 26 / 0.75) 34%, transparent 62%);
+  }
+}
+/* A thin aqua light sweeping along the road. */
+.installments .ov-hero-sweep {
+  position: absolute;
+  bottom: 22%;
+  left: -30%;
+  width: 30%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--ov-sky), transparent);
+  box-shadow: 0 0 18px 2px rgb(125 230 238 / 0.55);
+  opacity: 0.8;
+  animation: ov-sweep 6s cubic-bezier(.45,0,.2,1) infinite;
+}
+@keyframes ov-sweep {
+  0% { transform: translateX(0); opacity: 0; }
+  15% { opacity: 0.85; }
+  85% { opacity: 0.85; }
+  100% { transform: translateX(450%); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .installments .ov-hero-img { animation: none; transform: none; }
+  .installments .ov-hero-sweep { display: none; }
+}
+
+/* ================================================================== */
+/* Scroll-driven motion (CSS scroll timelines; reveal JS still covers  */
+/* browsers without them).                                             */
+/* ================================================================== */
+.installments .ov-scroll-progress {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 60;
+  height: 3px;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, var(--ov-sky-deep), var(--ov-sky));
+  box-shadow: 0 0 12px rgb(125 230 238 / 0.7);
+  pointer-events: none;
+}
+[dir='rtl'] .installments .ov-scroll-progress { transform-origin: 100% 50%; }
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .installments .ov-scroll-progress {
+      animation: ov-progress-grow linear both;
+      animation-timeline: scroll(root);
+    }
+    /* Hero photo drifts down and the copy lifts away while scrolling out. */
+    .installments .ov-hero-media > div {
+      animation: ov-hero-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+    .installments .ov-hero-copy {
+      animation: ov-hero-lift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 20vh 90vh;
+    }
+    /* Card photos unveil (clip) as they enter the viewport. */
+    .installments .ov-unveil {
+      animation: ov-unveil linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+    /* Sections slide in from the sides, scrubbed by scroll. */
+    .installments .ov-from-start {
+      animation: ov-from-start linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+    .installments .ov-from-end {
+      animation: ov-from-end linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+    .installments .ov-zoom-in {
+      animation: ov-zoom-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 35%;
+    }
+  }
+}
+@keyframes ov-progress-grow { to { transform: scaleX(1); } }
+@keyframes ov-hero-drift { to { transform: translateY(18%) scale(1.06); } }
+@keyframes ov-hero-lift { to { transform: translateY(-60px); opacity: 0; } }
+@keyframes ov-unveil {
+  from { clip-path: inset(12% 12% 12% 12% round 1.5rem); transform: scale(1.12); filter: brightness(0.4); }
+  to { clip-path: inset(0 0 0 0 round 0); transform: none; filter: none; }
+}
+@keyframes ov-from-start { from { opacity: 0; transform: translateX(var(--ov-slide, -80px)); } to { opacity: 1; transform: none; } }
+@keyframes ov-from-end { from { opacity: 0; transform: translateX(calc(var(--ov-slide, -80px) * -1)); } to { opacity: 1; transform: none; } }
+[dir='rtl'] .installments { --ov-slide: 80px; }
+@keyframes ov-zoom-in { from { opacity: 0; transform: scale(0.88) translateY(40px); } to { opacity: 1; transform: none; } }
