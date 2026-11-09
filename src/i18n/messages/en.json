@@ -162,6 +162,10 @@
       "top": "Top",
       "bottom": "Bottom",
       "battery": "Battery"
-    }
+    },
+    "copy": "Copy number",
+    "copied": "Copied",
+    "submitting_title": "Sending your request…",
+    "submitting_hint": "Please keep this page open, uploading photos can take a moment."
   }
 }

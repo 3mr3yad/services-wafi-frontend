@@ -18,5 +18,5 @@ export const viewport: Viewport = { themeColor: '#11131A' };
 // The installments brand has its own identity, so it doesn't use the wafiservices PortalShell.
 export default async function InstallmentsLayout({ children }: { children: ReactNode }) {
   const messages = await getMessages();
-  return <NextIntlClientProvider messages={pickMessages(messages, ['Errors', 'Installments'])}>{children}</NextIntlClientProvider>;
+  return <NextIntlClientProvider messages={pickMessages(messages, ['Errors', 'Portal', 'Installments'])}>{children}</NextIntlClientProvider>;
 }

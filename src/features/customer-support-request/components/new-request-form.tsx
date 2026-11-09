@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { type FormEvent, useRef, useState, useTransition } from 'react';
+import { SubmitOverlay } from '@/components/shared/submit-overlay';
 import { PhoneInput, type PhoneInputHandle } from '@/components/portal';
 import { submitSupportRequest } from '../api/actions';
 import { GENERAL_INQUIRY, ISSUE_TYPES, SHIPPING } from '../constants';
@@ -80,6 +81,7 @@ export function NewRequestForm({ onFeedback, hidden }: { onFeedback: (feedback: 
 
         <div className="p-7 sm:p-8">
           <form onSubmit={onSubmit} encType="multipart/form-data" className="space-y-5" aria-busy={pending}>
+            <SubmitOverlay open={pending} />
             {/* mt-5: the old form's leading @csrf input pushed the first field down (Tailwind v3 space-y). */}
             <div className="mt-5">
               <label className="block text-sm font-bold text-slate-700 mb-2">{t('customer_name')}</label>

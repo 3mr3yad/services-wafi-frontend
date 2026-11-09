@@ -15,6 +15,7 @@ import {
   WizardProgressText,
   WizardStep,
 } from '@/components/portal';
+import { SubmitOverlay } from '@/components/shared/submit-overlay';
 import { MockDataBadge } from '@/components/shared/mock-data-badge';
 import { submitResale } from '../api/actions';
 import type { ResaleFormData } from '../api/schemas';
@@ -170,16 +171,20 @@ export function ResaleView({ data, isMock }: ResaleViewProps) {
   const [formKey, setFormKey] = useState(0);
   const [state, setState] = useState<FormState>({ fieldErrors: {}, errorVersion: 0, submitting: false });
 
+  const submitLock = useRef(false);
   const closeModal = useCallback(() => setRequestNumber(null), []);
   const total = (data?.questions.length ?? 0) + 2;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>, phone: PhoneInputHandle | null, goToFirst: () => void) => {
     event.preventDefault();
-    if (state.submitting) return;
+    // Ref, not state: a fast double click arrives before the submitting state re-renders.
+    if (submitLock.current) return;
+    submitLock.current = true;
     const form = event.currentTarget;
 
     const e164 = await phone?.validate();
     if (!e164) {
+      submitLock.current = false;
       goToFirst();
       return;
     }
@@ -193,6 +198,7 @@ export function ResaleView({ data, isMock }: ResaleViewProps) {
       // e.g. the Server Action body limit rejected the photos.
       result = { status: 'error', kind: 'network' };
     }
+    submitLock.current = false;
 
     if (result.status === 'success') {
       // Old: redirect()->back()->with('success', ...)->with('request_number', ...): fresh form + modal.
@@ -218,6 +224,7 @@ export function ResaleView({ data, isMock }: ResaleViewProps) {
 
   return (
     <>
+      <SubmitOverlay open={state.submitting} />
       <RequestNumberModal requestNumber={requestNumber} onClose={closeModal} />
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:py-16">

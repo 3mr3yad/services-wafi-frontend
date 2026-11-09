@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { type FormEvent, type MouseEvent, type ReactNode, useCallback, useRef, useState } from 'react';
+import { SubmitOverlay } from '@/components/shared/submit-overlay';
 import { FlashAlert, PhoneInput, type PhoneInputHandle, RequestNumberModal } from '@/components/portal';
 import { lookupRefundRequest, submitRefundRequest } from '../api/refund.actions';
 import type { RefundLookupRecord } from '../api/schemas';
@@ -142,6 +143,7 @@ export function RefundPage() {
 
   return (
     <>
+      <SubmitOverlay open={submitting} />
       <RequestNumberModal requestNumber={requestNumber} onClose={closeRequestNumber} />
       <RefundTermsModal open={termsOpen} onClose={closeTerms} />
       <RefundLookupModal record={lookupRecord} onClose={closeLookup} />

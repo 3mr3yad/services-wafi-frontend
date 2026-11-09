@@ -3,10 +3,12 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { createContext, type FormEvent, type ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { PhoneInput, type PhoneInputHandle, StepWizard, useWizard, WizardStep } from '@/components/portal';
+import { SubmitOverlay } from '@/components/shared/submit-overlay';
+import { AfterReveal, RevealNumber, SuccessMark } from '@/components/shared/success-celebration';
 import { submitInstallmentRequest } from '../api/actions';
 import { OPEN_EVENT, type OpenDetail } from './events';
 import { BRAND } from '../brand';
-import { ForwardArrow, Icon } from './art';
+import { BrandLogo, ForwardArrow, Icon } from './art';
 
 type InstallmentType = '' | 'phone' | 'car';
 type FieldErrors = Record<string, string[]>;
@@ -193,30 +195,31 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
   if (success) {
     return (
       <div className="flex flex-col items-center py-6 text-center" role="status">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#7DE6EE] text-[#11131A] ring-8 ring-[#7DE6EE]/15">
-          <Icon name="check" className="h-8 w-8" strokeWidth={2.6} />
-        </span>
-        <h3 className="mt-5 text-2xl font-extrabold text-white">{tl('success_title')}</h3>
-        <p className="mt-2 max-w-sm text-sm text-[#E6FAFC]/55">{success.message}</p>
-        <div className="mt-6 w-full max-w-xs rounded-2xl border border-dashed border-[#7DE6EE]/60 bg-[#7DE6EE]/[0.06] px-5 py-4">
+        <SuccessMark accent="#7DE6EE" ink="#11131A" />
+        <AfterReveal delay={0.85}>
+          <h3 className="mt-5 text-2xl font-extrabold text-white">{tl('success_title')}</h3>
+          <p className="mt-2 max-w-sm text-sm text-[#E6FAFC]/55">{success.message}</p>
+        </AfterReveal>
+        <div className="mt-6 w-full max-w-xs rounded-2xl border border-dashed border-[#7DE6EE]/60 bg-[#7DE6EE]/[0.06] px-5 py-4 shadow-[0_0_40px_-12px_rgb(125_230_238/0.5)]">
           <div className="text-xs font-bold text-[#E6FAFC]/55">{tl('success_number')}</div>
-          <div className="mt-1 text-3xl font-semibold tracking-tight text-[#7DE6EE]" dir="ltr">
-            {success.number}
-          </div>
+          <RevealNumber value={success.number} className="mt-1 block text-4xl font-semibold tracking-tight text-[#7DE6EE] select-all" />
         </div>
-        <p className="mt-3 text-xs text-[#E6FAFC]/55">{tl('success_hint')}</p>
-        {BRAND.showApprovalDisclaimer && (
-          <p className="mt-4 max-w-sm rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xs leading-relaxed text-[#E6FAFC]/65">{tl('disclaimer_short')}</p>
-        )}
-        <button type="button" onClick={startOver} className="mt-7 text-sm font-bold text-white underline decoration-[#7DE6EE] decoration-2 underline-offset-4">
-          {tl('success_again')}
-        </button>
+        <AfterReveal delay={1 + success.number.length * 0.07} className="flex flex-col items-center">
+          <p className="mt-3 text-xs text-[#E6FAFC]/55">{tl('success_hint')}</p>
+          {BRAND.showApprovalDisclaimer && (
+            <p className="mt-4 max-w-sm rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xs leading-relaxed text-[#E6FAFC]/65">{tl('disclaimer_short')}</p>
+          )}
+          <button type="button" onClick={startOver} className="mt-7 text-sm font-bold text-white underline decoration-[#7DE6EE] decoration-2 underline-offset-4">
+            {tl('success_again')}
+          </button>
+        </AfterReveal>
       </div>
     );
   }
 
   return (
     <IdPrefix.Provider value={idPrefix}>
+    <SubmitOverlay open={submitting} accent="#7DE6EE" container="[data-service=installments]" logo={<BrandLogo className="text-6xl" />} />
     <StepWizard key={formKey} total={3}>
       <form onSubmit={onSubmit}>
         {listenToOpen && <ChooseListener onChoose={setType} />}

@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { type FormEvent, useCallback, useRef, useState, useTransition } from 'react';
+import { SubmitOverlay } from '@/components/shared/submit-overlay';
 import { FlashAlert, PhoneInput, type PhoneInputHandle, RequestNumberModal } from '@/components/portal';
 import { submitFollowerGift } from '../api/actions';
 
@@ -89,6 +90,7 @@ export function FollowerGiftsPage() {
 
   return (
     <>
+      <SubmitOverlay open={pending} />
       <RequestNumberModal requestNumber={requestNumber} onClose={closeModal} />
 
       <main className="max-w-6xl mx-auto px-4 py-10 sm:py-16">

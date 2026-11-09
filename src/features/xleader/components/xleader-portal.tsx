@@ -15,6 +15,7 @@ import {
   WizardProgressText,
   WizardStep,
 } from '@/components/portal';
+import { SubmitOverlay } from '@/components/shared/submit-overlay';
 import { submitXleaderRequest } from '../api/xleader.actions';
 import type { XleaderBrand } from '../api/schemas';
 import { XleaderTermsCheckbox } from './terms-checkbox';
@@ -154,6 +155,7 @@ function XleaderForm({
 
   return (
     <form id="xleaderForm" encType="multipart/form-data" className="[&>.step]:mt-6" onSubmit={onSubmit}>
+      <SubmitOverlay open={submitting} />
       {/* Step 1: customer details + brand */}
       <WizardStep index={0} id="step0">
         <label className="mb-2 block text-sm font-bold text-slate-700">{t('customer_name')}</label>
