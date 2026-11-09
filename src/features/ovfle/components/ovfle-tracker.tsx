@@ -1,0 +1,165 @@
+'use client';
+
+import { useLocale, useTranslations } from 'next-intl';
+import { type FormEvent, useRef, useState } from 'react';
+import { PhoneInput, type PhoneInputHandle } from '@/components/portal';
+import { lookupOvfleRequest } from '../api/ovfle.actions';
+import type { OvfleLookupRecord } from '../api/schemas';
+import { Icon } from './ovfle-art';
+
+const STATUS_KEYS = {
+  processing: 'status_processing',
+  accepted: 'status_accepted',
+  rejected: 'status_rejected',
+  offer_accepted: 'status_offer_accepted',
+  offer_rejected: 'status_offer_rejected',
+} as const;
+
+const STATUS_STYLES: Record<string, string> = {
+  processing: 'bg-amber-400/15 text-amber-300 ring-amber-300/30',
+  accepted: 'bg-emerald-400/15 text-emerald-300 ring-emerald-300/30',
+  rejected: 'bg-rose-400/15 text-rose-300 ring-rose-300/30',
+  offer_accepted: 'bg-[#7DE6EE]/15 text-[#7DE6EE] ring-[#7DE6EE]/30',
+  offer_rejected: 'bg-pink-400/15 text-pink-300 ring-pink-300/30',
+};
+
+type StageState = 'done' | 'current' | 'failed' | 'todo';
+
+/** Maps the backend status to the 3-stage timeline: received → review → offer. */
+function stagesFor(status: string): [StageState, StageState, StageState] {
+  switch (status) {
+    case 'processing':
+      return ['done', 'current', 'todo'];
+    case 'accepted':
+      return ['done', 'done', 'current'];
+    case 'rejected':
+      return ['done', 'failed', 'todo'];
+    case 'offer_accepted':
+      return ['done', 'done', 'done'];
+    case 'offer_rejected':
+      return ['done', 'done', 'failed'];
+    default:
+      return ['done', 'current', 'todo'];
+  }
+}
+
+const DOT: Record<StageState, string> = {
+  done: 'bg-[#7DE6EE] text-[#11131A]',
+  current: 'bg-[#11131A] text-[#7DE6EE] ring-2 ring-[#7DE6EE] animate-pulse',
+  failed: 'bg-rose-400 text-[#11131A]',
+  todo: 'bg-white/10 text-white/40',
+};
+
+function Result({ record }: { record: OvfleLookupRecord }) {
+  const t = useTranslations('Ovfle');
+  const tl = useTranslations('Ovfle.landing');
+  const statusKey = STATUS_KEYS[record.status as keyof typeof STATUS_KEYS] as (typeof STATUS_KEYS)[keyof typeof STATUS_KEYS] | undefined;
+  const typeLabel = record.installmentType === 'car' ? t('type_car') : record.installmentType === 'phone' ? t('type_phone') : record.installmentType;
+  const stages = stagesFor(record.status);
+  const stageLabels = [tl('timeline_received'), tl('timeline_review'), tl('timeline_offer')];
+
+  return (
+    <div className="mt-6 rounded-2xl border border-[#7DE6EE]/20 bg-[#11131A]/60 p-5" aria-live="polite">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-xs text-[#E6FAFC]/55">{t('lookup_full_name')}</div>
+          <div className="mt-0.5 text-lg font-extrabold text-white">{record.fullName}</div>
+        </div>
+        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ring-1 ${STATUS_STYLES[record.status] ?? 'bg-white/10 text-white ring-white/20'}`}>
+          {statusKey ? t(statusKey) : record.status}
+        </span>
+      </div>
+
+      <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
+        <div className="rounded-xl bg-white/[0.04] px-3 py-2.5">
+          <dt className="text-xs text-[#E6FAFC]/55">{t('lookup_type')}</dt>
+          <dd className="mt-0.5 font-bold text-white">{typeLabel}</dd>
+        </div>
+        <div className="rounded-xl bg-white/[0.04] px-3 py-2.5">
+          <dt className="text-xs text-[#E6FAFC]/55">{t('lookup_submitted_at')}</dt>
+          <dd className="mt-0.5 font-bold text-white" dir="ltr">
+            {record.submittedAt}
+          </dd>
+        </div>
+      </dl>
+
+      <ol className="mt-5 grid grid-cols-3 gap-2">
+        {stageLabels.map((label, i) => {
+          const state = stages[i] ?? 'todo';
+          return (
+            <li key={label} className="flex flex-col items-center gap-2 text-center">
+              <span className={`flex h-8 w-8 items-center justify-center rounded-full ${DOT[state]}`}>
+                {state === 'failed' ? (
+                  <Icon name="x" className="h-4 w-4" strokeWidth={2.6} />
+                ) : state === 'done' ? (
+                  <Icon name="check" className="h-4 w-4" strokeWidth={2.6} />
+                ) : (
+                  <Icon name="clock" className="h-4 w-4" />
+                )}
+              </span>
+              <span className={`text-xs font-bold ${state === 'todo' ? 'text-white/40' : 'text-[#E6FAFC]'}`}>{label}</span>
+            </li>
+          );
+        })}
+      </ol>
+
+      {record.adminNote ? (
+        <div className="mt-5 border-t border-white/10 pt-4">
+          <div className="text-xs text-[#E6FAFC]/55">{t('lookup_note_label')}</div>
+          <p className="mt-1 text-sm leading-relaxed text-[#E6FAFC]">{record.adminNote}</p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/** Status lookup by mobile number (GET /api/v1/public/ovfle/lookup/{phone} via a Server Action). */
+export function OvfleTracker() {
+  const phoneLocale = useLocale() === 'ar' ? 'ar' : 'en';
+  const t = useTranslations('Ovfle');
+  const tl = useTranslations('Ovfle.landing');
+  const phoneRef = useRef<PhoneInputHandle>(null);
+  const [record, setRecord] = useState<OvfleLookupRecord | null>(null);
+  const [notFound, setNotFound] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const phone = await phoneRef.current?.validate();
+    if (!phone) return;
+    setLoading(true);
+    setNotFound(false);
+    setRecord(null);
+    try {
+      const result = await lookupOvfleRequest(phone);
+      if (result.status === 'found') setRecord(result.record);
+      else setNotFound(true);
+    } catch {
+      setNotFound(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <form onSubmit={onSubmit} className="flex flex-col gap-3 sm:flex-row" noValidate>
+        <div className="min-w-0 flex-1">
+          <label htmlFor="ov-track-phone" className="sr-only">
+            {t('phone')}
+          </label>
+          <PhoneInput ref={phoneRef} id="ov-track-phone" name="track_phone" errorId="ov-track-phone-error" required dropdownInBody locale={phoneLocale} className="ov-field" />
+        </div>
+        <button type="submit" disabled={loading} className="ov-btn ov-btn-primary shrink-0">
+          <Icon name="search" className="h-4 w-4" strokeWidth={2.2} />
+          {loading ? tl('track_searching') : t('lookup_button')}
+        </button>
+      </form>
+      <p id="ov-track-phone-error" className="mt-2 hidden text-xs font-medium text-rose-300">
+        {t('phone_invalid')}
+      </p>
+      {notFound && <p className="mt-3 text-sm font-medium text-rose-300">{t('lookup_not_found')}</p>}
+      {record && <Result record={record} />}
+    </div>
+  );
+}

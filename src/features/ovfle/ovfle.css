@@ -1,0 +1,341 @@
+/*
+ * Ovfle brand layer (from ovfle branding.pdf), scoped under .ovfle so it never leaks into other services.
+ * Palette: navy #11131A · sky #7DE6EE · ice #E6FAFC · white. Dark surfaces with a fine vertical-line
+ * texture and soft cyan glows, like the brand's product mockups.
+ */
+.ovfle {
+  --ov-navy: #11131a;
+  --ov-navy-2: #171a24;
+  --ov-navy-3: #1f2330;
+  --ov-sky: #7de6ee;
+  --ov-sky-deep: #3fc9d6;
+  --ov-ice: #e6fafc;
+  --ov-white: #ffffff;
+  --ov-line: rgb(125 230 238 / 0.14);
+  --ov-muted: rgb(230 250 252 / 0.62);
+
+  font-family: var(--font-ovfle-latin), var(--font-ovfle-arabic), Tahoma, Arial, sans-serif;
+  background-color: var(--ov-navy);
+  color: var(--ov-ice);
+  min-height: 100dvh;
+  overflow-x: clip;
+}
+
+/* The brand's fine vertical-line texture. */
+.ovfle .ov-texture {
+  background-image: repeating-linear-gradient(90deg, rgb(255 255 255 / 0.022) 0 1px, transparent 1px 5px);
+}
+
+.ovfle .ov-glow {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  pointer-events: none;
+  background: radial-gradient(circle, rgb(125 230 238 / 0.35), transparent 70%);
+}
+
+.ovfle .ov-wordmark {
+  font-family: var(--font-ovfle-latin), sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ov-sky);
+  line-height: 1;
+}
+
+.ovfle .ov-card {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.045), rgb(255 255 255 / 0.015));
+  border: 1px solid var(--ov-line);
+  border-radius: 1.5rem;
+}
+
+.ovfle .ov-neon {
+  box-shadow: 0 0 0 1px rgb(125 230 238 / 0.35), 0 0 32px -6px rgb(125 230 238 / 0.55);
+}
+
+.ovfle .ov-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  height: 3.25rem;
+  padding-inline: 1.75rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.ovfle .ov-btn-primary {
+  background: var(--ov-sky);
+  color: var(--ov-navy);
+  box-shadow: 0 10px 30px -10px rgb(125 230 238 / 0.7);
+}
+.ovfle .ov-btn-primary:hover {
+  background: #a3eef3;
+}
+.ovfle .ov-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+.ovfle .ov-btn-ghost {
+  border: 1px solid rgb(125 230 238 / 0.35);
+  color: var(--ov-ice);
+}
+.ovfle .ov-btn-ghost:hover {
+  background: rgb(125 230 238 / 0.08);
+}
+
+/* Form controls on the light form card. */
+.ovfle .ov-field {
+  width: 100%;
+  height: 3.25rem;
+  border-radius: 0.9rem;
+  border: 1.5px solid #d5eef1;
+  background: #f6fdfe;
+  padding-inline: 1rem;
+  color: var(--ov-navy);
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+.ovfle .ov-field:focus {
+  outline: none;
+  border-color: var(--ov-sky-deep);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgb(125 230 238 / 0.25);
+}
+.ovfle .ov-field::placeholder {
+  color: #94a3b8;
+}
+.ovfle select.ov-field {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2311131a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 1.1rem;
+  background-position: left 0.9rem center;
+}
+[dir='ltr'] .ovfle select.ov-field {
+  background-position: right 0.9rem center;
+}
+.ovfle .ov-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ov-navy);
+}
+
+/* intl-tel-input inside the brand form. */
+.ovfle .iti {
+  width: 100%;
+  direction: ltr;
+}
+
+/* Choice cards (phone / car) inside the form. */
+.ovfle .ov-choice input:checked + .ov-choice-body {
+  border-color: var(--ov-sky-deep);
+  background: var(--ov-ice);
+  box-shadow: 0 0 0 4px rgb(125 230 238 / 0.25);
+}
+.ovfle .ov-choice input:focus-visible + .ov-choice-body {
+  outline: 3px solid var(--ov-sky-deep);
+  outline-offset: 2px;
+}
+
+/* Hero art motion. */
+@keyframes ov-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes ov-draw {
+  from { stroke-dashoffset: 1400; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes ov-fill {
+  from { opacity: 0.15; }
+  to { opacity: 1; }
+}
+.ovfle .ov-float { animation: ov-float 6s ease-in-out infinite; }
+.ovfle .ov-draw { stroke-dasharray: 1400; animation: ov-draw 2.4s cubic-bezier(.16,.8,.3,1) both; }
+.ovfle .ov-bar { animation: ov-fill 0.5s ease-out both; }
+
+/* Wizard step transition (shared StepWizard sets inline transform/opacity). */
+.ovfle .step { transition: opacity 0.18s ease, transform 0.18s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ovfle .ov-float, .ovfle .ov-draw, .ovfle .ov-bar { animation: none; }
+  .ovfle .ov-draw { stroke-dasharray: none; }
+}
+.ovfle .iti__selected-dial-code,
+.ovfle .iti__arrow {
+  color: var(--ov-navy);
+}
+.ovfle .iti__arrow {
+  border-top-color: var(--ov-navy);
+}
+
+/* Request dialog entrance. */
+@keyframes ov-pop {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.ovfle .ov-pop { animation: ov-pop 0.28s cubic-bezier(.16,.8,.3,1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .ovfle .ov-pop { animation: none; }
+}
+
+/* ================================================================== */
+/* Motion layer (all disabled under prefers-reduced-motion, see end)   */
+/* ================================================================== */
+
+/* Scroll reveal: [data-ov-reveal] + optional --ov-delay. */
+.ovfle [data-ov-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(.16,.8,.3,1), transform 0.8s cubic-bezier(.16,.8,.3,1);
+  transition-delay: var(--ov-delay, 0s);
+}
+.ovfle [data-ov-reveal="zoom"] { transform: scale(0.94); }
+.ovfle [data-ov-reveal][data-shown] { opacity: 1; transform: none; }
+
+/* Hero entrance (on load). */
+@keyframes ov-rise { from { opacity: 0; transform: translateY(22px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+.ovfle .ov-rise { animation: ov-rise 0.9s cubic-bezier(.16,.8,.3,1) both; animation-delay: var(--ov-delay, 0s); }
+
+/* Shimmering gradient text. */
+@keyframes ov-shine { to { background-position: 200% center; } }
+.ovfle .ov-shine-text {
+  background: linear-gradient(90deg, #7de6ee 0%, #e6fafc 25%, #7de6ee 50%, #3fc9d6 75%, #7de6ee 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: ov-shine 6s linear infinite;
+}
+
+/* Drifting background glows. */
+@keyframes ov-drift { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(40px, 30px) scale(1.12); } }
+.ovfle .ov-drift { animation: ov-drift 14s ease-in-out infinite; }
+
+/* Car: drives in, wheels spin, body bobs, headlight pulses, lane dashes move. */
+@keyframes ov-drive { from { transform: translateX(-70%); opacity: 0; } 60% { opacity: 1; } to { transform: none; opacity: 1; } }
+@keyframes ov-spin { to { transform: rotate(360deg); } }
+@keyframes ov-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes ov-lane { to { stroke-dashoffset: -100; } }
+@keyframes ov-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+.ovfle .ov-drive-in { animation: ov-drive 1.8s cubic-bezier(.2,.8,.25,1) 0.2s both; }
+.ovfle .ov-bob { animation: ov-bob 0.9s ease-in-out infinite; }
+.ovfle .ov-wheel { animation: ov-spin 0.9s linear infinite; transform-box: view-box; }
+.ovfle .ov-lane { animation: ov-lane 1.1s linear infinite; }
+.ovfle .ov-beam { animation: ov-pulse 2.4s ease-in-out infinite; }
+.ovfle .ov-headlight { animation: ov-pulse 1.2s ease-in-out infinite; }
+
+/* Skyline windows twinkle, sparkles blink. */
+@keyframes ov-twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.9; } }
+.ovfle .ov-window { animation: ov-twinkle 4s ease-in-out infinite; }
+@keyframes ov-sparkle { 0%, 100% { opacity: 0; transform: scale(0.4); } 50% { opacity: 1; transform: scale(1); box-shadow: 0 0 12px 2px rgb(125 230 238 / 0.8); } }
+.ovfle .ov-sparkle { animation: ov-sparkle 3.2s ease-in-out infinite; }
+
+/* Floating glass chips. */
+@keyframes ov-chip { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes ov-chip-in { from { opacity: 0; transform: translateY(14px) scale(0.9); } to { opacity: 1; transform: none; } }
+.ovfle .ov-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid rgb(125 230 238 / 0.25);
+  background: rgb(17 19 26 / 0.7);
+  backdrop-filter: blur(10px);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ov-ice);
+  white-space: nowrap;
+  box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.6);
+  animation: ov-chip-in 0.7s cubic-bezier(.16,.8,.3,1) both, ov-chip 5s ease-in-out infinite;
+}
+@keyframes ov-pop-in { from { opacity: 0; transform: translateY(30px) scale(0.92); } to { opacity: 1; transform: none; } }
+.ovfle .ov-pop-in { animation: ov-pop-in 1s cubic-bezier(.16,.8,.3,1) both; }
+
+/* Phone plan tiles light up in sequence (loops). */
+@keyframes ov-tile {
+  0%, 8% { background: rgb(255 255 255 / 0.08); color: rgb(230 250 252 / 0.4); }
+  12%, 85% { background: #7de6ee; color: #11131a; }
+  100% { background: rgb(255 255 255 / 0.08); color: rgb(230 250 252 / 0.4); }
+}
+.ovfle .ov-tile { background: rgb(255 255 255 / 0.08); color: rgb(230 250 252 / 0.4); animation: ov-tile 5.6s linear infinite; }
+
+/* Coins drop into the phone. */
+@keyframes ov-coin {
+  0% { transform: translate(-50%, -70px) scale(0.6); opacity: 0; }
+  25% { opacity: 1; }
+  70% { transform: translate(-50%, 20px) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, 40px) scale(0.4); opacity: 0; }
+}
+.ovfle .ov-coin { top: 30%; animation: ov-coin 3.3s cubic-bezier(.5,0,.5,1) infinite; }
+
+/* Slow orbit, podium ring, payment progress. */
+.ovfle .ov-spin-slow { animation: ov-spin 18s linear infinite; }
+@keyframes ov-ring { 0%, 100% { stroke-opacity: 0.25; } 50% { stroke-opacity: 1; filter: drop-shadow(0 0 6px #7de6ee); } }
+.ovfle .ov-ring { animation: ov-ring 3s ease-in-out infinite; }
+@keyframes ov-progress { 0% { stroke-dashoffset: 170; } 70%, 100% { stroke-dashoffset: 40; } }
+.ovfle .ov-progress { animation: ov-progress 3.5s cubic-bezier(.16,.8,.3,1) infinite alternate; }
+
+/* Marquee strip. */
+@keyframes ov-marquee { to { transform: translateX(-50%); } }
+.ovfle .ov-marquee { animation: ov-marquee 38s linear infinite; }
+
+/* Steps: connector line draws in when revealed. */
+.ovfle .ov-connector { transform: scaleX(0); transform-origin: right; transition: transform 1.4s cubic-bezier(.16,.8,.3,1) 0.3s; }
+[dir="ltr"] .ovfle .ov-connector { transform-origin: left; }
+.ovfle [data-shown] .ov-connector { transform: scaleX(1); }
+
+/* Cards lift + glow on hover. */
+/* Includes the reveal's opacity fade, since cards are often both revealed and liftable. */
+.ovfle .ov-lift {
+  transition:
+    transform 0.5s cubic-bezier(.16,.8,.3,1),
+    border-color 0.35s,
+    box-shadow 0.35s,
+    opacity 0.8s cubic-bezier(.16,.8,.3,1) var(--ov-delay, 0s);
+}
+.ovfle .ov-lift:hover { transform: translateY(-6px); border-color: rgb(125 230 238 / 0.45); box-shadow: 0 30px 60px -30px rgb(125 230 238 / 0.35); }
+
+/* CTA: rotating neon border. */
+@property --ov-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes ov-rotate { to { --ov-angle: 360deg; } }
+.ovfle .ov-neon-border { position: relative; isolation: isolate; }
+.ovfle .ov-neon-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--ov-angle), transparent 0 60%, #7de6ee 75%, transparent 90%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: ov-rotate 5s linear infinite;
+}
+
+/* Primary button sheen on hover. */
+.ovfle .ov-btn-primary { position: relative; overflow: hidden; }
+.ovfle .ov-btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.55) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.7s ease;
+}
+.ovfle .ov-btn-primary:hover::after { transform: translateX(120%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ovfle [data-ov-reveal] { opacity: 1; transform: none; transition: none; }
+  .ovfle .ov-rise, .ovfle .ov-shine-text, .ovfle .ov-drift, .ovfle .ov-drive-in, .ovfle .ov-bob, .ovfle .ov-wheel,
+  .ovfle .ov-lane, .ovfle .ov-beam, .ovfle .ov-headlight, .ovfle .ov-window, .ovfle .ov-sparkle, .ovfle .ov-chip,
+  .ovfle .ov-pop-in, .ovfle .ov-tile, .ovfle .ov-coin, .ovfle .ov-spin-slow, .ovfle .ov-ring, .ovfle .ov-progress,
+  .ovfle .ov-marquee, .ovfle .ov-neon-border::before { animation: none; }
+  .ovfle .ov-coin { display: none; }
+  .ovfle .ov-connector { transform: none; transition: none; }
+  .ovfle .ov-lift:hover { transform: none; }
+}

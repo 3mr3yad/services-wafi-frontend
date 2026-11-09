@@ -1,0 +1,160 @@
+{
+  "Metadata": {
+    "siteName": "عالم وافي",
+    "description": "An advanced unified portal to complete all device, protection, and after-sales services quickly, easily, and with the highest security standards.",
+    "homeTitle": "Choose the right service for you"
+  },
+  "Home": {
+    "eyebrow": "Official Wafi World Services Portal",
+    "title": "Choose the right service for you",
+    "subtitle": "An advanced unified portal to complete all device, protection, and after-sales services quickly, easily, and with the highest security standards.",
+    "hero_headline": "Clearer services... simpler procedures",
+    "hero_subtitle": "Everything you need after purchase — protection, trade-in, support, and order tracking — all in one place.",
+    "browse_services": "Explore Services",
+    "track_now": "Track Request",
+    "tracker_title": "Track your request easily",
+    "tracker_subtitle": "Enter your mobile number or request number to see its status and updates anytime.",
+    "tracker_tab_phone": "By Mobile Number (Support)",
+    "tracker_tab_request": "By Request # (Voucher / Trade-In / Warranty)",
+    "tracker_input_label": "Mobile number or request number",
+    "tracker_unified_placeholder": "Enter mobile number or request number",
+    "tracker_phone_placeholder": "05xxxxxxxx or +9665xxxxxxxx",
+    "tracker_request_placeholder": "e.g. REF-123456 or RES-123456",
+    "tracker_submit": "Check Status",
+    "tracker_searching": "Checking status...",
+    "tracker_empty": "No requests found for the provided information.",
+    "tracker_modal_title": "Search Results",
+    "tracker_modal_close": "Close",
+    "tracker_results_count": "{count} request(s) found for this search.",
+    "tracker_date_label": "Submitted on",
+    "tracker_phone_label": "Phone number",
+    "tracker_attachments_label": "Photos from the support team",
+    "intent_label": "Quick Find:",
+    "intent_all": "All Services",
+    "intent_refund": "Cancel Voucher",
+    "intent_resale": "Trade-In Device",
+    "intent_xleader": "Activate Warranty",
+    "intent_support": "Support",
+    "value_fast": "Fast Digital Flows",
+    "value_fast_desc": "Submit your request in minutes.",
+    "value_tracking": "Real-Time Tracking",
+    "value_tracking_desc": "Clear updates on your request status.",
+    "value_protection": "Data Protection",
+    "value_protection_desc": "Privacy for your information and files.",
+    "value_support": "Dedicated Support Team",
+    "value_support_desc": "Ready to help you every step of the way.",
+    "service_label": "Our Services",
+    "services_title": "All Wafi World services... in one place",
+    "services_subtitle": "Choose the right service, check the requirements, and start your request in clear, direct steps.",
+    "start_now": "Start Your Request",
+    "explore_showcase": "Explore Packages Now",
+    "requirements_label": "Requirements:",
+    "time_label": "Est. Time:",
+    "featured_badge": "Most Popular",
+    "external_badge": "Interactive Showcase",
+    "how_it_works_label": "Simple digital steps",
+    "how_it_works_title": "How to Start & Track Your Request",
+    "how_it_works_subtitle": "Three clear steps from choosing your service to tracking your request.",
+    "step_1_title": "Choose a Service",
+    "step_1_desc": "Pick the right service from the Wafi World list.",
+    "step_2_title": "Complete Your Details",
+    "step_2_desc": "Enter the basic details and upload the required documents.",
+    "step_3_title": "Track Your Request",
+    "step_3_desc": "Get your reference number and follow its status and updates directly.",
+    "protection_highlight": "Superior screen and device protection engineered with international impact-resistance standards.",
+    "policies_title": "Security & Warranty at Wafi World",
+    "policies_subtitle": "Committed to consumer protection standards, warranty integrity, and data privacy in the Kingdom of Saudi Arabia.",
+    "mobile_sticky_start": "Start New Request",
+    "mobile_sticky_track": "Track Existing Request",
+    "banner_title": "Stay Always Up To Date",
+    "banner_subtitle": "Follow your request status and updates as they happen.",
+    "tracker_name_label": "Name",
+    "services": {
+      "refund": {
+        "name": "Voucher Cancellation",
+        "short_desc": "Submit a voucher cancellation request and attach the required documents to follow up.",
+        "requirements": "Voucher code + original invoice"
+      },
+      "resale": {
+        "name": "Device Trade-In",
+        "short_desc": "Get your current device valued and trade it in for a newer one, clearly and directly.",
+        "requirements": "Device model + clear condition photos"
+      },
+      "xleader": {
+        "name": "Full Protection Warranty (Xleader)",
+        "short_desc": "Activate and register your device protection and benefit from the available coverage under the terms.",
+        "requirements": "Serial number (IMEI) + purchase invoice"
+      },
+      "customer_support": {
+        "name": "Customer Support & Inquiries",
+        "short_desc": "General inquiries, reports, request follow-up, and support from a dedicated team.",
+        "requirements": "Mobile number + issue details"
+      },
+      "protection": {
+        "name": "Wafi Advanced Protection Packages",
+        "short_desc": "Protection packages for electronic devices, giving you extra options and peace of mind after purchase.",
+        "requirements": "Select device model and package"
+      },
+      "ovfle": {
+        "name": "Phone & Car Installments (Ovfle)",
+        "short_desc": "Submit an installment-financing request for your phone or car and get a suitable offer.",
+        "requirements": "Income details + national ID"
+      }
+    }
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The link you opened is wrong or has moved.",
+    "backHome": "Back to home"
+  },
+  "Errors": {
+    "title": "Something went wrong",
+    "description": "Please try again in a moment.",
+    "retry": "Try again"
+  },
+  "Layout": {
+    "nav_home": "Home",
+    "nav_services": "Our Services",
+    "nav_protection": "Protection Packages",
+    "nav_how": "How It Works",
+    "nav_refund": "Voucher Cancellation",
+    "nav_resale": "Device Trade-In",
+    "nav_xleader": "Full Protection Warranty",
+    "nav_customer_support": "Support",
+    "nav_follower_gifts": "Follower Gifts",
+    "switch_language": "عربي",
+    "footer_tagline": "A unified portal for Wafi World services, giving you an easier experience after purchase.",
+    "footer_policies_label": "Policies & Terms",
+    "footer_rights": "All rights reserved",
+    "footer_terms": "General Policy, Terms & Conditions",
+    "footer_contact": "Contact Us"
+  },
+  "Portal": {
+    "success_title": "Submitted successfully",
+    "error_title": "Could not submit request",
+    "error_hint": "Please check your details and try again.",
+    "error_list_title": "There are some errors",
+    "request_number_title": "Request number",
+    "request_number_hint": "Keep this number so we can help you faster.",
+    "ok": "OK",
+    "next": "Next",
+    "previous": "Back",
+    "submit": "Submit",
+    "choose": "Choose",
+    "required_note": "Required fields",
+    "step_of": "Step {current} of {total}",
+    "upload_hint": "Drag a photo here or click to choose",
+    "file_types_hint": "JPG / PNG / WEBP — max 5MB",
+    "device_photos": {
+      "step_title": "Device photos",
+      "step_subtitle": "Upload the required photos (clear shots work best).",
+      "screen": "Screen",
+      "back": "Back",
+      "right_edge": "Right edge",
+      "left_edge": "Left edge",
+      "top": "Top",
+      "bottom": "Bottom",
+      "battery": "Battery"
+    }
+  }
+}

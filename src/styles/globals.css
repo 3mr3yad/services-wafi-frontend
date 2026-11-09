@@ -1,0 +1,94 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens are CSS variables, mapped to Tailwind utilities below.
+ * The main website sets them on :root. Each service may override them inside its own
+ * [data-service="<slug>"] wrapper, so services keep independent designs.
+ */
+@theme inline {
+  --font-sans: var(--font-active);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --radius-brand: var(--radius);
+}
+
+/*
+ * Wafi portal scales, ported from the Tailwind CDN config in wafi-service
+ * resources/views/layouts/public.blade.php (used by the service pages: bg-brand-700, text-ink-900...).
+ * shadow-sm keeps its Tailwind v3 value so ported markup looks the same.
+ */
+@theme {
+  --color-brand-50: #eaf3fb;
+  --color-brand-100: #cfe4f5;
+  --color-brand-200: #9fc9eb;
+  --color-brand-300: #6baddf;
+  --color-brand-400: #3f93d2;
+  --color-brand-500: #1f78bd;
+  --color-brand-600: #0e63a2;
+  --color-brand-700: #025197;
+  --color-brand-800: #023f76;
+  --color-brand-900: #032f57;
+
+  --color-accent-50: #eefaff;
+  --color-accent-100: #d6f2fc;
+  --color-accent-200: #ade4f8;
+  --color-accent-300: #7ad2f1;
+  --color-accent-400: #2fb6e9;
+  --color-accent-500: #1998cc;
+  --color-accent-600: #1478a3;
+  --color-accent-700: #135f81;
+  --color-accent-800: #134f6b;
+  --color-accent-900: #123f57;
+
+  --color-ink-50: #f5f7fa;
+  --color-ink-100: #e8ecf3;
+  --color-ink-200: #ccd5e3;
+  --color-ink-300: #a9b6cc;
+  --color-ink-400: #8291ab;
+  --color-ink-500: #5f6d88;
+  --color-ink-600: #434f68;
+  --color-ink-700: #1c3157;
+  --color-ink-800: #132344;
+  --color-ink-900: #0e2347;
+  --color-ink-950: #0b1a33;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* Main website palette (from the wafiservices homepage). */
+:root {
+  --brand: #1366e0;
+  --brand-foreground: #ffffff;
+  --surface: #f5f8fc;
+  --surface-raised: #ffffff;
+  --ink: #0f1e3a;
+  --muted: #5b6b82;
+  --line: #e3eaf4;
+  --radius: 22px;
+  --font-active: var(--font-cairo-latin), var(--font-cairo-arabic), Tahoma, Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  body {
+    @apply bg-surface text-ink font-sans antialiased;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
