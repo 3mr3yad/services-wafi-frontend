@@ -1,5 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // Must match the Worker name in the Cloudflare dashboard (Workers Builds checks it).
   "name": "wafi-services-frontend",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-10-01",
@@ -9,19 +10,11 @@
     "binding": "ASSETS"
   },
   "observability": { "enabled": true },
+  // Public, non-secret runtime config. Secrets (e.g. FRONTEND_API_KEY) are set with
+  // `wrangler secret put <NAME>` or in the dashboard, never here.
   "vars": {
+    "API_BASE_URL": "https://wafii.sa/wafiservices",
     "API_TIMEOUT_MS": "15000",
     "API_MOCKS": "false"
-  },
-  // Secrets are set with `wrangler secret put <NAME> --env <env>`; never put them here.
-  "env": {
-    "staging": {
-      "name": "wafi-services-frontend-staging",
-      "vars": { "API_TIMEOUT_MS": "15000", "API_MOCKS": "false" }
-    },
-    "production": {
-      "name": "wafi-services-frontend-production",
-      "vars": { "API_TIMEOUT_MS": "15000", "API_MOCKS": "false" }
-    }
   }
 }
