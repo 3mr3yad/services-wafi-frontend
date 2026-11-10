@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo/page-metadata';
 import { notFound } from 'next/navigation';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
@@ -23,12 +24,11 @@ export async function generateMetadata({ params }: LocaleLayoutProps): Promise<M
   const t = await getTranslations({ locale, namespace: 'Metadata' });
 
   return {
+    // Production must set NEXT_PUBLIC_SITE_URL (https://...): previews need absolute https image URLs.
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+    // Defaults for routes without their own metadata (e.g. 404); pages override them via pageMetadata().
+    ...pageMetadata({ locale, path: '', title: t('siteName'), description: t('description'), siteName: t('siteName') }),
     title: { default: t('siteName'), template: `%s - ${t('siteName')}` },
-    description: t('description'),
-    alternates: {
-      languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}`])),
-    },
   };
 }
 

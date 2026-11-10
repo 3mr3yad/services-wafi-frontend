@@ -39,6 +39,7 @@
     "status_rejected": "Rejected",
     "submit_success": "Your request has been submitted successfully!",
     "submit_not_available": "Submitting requests is not available on this page yet. Please try again later.",
-    "submit_error": "Could not send your request. Please try again."
+    "submit_error": "Could not send your request. Please try again.",
+    "meta_description": "Submit your purchase voucher refund request online and track it with your request or mobile number."
   }
 }

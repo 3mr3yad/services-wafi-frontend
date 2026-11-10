@@ -47,6 +47,7 @@
     "data_unavailable": "The form data could not be loaded right now. Please try again later.",
     "decision_unavailable": "Recording your decision is not available from this page yet. Please try again later.",
     "submission_success": "تم إرسال النموذج بنجاح!",
-    "mock_badge": "Mock data"
+    "mock_badge": "Mock data",
+    "meta_description": "Trade in your old device: choose the model, answer a few questions, upload photos and follow your price offer."
   }
 }
