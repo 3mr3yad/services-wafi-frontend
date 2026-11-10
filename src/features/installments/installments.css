@@ -447,6 +447,137 @@
   .installments .ov-hero-sweep { display: none; }
 }
 
+/* ------------------------------------------------------------------ */
+/* Hero lights: the photo + its light layer share one "object-fit: cover" box, computed with container units, so  */
+/* every light stays glued to its tower / headlight at any crop (mobile keeps the old 30% focus, desktop centres). */
+/* ------------------------------------------------------------------ */
+.installments .ov-hero-frame { position: relative; container-type: size; }
+.installments .ov-hero-cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  --ov-cw: max(100cqw, 100cqh * 1536 / 864);
+  --ov-ch: max(100cqh, 100cqw * 864 / 1536);
+  width: var(--ov-cw);
+  height: var(--ov-ch);
+  left: calc((100cqw - var(--ov-cw)) * 0.3);
+  top: calc((100cqh - var(--ov-ch)) * 0.5);
+}
+@media (min-width: 64rem) {
+  .installments .ov-hero-cover { left: calc((100cqw - var(--ov-cw)) * 0.5); }
+}
+.installments .ov-hero-cover > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.installments .ov-lights { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; }
+.installments .ov-lights > span { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; }
+
+/* Window lights on the towers + far skyline dots. */
+.installments .ov-l-dot {
+  width: 0.34%;
+  aspect-ratio: 1;
+  background: #e8fdff;
+  box-shadow: 0 0 6px 2px rgb(125 230 238 / 0.85), 0 0 14px 4px rgb(125 230 238 / 0.35);
+  opacity: 0.25;
+  animation: ov-l-twinkle var(--t, 3s) ease-in-out var(--d, 0s) infinite;
+}
+.installments .ov-l-dot.is-warm { background: #fff1d6; box-shadow: 0 0 6px 2px rgb(255 190 110 / 0.85), 0 0 14px 4px rgb(255 170 80 / 0.3); }
+.installments .ov-l-dot.is-far { width: 0.24%; }
+@keyframes ov-l-twinkle {
+  0%, 100% { opacity: 0.2; }
+  40% { opacity: 1; }
+  55% { opacity: 0.9; }
+  70% { opacity: 0.35; }
+}
+
+/* Soft glows breathing over the brightest towers. */
+.installments .ov-l-glow {
+  background: radial-gradient(closest-side, rgb(125 230 238 / 0.7), rgb(125 230 238 / 0.22) 55%, transparent);
+  filter: blur(4px);
+  opacity: 0.2;
+  animation: ov-l-breathe var(--t, 3.6s) ease-in-out var(--d, 0s) infinite;
+}
+@keyframes ov-l-breathe { 0%, 100% { opacity: 0.15; } 50% { opacity: 1; } }
+
+/* Warm street lamps. */
+.installments .ov-l-lamp {
+  width: 2%;
+  height: 3.2%;
+  background: radial-gradient(closest-side, #fff4dc, rgb(255 190 110 / 0.75) 35%, transparent);
+  filter: blur(1px);
+  animation: ov-l-breathe var(--t, 2.6s) ease-in-out var(--d, 0s) infinite;
+}
+
+/* Cyan lane lights on the road, with a long reflection on the wet asphalt. */
+.installments .ov-l-lane {
+  width: 3.4%;
+  height: 1.3%;
+  background: radial-gradient(closest-side, #e8fdff, rgb(125 230 238 / 0.8) 45%, transparent);
+  animation: ov-l-lane 3.2s ease-in-out var(--d, 0s) infinite;
+}
+.installments .ov-l-lane::after {
+  content: '';
+  position: absolute;
+  left: 30%;
+  top: 100%;
+  width: 40%;
+  height: 900%;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgb(125 230 238 / 0.55), transparent);
+  filter: blur(2px);
+}
+@keyframes ov-l-lane { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+/* Aviation warning lights. */
+.installments .ov-l-beacon {
+  width: 0.5%;
+  aspect-ratio: 1;
+  background: radial-gradient(closest-side, #ffd6d6, #ff4545 45%, transparent);
+  box-shadow: 0 0 10px 3px rgb(255 69 69 / 0.6);
+  opacity: 0;
+  animation: ov-l-beacon 2.2s steps(1, end) var(--d, 0s) infinite;
+}
+@keyframes ov-l-beacon { 0% { opacity: 1; } 22% { opacity: 0; } }
+
+/* Headlights (~(530,575) and (803,580) on the 1536×864 photo): ignite once, then breathe + double-flash. */
+.installments .ov-l-core { background: radial-gradient(closest-side, #fff, #e3fcff 35%, rgb(125 230 238 / 0.6) 62%, transparent); filter: blur(1.5px); }
+.installments .ov-l-bloom { background: radial-gradient(closest-side, rgb(125 230 238 / 0.75), rgb(125 230 238 / 0.25) 55%, transparent); filter: blur(6px); }
+.installments .ov-l-streak { height: 0.35%; border-radius: 0; background: linear-gradient(90deg, transparent, #d9fbff 50%, transparent); filter: blur(0.6px); }
+.installments .ov-l-left.ov-l-core { left: 34.4%; top: 66.6%; width: 7%; height: 3%; }
+.installments .ov-l-left.ov-l-bloom { left: 34.4%; top: 66.6%; width: 20%; height: 12%; }
+.installments .ov-l-left.ov-l-streak { left: 34.4%; top: 66.6%; width: 38%; }
+.installments .ov-l-right.ov-l-core { left: 52.4%; top: 67.2%; width: 3%; height: 2.8%; }
+.installments .ov-l-right.ov-l-bloom { left: 52.4%; top: 67.2%; width: 11%; height: 10%; }
+.installments .ov-l-right.ov-l-streak { left: 52.4%; top: 67.2%; width: 26%; }
+.installments .ov-l-road {
+  left: 44%;
+  top: 84%;
+  width: 46%;
+  height: 16%;
+  background: radial-gradient(closest-side, rgb(125 230 238 / 0.4), transparent);
+  filter: blur(10px);
+  transform: translate(-50%, -50%);
+}
+.installments .ov-l-hl,
+.installments .ov-l-road {
+  animation: ov-l-ignite 1.8s steps(1, end) 0.6s both, ov-l-live 6s ease-in-out 2.4s infinite;
+}
+@keyframes ov-l-ignite {
+  0% { opacity: 0; } 10% { opacity: 0.9; } 16% { opacity: 0; } 28% { opacity: 1; } 34% { opacity: 0.2; } 44%, 100% { opacity: 1; }
+}
+@keyframes ov-l-live {
+  0%, 100% { opacity: 1; }
+  35% { opacity: 0.75; }
+  70% { opacity: 1; }
+  76% { opacity: 0.3; }
+  80% { opacity: 1; }
+  84% { opacity: 0.3; }
+  88% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .installments .ov-lights > span { animation: none; opacity: 0.8; }
+}
+
 /* ================================================================== */
 /* Scroll-driven motion (CSS scroll timelines; reveal JS still covers  */
 /* browsers without them).                                             */

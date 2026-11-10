@@ -7,6 +7,7 @@ import '../installments.css';
 import { FireworksBackground } from '@/components/animate-ui/backgrounds/fireworks';
 import { ApplyForm } from './apply-form';
 import { BrandLogo, ForwardArrow, Icon, MotionProvider } from './art';
+import { HeroLights } from './hero-lights';
 import { OpenButton } from './open-button';
 import { Parallax } from './parallax';
 import { RequestDialog } from './request-dialog';
@@ -106,13 +107,12 @@ export async function InstallmentsLanding() {
           <section className="relative">
             <div className="ov-hero-media relative h-[min(82vw,26rem)] overflow-hidden lg:absolute lg:inset-0 lg:h-auto">
               {/* Mirrored in LTR (on a wrapper, so the flip doesn't share the zoom's transform-origin). */}
-              <div className="h-full w-full ltr:-scale-x-100">
-                <img
-                  src="/images/ovfle/hero.webp"
-                  alt=""
-                  fetchPriority="high"
-                  className="ov-hero-img h-full w-full object-cover object-[30%_50%] lg:object-center"
-                />
+              <div className="ov-hero-frame h-full w-full ltr:-scale-x-100">
+                {/* The photo and its light layer share one cover-sized box, so the lights stay on the towers / headlights. */}
+                <div className="ov-hero-img ov-hero-cover">
+                  <img src="/images/ovfle/hero.webp" alt="" fetchPriority="high" />
+                  <HeroLights />
+                </div>
               </div>
               <span className="ov-hero-sweep" aria-hidden="true" />
               <div className="ov-hero-scrim absolute inset-0" />

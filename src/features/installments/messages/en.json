@@ -125,7 +125,8 @@
       "footer_tagline": "A digital platform to submit and track car and smartphone installment applications.",
       "parent_attribution": "A Wafi World company",
       "footer_back": "Wafi World services portal",
-      "footer_rights": "All rights reserved"
+      "footer_rights": "All rights reserved",
+      "net_income_share": "{percent} of your income"
     }
   }
 }

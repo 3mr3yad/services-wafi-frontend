@@ -148,6 +148,10 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
   const net = Number(salary || 0) - Number(obligations || 0);
   const showNet = salary !== '' && Number.isFinite(net);
   const money = new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en-SA', { maximumFractionDigits: 0 });
+  // Share of the salary left after obligations (null when there is no salary to divide by).
+  const salaryValue = Number(salary || 0);
+  const netShare = showNet && salaryValue > 0 ? net / salaryValue : null;
+  const percent = new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en-SA', { style: 'percent', maximumFractionDigits: 0 });
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -365,14 +369,38 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
           </div>
 
           {showNet && (
-            <div className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-[#7DE6EE]/20 bg-[#7DE6EE]/[0.06] px-5 py-4 text-[#E6FAFC]">
-              <div>
-                <div className="text-xs font-bold text-[#E6FAFC]/70">{tl('net_income_label')}</div>
-                <div className="mt-0.5 text-[11px] text-[#E6FAFC]/45">{tl('net_income_note')}</div>
+            <div className="mt-6 rounded-2xl border border-[#7DE6EE]/20 bg-[#7DE6EE]/[0.06] px-5 py-4 text-[#E6FAFC]">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <div className="text-xs font-bold text-[#E6FAFC]/70">{tl('net_income_label')}</div>
+                  <div className="mt-0.5 text-[11px] text-[#E6FAFC]/45">{tl('net_income_note')}</div>
+                </div>
+                <div className="text-end">
+                  <div className={`text-2xl font-semibold whitespace-nowrap ${net < 0 ? 'text-rose-300' : 'text-[#7DE6EE]'}`}>
+                    {money.format(net)} <span className="text-xs text-[#E6FAFC]/60">{tl('currency')}</span>
+                  </div>
+                  {netShare !== null && (
+                    <div className={`mt-0.5 text-xs font-bold whitespace-nowrap ${net < 0 ? 'text-rose-300' : 'text-[#E6FAFC]/70'}`}>
+                      {tl('net_income_share', { percent: percent.format(netShare) })}
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className={`text-2xl font-semibold whitespace-nowrap ${net < 0 ? 'text-rose-300' : 'text-[#7DE6EE]'}`}>
-                {money.format(net)} <span className="text-xs text-[#E6FAFC]/60">{tl('currency')}</span>
-              </div>
+              {netShare !== null && (
+                <div
+                  className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10"
+                  role="meter"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.round(Math.max(0, netShare) * 100)}
+                  aria-label={tl('net_income_label')}
+                >
+                  <div
+                    className={`h-full rounded-full transition-[width] duration-300 ${net < 0 ? 'bg-rose-400' : 'bg-[#7DE6EE] shadow-[0_0_10px_rgb(125_230_238/0.6)]'}`}
+                    style={{ width: `${net < 0 ? 100 : Math.min(100, netShare * 100)}%` }}
+                  />
+                </div>
+              )}
             </div>
           )}
           {BRAND.showApprovalDisclaimer && (
