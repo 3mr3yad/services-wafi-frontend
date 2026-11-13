@@ -12,6 +12,7 @@ import {
   type InstallmentSubmitResponse,
   InstallmentSubmitResponseSchema,
 } from './schemas';
+import { toLookupRecord } from './lookup-record';
 
 /** Submits the installment request to POST /api/v1/public/ovfle (field names = the old Blade form). */
 export async function submitInstallmentRequest(formData: FormData): Promise<FormResult<InstallmentSubmitResponse>> {
@@ -33,16 +34,7 @@ export async function lookupInstallmentRequest(phone: string): Promise<Installme
       schema: InstallmentLookupResponseSchema,
       cache: 'no-store',
     });
-    return {
-      status: 'found',
-      record: {
-        fullName: data.full_name ?? '',
-        installmentType: data.installment_type,
-        status: data.status,
-        submittedAt: data.submitted_at ?? '',
-        adminNote: data.admin_note,
-      },
-    };
+    return { status: 'found', record: toLookupRecord(data) };
   } catch (error) {
     // Like the old page: every failure shows "not found".
     if (!isApiError(error) || error.kind !== 'not_found') {

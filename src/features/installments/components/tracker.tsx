@@ -6,6 +6,7 @@ import { PhoneInput, type PhoneInputHandle } from '@/components/portal';
 import { lookupInstallmentRequest } from '../api/actions';
 import type { InstallmentLookupRecord } from '../api/schemas';
 import { Icon } from './art';
+import { CompletedBanner, FinancingCard, StageTracker } from './track-details';
 
 const STATUS_KEYS = {
   processing: 'status_processing',
@@ -50,7 +51,7 @@ const DOT: Record<StageState, string> = {
   todo: 'bg-white/10 text-white/40',
 };
 
-function Result({ record }: { record: InstallmentLookupRecord }) {
+export function TrackResult({ record, onRefresh, refreshing }: { record: InstallmentLookupRecord; onRefresh: () => void; refreshing: boolean }) {
   const t = useTranslations('Installments');
   const tl = useTranslations('Installments.landing');
   const statusKey = STATUS_KEYS[record.status as keyof typeof STATUS_KEYS] as (typeof STATUS_KEYS)[keyof typeof STATUS_KEYS] | undefined;
@@ -58,6 +59,8 @@ function Result({ record }: { record: InstallmentLookupRecord }) {
   const typeLabel = TYPE_LABELS[record.installmentType] ?? record.installmentType;
   const stages = stagesFor(record.status);
   const stageLabels = [tl('timeline_received'), tl('timeline_review'), tl('timeline_offer')];
+  // Post-offer tracking only exists once the offer is accepted (or the request is already finished).
+  const postOffer = record.status === 'offer_accepted' || record.completedAt !== null;
 
   return (
     <div className="mt-6 rounded-2xl border border-[#7DE6EE]/20 bg-[#11131A]/60 p-5" aria-live="polite">
@@ -110,6 +113,27 @@ function Result({ record }: { record: InstallmentLookupRecord }) {
           <p className="mt-1 text-sm leading-relaxed text-[#E6FAFC]">{record.adminNote}</p>
         </div>
       ) : null}
+
+      {/* After the offer: financing (car), ownership transfer (car), delivery (all), then the completed state. */}
+      {record.financing && <FinancingCard financing={record.financing} />}
+      {postOffer && record.installmentType === 'car' && record.ownershipTransfer && <StageTracker kind="ownership" block={record.ownershipTransfer} />}
+      {postOffer && record.delivery && <StageTracker kind="delivery" block={record.delivery} />}
+      {record.completedAt && <CompletedBanner date={record.completedAt} />}
+
+      {/* No push for progress: the customer re-checks on demand. */}
+      {!record.completedAt && (
+        <button
+          type="button"
+          onClick={onRefresh}
+          disabled={refreshing}
+          className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-[#7DE6EE] hover:underline disabled:opacity-60"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-3.5 w-3.5${refreshing ? ' animate-spin' : ''}`} aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36M21 4v5h-5" />
+          </svg>
+          {refreshing ? tl('track_searching') : tl('track_refresh')}
+        </button>
+      )}
     </div>
   );
 }
@@ -123,11 +147,14 @@ export function RequestTracker() {
   const [record, setRecord] = useState<InstallmentLookupRecord | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const lastPhone = useRef<string | null>(null);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const phone = await phoneRef.current?.validate();
     if (!phone) return;
+    lastPhone.current = phone;
     setLoading(true);
     setNotFound(false);
     setRecord(null);
@@ -139,6 +166,18 @@ export function RequestTracker() {
       setNotFound(true);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Re-runs the same lookup and keeps the current result on screen while it loads.
+  const refresh = async () => {
+    if (!lastPhone.current || refreshing) return;
+    setRefreshing(true);
+    try {
+      const result = await lookupInstallmentRequest(lastPhone.current);
+      if (result.status === 'found') setRecord(result.record);
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -160,7 +199,7 @@ export function RequestTracker() {
         {t('phone_invalid')}
       </p>
       {notFound && <p className="mt-3 text-sm font-medium text-rose-300">{t('lookup_not_found')}</p>}
-      {record && <Result record={record} />}
+      {record && <TrackResult record={record} onRefresh={refresh} refreshing={refreshing} />}
     </div>
   );
 }
