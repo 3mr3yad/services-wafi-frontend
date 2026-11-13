@@ -7,7 +7,7 @@ export const E164_PHONE = /^\+[1-9]\d{7,14}$/;
  * Contract: wafi-service app/Http/Controllers/Api/PublicOvfleController.php
  *
  * POST /api/v1/public/ovfle → 201 { data: { request_number, message } }
- *   Body: installment_type (phone|car), full_name, email, phone (E.164), national_id, salary, obligations,
+ *   Body: installment_type (phone|device|car), full_name, email, phone (E.164), national_id, salary, obligations,
  *   employer_type (government|employee|retired), employment_duration (under_3_months|over_3_months),
  *   car_type / car_model / car_value (required only when installment_type = car).
  *   422 → { message, errors: { field: [..] } }.

@@ -54,7 +54,8 @@ function Result({ record }: { record: InstallmentLookupRecord }) {
   const t = useTranslations('Installments');
   const tl = useTranslations('Installments.landing');
   const statusKey = STATUS_KEYS[record.status as keyof typeof STATUS_KEYS] as (typeof STATUS_KEYS)[keyof typeof STATUS_KEYS] | undefined;
-  const typeLabel = record.installmentType === 'car' ? t('type_car') : record.installmentType === 'phone' ? t('type_phone') : record.installmentType;
+  const TYPE_LABELS: Record<string, string> = { car: t('type_car'), phone: t('type_phone'), device: t('type_device') };
+  const typeLabel = TYPE_LABELS[record.installmentType] ?? record.installmentType;
   const stages = stagesFor(record.status);
   const stageLabels = [tl('timeline_received'), tl('timeline_review'), tl('timeline_offer')];
 

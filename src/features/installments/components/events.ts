@@ -3,10 +3,13 @@ export const OPEN_EVENT = 'installments:open';
 
 export type DialogTab = 'apply' | 'track';
 
+/** Installment types accepted by POST /api/v1/public/ovfle. */
+export type InstallmentKind = 'phone' | 'device' | 'car';
+
 export interface OpenDetail {
   tab: DialogTab;
-  /** Preselects the installment type in the form (from the phone / car cards). */
-  type?: 'phone' | 'car';
+  /** Preselects the installment type in the form (from the service cards / slides). */
+  type?: InstallmentKind;
 }
 
 export function openRequestDialog(detail: OpenDetail) {

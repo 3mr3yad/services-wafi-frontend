@@ -7,7 +7,7 @@ import '../installments.css';
 import { FireworksBackground } from '@/components/animate-ui/backgrounds/fireworks';
 import { ApplyForm } from './apply-form';
 import { BrandLogo, ForwardArrow, Icon, MotionProvider } from './art';
-import { HeroLights } from './hero-lights';
+import { type HeroSlide, HeroSlider } from './hero-slider';
 import { OpenButton } from './open-button';
 import { Parallax } from './parallax';
 import { RequestDialog } from './request-dialog';
@@ -39,17 +39,96 @@ function Disclaimer({ text, className = '' }: { text: string; className?: string
   );
 }
 
+/** Financing partner: official logo when configured in brand.ts, otherwise a text badge. */
+function PartnerMark({ name, logo }: { name: string; logo: string | null }) {
+  return (
+    // Partner logos are drawn for light backgrounds, so they sit on a white card (with a soft brand glow).
+    <div
+      className={`ov-lift flex h-28 min-w-56 flex-1 items-center justify-center rounded-3xl px-8 sm:h-32 ${
+        logo ? 'bg-white shadow-[0_20px_60px_-25px_rgb(125_230_238/0.45)] ring-1 ring-[#7DE6EE]/30' : 'ov-card bg-white/[0.04]'
+      }`}
+    >
+      {logo ? (
+        <img src={logo} alt={name} className="max-h-16 w-auto max-w-full object-contain" loading="lazy" />
+      ) : (
+        <span className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">{name}</span>
+      )}
+    </div>
+  );
+}
+
 /**
- * Ovfle landing page: car + smartphone installments, equally prominent.
- * Brand name, parent attribution and disclaimers are configured in ../brand.ts and the message files.
+ * Ovfle landing page: car, smartphone and electronic-device installments.
+ * Copy follows the "صفحة الهبوط أوفل" brief; commercial settings live in ../brand.ts and the message files.
  */
 export async function InstallmentsLanding() {
   const [t, locale] = await Promise.all([getTranslations('Installments.landing'), getLocale()]);
-  const brandName = BRAND.name[locale === 'en' ? 'en' : 'ar'];
+  const lang = locale === 'en' ? 'en' : 'ar';
+  const brandName = BRAND.name[lang];
   const year = new Date().getFullYear();
+  const partnerItems = BRAND.partners.map((p) => ({ name: p.name[lang], logo: p.logo?.[lang] ?? null }));
+
+  const slides: HeroSlide[] = [
+    {
+      id: 'ovfle',
+      image: '/images/ovfle/hero.webp',
+      lights: true,
+      eyebrow: t('s1_eyebrow'),
+      title1: t('s1_title_1'),
+      title2: t('s1_title_2'),
+      subtitle: t('s1_subtitle'),
+      primary: { label: t('hero_cta') },
+      secondary: { label: t('hero_track'), action: 'track' },
+    },
+    {
+      id: 'cars',
+      image: '/images/ovfle/slide-showroom.webp',
+      eyebrow: t('s2_eyebrow'),
+      title1: t('s2_title_1'),
+      title2: t('s2_title_2'),
+      subtitle: t('s2_subtitle'),
+      primary: { label: t('car_cta'), type: 'car' },
+      secondary: { label: t('s2_how'), action: 'how' },
+      partners: { label: t('s2_partners'), items: partnerItems },
+    },
+    {
+      id: 'devices',
+      image: '/images/ovfle/slide-devices.webp',
+      eyebrow: t('s3_eyebrow'),
+      title1: t('s3_title_1'),
+      title2: t('s3_title_2'),
+      subtitle: t('s3_subtitle'),
+      primary: { label: t('device_cta'), type: 'device' },
+      secondary: { label: t('hero_track'), action: 'track' },
+    },
+    {
+      id: 'flex',
+      image: '/images/ovfle/slide-flex.webp',
+      eyebrow: t('s4_eyebrow'),
+      title1: t('s4_title_1'),
+      title2: t('s4_title_2'),
+      subtitle: t('s4_subtitle'),
+      primary: { label: t('hero_cta') },
+      secondary: { label: t('hero_track'), action: 'track' },
+    },
+  ];
+
   const services = [
-    { type: 'car' as const, icon: 'car' as const, image: '/images/ovfle/car.webp', label: t('car_label'), title: t('car_title'), desc: t('car_desc'), cta: t('car_cta') },
     { type: 'phone' as const, icon: 'phone' as const, image: '/images/ovfle/phones.webp', label: t('phone_label'), title: t('phone_title'), desc: t('phone_desc'), cta: t('phone_cta') },
+    { type: 'device' as const, icon: 'device' as const, image: '/images/ovfle/devices.webp', label: t('device_label'), title: t('device_title'), desc: t('device_desc'), cta: t('device_cta') },
+    { type: 'car' as const, icon: 'car' as const, image: '/images/ovfle/car.webp', label: t('car_label'), title: t('car_title'), desc: t('car_desc'), cta: t('car_cta') },
+  ];
+  const reasons = [
+    { icon: 'shield' as const, label: t('why_1') },
+    { icon: 'wallet' as const, label: t('why_2') },
+    { icon: 'phone' as const, label: t('why_3') },
+    { icon: 'car' as const, label: t('why_4') },
+    { icon: 'check' as const, label: t('why_5') },
+  ];
+  const stats = [
+    { value: t('about_stat_months'), label: t('about_stat_months_label'), icon: 'clock' as const },
+    { value: t('about_stat_services'), label: t('about_stat_services_label'), icon: 'spark' as const },
+    ...(BRAND.showParentAttribution ? [{ value: t('about_stat_parent'), label: t('about_stat_parent_label'), icon: 'shield' as const, labelFirst: true }] : []),
   ];
   const steps = [
     { n: '01', icon: 'spark' as const, title: t('step_1_title'), desc: t('step_1_desc') },
@@ -63,6 +142,11 @@ export async function InstallmentsLanding() {
     { icon: 'contact' as const, label: t('req_contact') },
     { icon: 'car' as const, label: t('req_car') },
   ];
+  const company = [
+    { label: t('footer_cr'), value: BRAND.company.commercialRegistration },
+    { label: t('footer_vat'), value: BRAND.company.vatNumber },
+    { label: t('footer_unified'), value: BRAND.company.unifiedNumber, tel: true },
+  ].filter((row) => row.value);
 
   return (
     <MotionProvider>
@@ -74,8 +158,9 @@ export async function InstallmentsLanding() {
           <a href="#top" className="min-w-0" aria-label={brandName}>
             <BrandLogo className="text-[1.6rem] sm:text-[1.9rem]" />
           </a>
-          <nav className="hidden items-center gap-7 text-sm font-bold text-[#E6FAFC]/70 md:flex">
+          <nav className="hidden items-center gap-6 text-sm font-bold text-[#E6FAFC]/70 lg:flex">
             <Link href="/" className="hover:text-white">{t('nav_home')}</Link>
+            <a href="#about" className="hover:text-white">{t('nav_about')}</a>
             <a href="#services" className="hover:text-white">{t('nav_services')}</a>
             <a href="#how" className="hover:text-white">{t('nav_how')}</a>
             <OpenButton tab="track" className="hover:text-white">
@@ -85,7 +170,7 @@ export async function InstallmentsLanding() {
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             <Link
               href="/"
-              className="inline-flex h-10 items-center px-1 text-xs font-bold text-[#E6FAFC]/80 hover:text-white md:hidden"
+              className="inline-flex h-10 items-center px-1 text-xs font-bold text-[#E6FAFC]/80 hover:text-white lg:hidden"
             >
               {t('nav_home')}
             </Link>
@@ -102,105 +187,129 @@ export async function InstallmentsLanding() {
       </header>
 
       <main id="top">
-        {/* Hero: full-bleed night photo, copy on the empty side (start side; the photo is mirrored in LTR) */}
+        {/* Hero: 4-slide carousel (Ovfle / cars from dealers / phones & devices / up to 5 years) */}
         <Parallax className="relative isolate overflow-hidden">
-          <section className="relative">
-            <div className="ov-hero-media relative h-[min(82vw,26rem)] overflow-hidden lg:absolute lg:inset-0 lg:h-auto">
-              {/* Mirrored in LTR (on a wrapper, so the flip doesn't share the zoom's transform-origin). */}
-              <div className="ov-hero-frame h-full w-full ltr:-scale-x-100">
-                {/* The photo and its light layer share one cover-sized box, so the lights stay on the towers / headlights. */}
-                <div className="ov-hero-img ov-hero-cover">
-                  <img src="/images/ovfle/hero.webp" alt="" fetchPriority="high" />
-                  <HeroLights />
-                </div>
-              </div>
-              <span className="ov-hero-sweep" aria-hidden="true" />
-              <div className="ov-hero-scrim absolute inset-0" />
-            </div>
-            <div className="relative mx-auto -mt-8 max-w-6xl px-4 pb-16 sm:px-6 lg:mt-0 lg:flex lg:min-h-[44rem] lg:items-center lg:py-24">
-              <div className="ov-hero-copy max-w-xl text-center lg:text-start">
-                <span className="ov-rise inline-flex items-center gap-2 rounded-full border border-[#7DE6EE]/30 bg-[#7DE6EE]/10 px-4 py-1.5 text-xs font-bold text-[#7DE6EE]">
-                  <Icon name="spark" className="h-3.5 w-3.5" />
-                  {t('hero_eyebrow')}
-                </span>
-                <h1 className="mt-6 text-4xl leading-[1.25] font-extrabold tracking-tight text-white drop-shadow-[0_2px_24px_rgb(17_19_26/0.8)] sm:text-5xl lg:text-[3.4rem]">
-                  <span className="ov-rise block" style={{ ['--ov-delay' as string]: '0.12s' }}>
-                    {t('hero_title_1')}
-                  </span>
-                  <span className="ov-rise ov-shine-text mt-2 block" style={{ ['--ov-delay' as string]: '0.28s' }}>
-                    {t('hero_title_2')}
-                  </span>
-                </h1>
-                <p className="ov-rise mx-auto mt-6 max-w-2xl text-lg lg:mx-0 leading-relaxed text-[#E6FAFC]/70" style={{ ['--ov-delay' as string]: '0.44s' }}>
-                  {t('hero_subtitle')}
-                </p>
-                <div className="ov-rise mt-8 flex flex-wrap justify-center gap-3 lg:justify-start" style={{ ['--ov-delay' as string]: '0.6s' }}>
-                  <OpenButton tab="apply" className="ov-btn ov-btn-primary">
-                    {t('hero_cta')}
-                    <ForwardArrow />
-                  </OpenButton>
-                  <OpenButton tab="track" className="ov-btn ov-btn-ghost">
-                    <Icon name="search" className="h-4 w-4" />
-                    {t('hero_track')}
-                  </OpenButton>
-                </div>
-                <ul className="mt-8 flex flex-wrap justify-center gap-x-6 lg:justify-start gap-y-3 text-sm text-[#E6FAFC]/75">
-                  {[t('hero_point_1'), t('hero_point_2'), t('hero_point_3')].map((point, i) => (
-                    <li key={point} className="ov-rise flex items-center gap-2" style={{ ['--ov-delay' as string]: `${0.75 + i * 0.12}s` }}>
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#7DE6EE]/15 text-[#7DE6EE]">
-                        <Icon name="check" className="h-3 w-3" strokeWidth={3} />
-                      </span>
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-                <Disclaimer text={t('disclaimer_short')} className="ov-rise mx-auto mt-6 max-w-xl justify-center text-center lg:mx-0 lg:justify-start lg:text-start" />
-              </div>
-            </div>
-          </section>
+          <HeroSlider
+            slides={slides}
+            labels={{ region: t('slides_label'), prev: t('slide_prev'), next: t('slide_next'), go: t.raw('slide_go') as string, pause: t('slide_pause'), play: t('slide_play') }}
+            footer={<Disclaimer text={t('disclaimer_short')} className="mx-auto mt-6 max-w-xl justify-center text-center lg:mx-0 lg:justify-start lg:text-start" />}
+          />
         </Parallax>
 
-        {/* The two services, equal size */}
-        <section id="services" className="ov-texture relative scroll-mt-20 py-20">
-          <div className="ov-glow -top-40 left-1/2 h-80 w-[40rem] -translate-x-1/2 opacity-40" />
-          <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-            <SectionHead eyebrow={t('services_eyebrow')} title={t('services_title')} />
-              <div className="mt-12 grid gap-5 md:grid-cols-2">
-                {services.map((service, i) => (
-                  <article
-                    key={service.type}
-                    data-ov-reveal=""
-                    style={{ ['--ov-delay' as string]: `${0.2 + i * 0.15}s` }}
-                    className="ov-card ov-lift group relative overflow-hidden bg-[#11131A]/60 backdrop-blur-sm"
-                  >
-                    <div className="relative aspect-[4/3] overflow-hidden border-b border-[#7DE6EE]/10 bg-[#0c0e13]">
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        loading="lazy"
-                        className="ov-unveil h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
-                      />
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#11131A] to-transparent" />
-                      <span className="absolute top-4 inline-flex items-center gap-2 rounded-full border border-[#7DE6EE]/25 bg-[#11131A]/70 px-3 py-1.5 text-xs font-bold text-[#E6FAFC] backdrop-blur ltr:left-4 rtl:right-4">
-                        <Icon name={service.icon} className="h-4 w-4 text-[#7DE6EE]" />
-                        {service.label}
-                      </span>
-                    </div>
-                    <div className="relative p-7 sm:p-8">
-                      <h2 className="text-2xl font-extrabold text-white">{service.title}</h2>
-                      <p className="mt-3 max-w-md leading-relaxed text-[#E6FAFC]/65">{service.desc}</p>
-                      <OpenButton tab="apply" type={service.type} className="ov-btn ov-btn-primary mt-6">
-                        {service.cta}
-                        <ForwardArrow />
-                      </OpenButton>
-                    </div>
-                  </article>
-                ))}
+        {/* About Ovfle */}
+        <section id="about" className="ov-texture relative scroll-mt-20 border-t border-white/5 py-20">
+          <div className="ov-glow -top-40 left-1/2 h-80 w-[40rem] -translate-x-1/2 opacity-30" />
+          <div className="relative mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center">
+            <div className="ov-from-start" data-ov-reveal="">
+              <span className="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-[#7DE6EE]">
+                <span className="h-px w-6 bg-[#7DE6EE]" />
+                {t('about_eyebrow')}
+              </span>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">{t('about_title')}</h2>
+              <div className="mt-6 space-y-4 text-base leading-relaxed text-[#E6FAFC]/70">
+                <p>{t('about_p1')}</p>
+                <p>{t('about_p2')}</p>
+                <p>{t('about_p3')}</p>
+                <p>{t('about_p4')}</p>
               </div>
+            </div>
+            <ul className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+              {stats.map((stat, i) => (
+                <li
+                  key={stat.value}
+                  data-ov-reveal="zoom"
+                  style={{ ['--ov-delay' as string]: `${0.1 + i * 0.12}s` }}
+                  className="ov-card ov-lift flex items-center gap-4 bg-[#11131A]/70 p-5"
+                >
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#7DE6EE]/10 text-[#7DE6EE]">
+                    <Icon name={stat.icon} className="h-6 w-6" />
+                  </span>
+                  <div className="flex flex-col">
+                    {'labelFirst' in stat && <span className="text-xs text-[#E6FAFC]/55">{stat.label}</span>}
+                    <span className="text-2xl font-extrabold text-white">{stat.value}</span>
+                    {!('labelFirst' in stat) && <span className="text-xs text-[#E6FAFC]/55">{stat.label}</span>}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
-        <Marquee items={[t('car_title'), t('phone_title'), t('hero_point_1'), t('hero_point_2'), t('hero_point_3')]} />
+        {/* The three services */}
+        <section id="services" className="ov-texture relative scroll-mt-20 border-t border-white/5 bg-[#0e1016] py-20">
+          <div className="ov-glow -top-40 left-1/2 h-80 w-[40rem] -translate-x-1/2 opacity-40" />
+          <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+            <SectionHead eyebrow={t('services_eyebrow')} title={t('services_title')} subtitle={t('services_subtitle')} />
+            <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {services.map((service, i) => (
+                <article
+                  key={service.type}
+                  data-ov-reveal=""
+                  style={{ ['--ov-delay' as string]: `${0.2 + i * 0.15}s` }}
+                  className="ov-card ov-lift group relative flex flex-col overflow-hidden bg-[#11131A]/60 backdrop-blur-sm"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden border-b border-[#7DE6EE]/10 bg-[#0c0e13]">
+                    <img
+                      src={service.image}
+                      alt={service.label}
+                      loading="lazy"
+                      className="ov-unveil h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
+                    />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#11131A] to-transparent" />
+                    <span className="absolute top-4 inline-flex items-center gap-2 rounded-full border border-[#7DE6EE]/25 bg-[#11131A]/70 px-3 py-1.5 text-xs font-bold text-[#E6FAFC] backdrop-blur ltr:left-4 rtl:right-4">
+                      <Icon name={service.icon} className="h-4 w-4 text-[#7DE6EE]" />
+                      {service.label}
+                    </span>
+                  </div>
+                  <div className="relative flex flex-1 flex-col p-7">
+                    <h3 className="text-xl font-extrabold text-white">{service.title}</h3>
+                    <p className="mt-3 flex-1 leading-relaxed text-[#E6FAFC]/65">{service.desc}</p>
+                    <OpenButton tab="apply" type={service.type} className="ov-btn ov-btn-primary mt-6 self-start">
+                      {service.cta}
+                      <ForwardArrow />
+                    </OpenButton>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <Marquee items={[t('marquee_1'), t('marquee_2'), t('marquee_3'), t('marquee_4'), t('marquee_5')]} />
+
+        {/* Why Ovfle */}
+        <section id="why" className="ov-texture relative scroll-mt-20 py-20">
+          <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+            <SectionHead eyebrow={t('why_eyebrow')} title={t('why_title')} />
+            <ul className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+              {reasons.map((reason, i) => (
+                <li
+                  key={reason.label}
+                  data-ov-reveal="zoom"
+                  style={{ ['--ov-delay' as string]: `${0.1 + i * 0.1}s` }}
+                  className={`ov-card ov-lift flex flex-col items-center gap-4 bg-[#11131A]/60 px-4 py-7 text-center${i === reasons.length - 1 ? ' col-span-2 md:col-span-1' : ''}`}
+                >
+                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#7DE6EE]/30 bg-[#7DE6EE]/10 text-[#7DE6EE] shadow-[0_0_30px_-10px_rgb(125_230_238/0.6)]">
+                    <Icon name={reason.icon} className="h-7 w-7" />
+                  </span>
+                  <span className="text-sm leading-relaxed font-bold text-[#E6FAFC]/85">{reason.label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* Financing partners (cars) */}
+        <section id="partners" className="relative scroll-mt-20 border-t border-white/5 bg-[#0e1016] py-20">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <SectionHead eyebrow={t('partners_eyebrow')} title={t('partners_title')} subtitle={t('partners_subtitle')} />
+            <div className="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-4" data-ov-reveal="zoom">
+              {BRAND.partners.map((partner) => (
+                <PartnerMark key={partner.id} name={partner.name[lang]} logo={partner.logo?.[lang] ?? null} />
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* How it works + requirements */}
         <section id="how" className="ov-texture scroll-mt-20 border-t border-white/5 bg-[#171a24] py-20">
@@ -263,9 +372,9 @@ export async function InstallmentsLanding() {
               <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl">{t('cta_title')}</h2>
               <p className="mt-4 leading-relaxed text-[#E6FAFC]/65">{t('cta_subtitle')}</p>
               <ul className="mt-8 space-y-3 text-sm text-[#E6FAFC]/80">
-                {[t('hero_point_1'), t('hero_point_2'), t('hero_point_3')].map((point) => (
+                {[t('why_3'), t('step_1_desc'), t('step_3_desc')].map((point) => (
                   <li key={point} className="flex items-center justify-center gap-3 lg:justify-start">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#7DE6EE]/15 text-[#7DE6EE]">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#7DE6EE]/15 text-[#7DE6EE]">
                       <Icon name="check" className="h-3.5 w-3.5" strokeWidth={3} />
                     </span>
                     {point}
@@ -298,22 +407,73 @@ export async function InstallmentsLanding() {
 
       {/* Footer */}
       <footer className="border-t border-white/5 bg-[#0c0e13]">
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-            <div className="max-w-sm">
-              <BrandLogo className="text-3xl" />
-              <p className="mt-3 text-sm text-[#E6FAFC]/55">{t('footer_tagline')}</p>
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 lg:grid-cols-[minmax(0,5fr)_repeat(3,minmax(0,3fr))]">
+          <div>
+            <BrandLogo className="text-3xl" />
+            <p className="mt-4 text-sm leading-relaxed text-[#E6FAFC]/60">
+              {BRAND.showParentAttribution ? t('footer_about') : t('footer_tagline')}
+            </p>
+          </div>
+
+          {company.length > 0 && (
+            <div>
+              <h2 className="text-sm font-extrabold text-white">{t('footer_company')}</h2>
+              <dl className="mt-4 space-y-3 text-sm">
+                {company.map((row) => (
+                  <div key={row.label}>
+                    <dt className="text-xs text-[#E6FAFC]/50">{row.label}</dt>
+                    <dd className="mt-0.5 font-bold text-[#E6FAFC]/85">
+                      {row.tel ? (
+                        <a href={`tel:${row.value}`} className="hover:text-[#7DE6EE]" dir="ltr">
+                          {row.value}
+                        </a>
+                      ) : (
+                        <span dir="ltr">{row.value}</span>
+                      )}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
-            {BRAND.showParentAttribution && (
-              <div className="flex flex-col gap-2 text-sm sm:items-end">
-                <span className="text-xs text-[#E6FAFC]/50">{t('parent_attribution')}</span>
-                <Link href="/" className="text-xs font-bold text-[#7DE6EE]/80 hover:underline">
-                  {t('footer_back')}
-                </Link>
-              </div>
+          )}
+
+          <div>
+            <h2 className="text-sm font-extrabold text-white">{t('footer_links')}</h2>
+            <ul className="mt-4 space-y-2.5 text-sm text-[#E6FAFC]/65">
+              <li>
+                <a href="#top" className="hover:text-[#7DE6EE]">{t('footer_link_home')}</a>
+              </li>
+              <li>
+                <a href="#services" className="hover:text-[#7DE6EE]">{t('footer_link_services')}</a>
+              </li>
+              <li>
+                <OpenButton tab="track" className="hover:text-[#7DE6EE]">
+                  {t('footer_link_track')}
+                </OpenButton>
+              </li>
+              <li>
+                <Link href="/services/customer-support-request" className="hover:text-[#7DE6EE]">{t('footer_link_support')}</Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="text-sm font-extrabold text-white">{t('footer_contact')}</h2>
+            <p className="mt-4 text-sm leading-relaxed text-[#E6FAFC]/60">{t('footer_contact_text')}</p>
+            {BRAND.company.unifiedNumber && (
+              <a
+                href={`tel:${BRAND.company.unifiedNumber}`}
+                className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#7DE6EE]/30 px-4 py-2 text-sm font-extrabold text-[#7DE6EE] hover:bg-[#7DE6EE]/10"
+                dir="ltr"
+              >
+                <Icon name="phone" className="h-4 w-4" />
+                {BRAND.company.unifiedNumber}
+              </a>
             )}
           </div>
-          <Disclaimer text={t('disclaimer_full')} className="mt-8 border-t border-white/5 pt-6" />
+        </div>
+        <div className="mx-auto max-w-6xl px-4 pb-10 sm:px-6">
+          <Disclaimer text={t('disclaimer_full')} className="border-t border-white/5 pt-6" />
           <div className="mt-4 text-xs text-[#E6FAFC]/40">
             © {year} {brandName} · {t('footer_rights')}
           </div>

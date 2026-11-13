@@ -6,11 +6,11 @@ import { PhoneInput, type PhoneInputHandle, StepWizard, useWizard, WizardStep } 
 import { SubmitOverlay } from '@/components/shared/submit-overlay';
 import { AfterReveal, RevealNumber, SuccessMark } from '@/components/shared/success-celebration';
 import { submitInstallmentRequest } from '../api/actions';
-import { OPEN_EVENT, type OpenDetail } from './events';
+import { type InstallmentKind, OPEN_EVENT, type OpenDetail } from './events';
 import { BRAND } from '../brand';
 import { BrandLogo, ForwardArrow, Icon } from './art';
 
-type InstallmentType = '' | 'phone' | 'car';
+type InstallmentType = '' | InstallmentKind;
 type FieldErrors = Record<string, string[]>;
 
 const STEP_FIELDS: string[][] = [
@@ -245,10 +245,11 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
         <WizardStep index={0}>
           <fieldset>
             <legend className="ov-label">{t('installment_type')}</legend>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
               {(
                 [
                   ['phone', 'phone', t('type_phone')],
+                  ['device', 'device', t('type_device')],
                   ['car', 'car', t('type_car')],
                 ] as const
               ).map(([value, icon, label]) => (
@@ -262,11 +263,11 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
                     checked={type === value}
                     onChange={() => setType(value)}
                   />
-                  <span className="ov-choice-body flex flex-col items-center gap-3 rounded-2xl border-[1.5px] border-[#7DE6EE]/15 bg-white/[0.03] px-3 py-6 hover:border-[#7DE6EE]/40 text-center transition">
+                  <span className="ov-choice-body flex flex-col items-center gap-3 rounded-2xl border-[1.5px] border-[#7DE6EE]/15 bg-white/[0.03] px-2 py-5 hover:border-[#7DE6EE]/40 text-center transition sm:px-3 sm:py-6">
                     <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#7DE6EE]/10 text-[#7DE6EE]">
                       <Icon name={icon} className="h-6 w-6" />
                     </span>
-                    <span className="text-sm font-extrabold text-white">{label}</span>
+                    <span className="text-xs leading-snug font-extrabold text-white sm:text-sm">{label}</span>
                   </span>
                 </label>
               ))}
