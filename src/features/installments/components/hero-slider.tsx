@@ -12,6 +12,11 @@ export interface HeroSlide {
   image: string;
   /** Light layer tuned to /images/ovfle/hero.webp only. */
   lights?: boolean;
+  /**
+   * Mobile crop: which part of the photo stays in view horizontally (0 = left edge, 1 = right edge, in the
+   * un-mirrored photo). Desktop always centres. Default 0.3 (tuned for hero.webp).
+   */
+  focusX?: number;
   eyebrow: string;
   title1: string;
   title2: string;
@@ -43,11 +48,13 @@ export function HeroSlider({
   const [index, setIndex] = useState(0);
   const [userPaused, setUserPaused] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const swipeStart = useRef<number | null>(null);
+  const drag = useRef<{ id: number; x: number; y: number; dx: number; horizontal: boolean | null } | null>(null);
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
   const count = slides.length;
 
   const go = useCallback((to: number) => setIndex(((to % count) + count) % count), [count]);
-  const paused = userPaused || hidden;
+  const paused = userPaused || hidden || dragging;
 
   // Stop while the tab is in the background.
   useEffect(() => {
@@ -63,15 +70,45 @@ export function HeroSlider({
     return () => window.clearTimeout(timer);
   }, [index, paused, count]);
 
-  const onPointerUp = (event: React.PointerEvent) => {
-    const start = swipeStart.current;
-    swipeStart.current = null;
-    if (start === null || event.pointerType === 'mouse') return;
-    const dx = event.clientX - start;
-    if (Math.abs(dx) < 50) return;
+  // Drag / swipe with mouse, touch or pen. Buttons and links keep working (drags never start on them);
+  // vertical page scrolling stays native (touch-action: pan-y on the section).
+  const onPointerDown = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.button !== 0 || (event.target as Element).closest('a, button, input, select, textarea, label, [role=dialog]')) return;
+    drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, horizontal: null };
+    if (event.pointerType === 'mouse') event.preventDefault(); // no text selection / image ghost while dragging
+  };
+  const onPointerMove = (event: React.PointerEvent<HTMLElement>) => {
+    const d = drag.current;
+    if (!d || d.id !== event.pointerId) return;
+    const dx = event.clientX - d.x;
+    const dy = event.clientY - d.y;
+    if (d.horizontal === null && Math.hypot(dx, dy) > 8) {
+      d.horizontal = Math.abs(dx) > Math.abs(dy);
+      if (d.horizontal) {
+        event.currentTarget.setPointerCapture(event.pointerId);
+        setDragging(true);
+      } else {
+        drag.current = null; // a vertical gesture: leave it to the page scroll
+        return;
+      }
+    }
+    if (d.horizontal) {
+      d.dx = dx;
+      setDragX(dx);
+    }
+  };
+  const endDrag = (event: React.PointerEvent<HTMLElement>, cancelled = false) => {
+    const d = drag.current;
+    if (!d || d.id !== event.pointerId) return;
+    drag.current = null;
+    setDragging(false);
+    setDragX(0);
+    if (cancelled || !d.horizontal) return;
+    const threshold = Math.min(90, event.currentTarget.clientWidth * 0.12);
+    if (Math.abs(d.dx) < threshold) return;
     const rtl = getComputedStyle(event.currentTarget).direction === 'rtl';
-    // Swipe towards the reading direction's start = next slide.
-    go(index + ((dx > 0) === rtl ? 1 : -1));
+    // Content follows the hand: pulling towards the reading start reveals the next slide.
+    go(index + ((d.dx > 0) === rtl ? 1 : -1));
   };
 
   return (
@@ -85,10 +122,13 @@ export function HeroSlider({
         const rtl = getComputedStyle(e.currentTarget).direction === 'rtl';
         go(index + ((e.key === 'ArrowLeft') === rtl ? 1 : -1));
       }}
-      onPointerDown={(e) => {
-        swipeStart.current = e.clientX;
-      }}
-      onPointerUp={onPointerUp}
+      data-dragging={dragging ? '' : undefined}
+      style={{ touchAction: 'pan-y', '--ov-drag': `${dragX}px` } as CSSProperties}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={(e) => endDrag(e)}
+      onPointerCancel={(e) => endDrag(e, true)}
+      onDragStart={(e) => e.preventDefault()}
     >
       <div className="ov-hero-media relative h-[min(82vw,26rem)] overflow-hidden lg:absolute lg:inset-0 lg:h-auto">
         {/* Mirrored in LTR (on a wrapper, so the flip doesn't share the zoom's transform-origin). */}
@@ -96,8 +136,8 @@ export function HeroSlider({
           {slides.map((slide, i) => (
             <div key={slide.id} className={`ov-slide-media${i === index ? ' is-active' : ''}`} aria-hidden="true">
               {/* Photo + light layer share one cover-sized box, so the lights stay on the towers / headlights. */}
-              <div className="ov-hero-img ov-hero-cover">
-                <img src={slide.image} alt="" fetchPriority={i === 0 ? 'high' : 'low'} decoding="async" />
+              <div className="ov-hero-img ov-hero-cover" style={{ '--ov-focus-x': slide.focusX ?? 0.3 } as CSSProperties}>
+                <img src={slide.image} alt="" fetchPriority={i === 0 ? 'high' : 'low'} decoding="async" draggable={false} />
                 {slide.lights && <HeroLights />}
               </div>
             </div>

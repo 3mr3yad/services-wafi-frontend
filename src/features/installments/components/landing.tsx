@@ -90,6 +90,7 @@ export async function InstallmentsLanding() {
     {
       id: 'cars',
       image: '/images/ovfle/slide-showroom.webp',
+      focusX: 0, // subject sits on the photo's left half
       eyebrow: t('s2_eyebrow'),
       title1: t('s2_title_1'),
       title2: t('s2_title_2'),
@@ -101,6 +102,7 @@ export async function InstallmentsLanding() {
     {
       id: 'devices',
       image: '/images/ovfle/slide-devices.webp',
+      focusX: 0, // subject sits on the photo's left half
       eyebrow: t('s3_eyebrow'),
       title1: t('s3_title_1'),
       title2: t('s3_title_2'),
@@ -111,6 +113,7 @@ export async function InstallmentsLanding() {
     {
       id: 'flex',
       image: '/images/ovfle/slide-flex.webp',
+      focusX: 0, // subject sits on the photo's left half
       eyebrow: t('s4_eyebrow'),
       title1: t('s4_title_1'),
       title2: t('s4_title_2'),
