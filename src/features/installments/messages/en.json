@@ -184,7 +184,9 @@
       "marquee_4": "Up to 60 months",
       "marquee_5": "Cars from authorised dealers",
       "slide_pause": "Pause auto-play",
-      "slide_play": "Play auto-play"
+      "slide_play": "Play auto-play",
+      "menu_open": "Open menu",
+      "menu_close": "Close menu"
     },
     "type_device": "Electronic Device Installment"
   }

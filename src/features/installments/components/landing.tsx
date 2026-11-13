@@ -8,6 +8,7 @@ import { FireworksBackground } from '@/components/animate-ui/backgrounds/firewor
 import { ApplyForm } from './apply-form';
 import { BrandLogo, ForwardArrow, Icon, MotionProvider } from './art';
 import { type HeroSlide, HeroSlider } from './hero-slider';
+import { MobileMenu } from './mobile-menu';
 import { OpenButton } from './open-button';
 import { Parallax } from './parallax';
 import { RequestDialog } from './request-dialog';
@@ -159,7 +160,7 @@ export async function InstallmentsLanding() {
             <BrandLogo className="text-[1.6rem] sm:text-[1.9rem]" />
           </a>
           <nav className="hidden items-center gap-6 text-sm font-bold text-[#E6FAFC]/70 lg:flex">
-            <Link href="/" className="hover:text-white">{t('nav_home')}</Link>
+            <a href="#top" className="hover:text-white">{t('nav_home')}</a>
             <a href="#about" className="hover:text-white">{t('nav_about')}</a>
             <a href="#services" className="hover:text-white">{t('nav_services')}</a>
             <a href="#how" className="hover:text-white">{t('nav_how')}</a>
@@ -168,12 +169,6 @@ export async function InstallmentsLanding() {
             </OpenButton>
           </nav>
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-            <Link
-              href="/"
-              className="inline-flex h-10 items-center px-1 text-xs font-bold text-[#E6FAFC]/80 hover:text-white lg:hidden"
-            >
-              {t('nav_home')}
-            </Link>
             <LocaleSwitcher
               label={t('switch_language')}
               targetName={t('switch_language')}
@@ -182,6 +177,17 @@ export async function InstallmentsLanding() {
             <OpenButton tab="apply" className="ov-btn ov-btn-primary h-10! px-4! text-sm sm:px-5!">
               {t('nav_apply')}
             </OpenButton>
+            <MobileMenu
+              labels={{ open: t('menu_open'), close: t('menu_close') }}
+              items={[
+                { label: t('nav_home'), href: '#top' },
+                { label: t('nav_about'), href: '#about' },
+                { label: t('nav_services'), href: '#services' },
+                { label: t('nav_how'), href: '#how' },
+                { label: t('nav_track'), action: 'track' },
+                { label: t('footer_link_support'), href: '/services/customer-support-request', route: true },
+              ]}
+            />
           </div>
         </div>
       </header>
