@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from 'next-intl/server';
-import { LocaleSwitcher } from '@/components/shared/locale-switcher';
-import { Link } from '@/i18n/navigation';
+import { headers } from 'next/headers';
+import { isOvfleHost } from '@/lib/site/ovfle-host';
 import { BRAND } from '../brand';
 import { brandArabic, brandLatin } from '../fonts';
 import '../installments.css';
@@ -63,7 +63,13 @@ function PartnerMark({ name, logo }: { name: string; logo: string | null }) {
  * Copy follows the "صفحة الهبوط أوفل" brief; commercial settings live in ../brand.ts and the message files.
  */
 export async function InstallmentsLanding() {
-  const [t, locale] = await Promise.all([getTranslations('Installments.landing'), getLocale()]);
+  const [t, locale, requestHeaders] = await Promise.all([getTranslations('Installments.landing'), getLocale(), headers()]);
+  // Served on its own (sub)domain? Then the page is the site root (/ar, /en) and portal pages live on the portal host.
+  const onOwnDomain = isOvfleHost(requestHeaders.get('host'));
+  const otherLocale = locale === 'en' ? 'ar' : 'en';
+  const otherLocaleHref = onOwnDomain ? `/${otherLocale}` : `/${otherLocale}/services/installments`;
+  const portal = process.env.NEXT_PUBLIC_SITE_URL ?? '';
+  const supportHref = `${onOwnDomain ? portal : ''}/${locale}/services/customer-support-request`;
   const lang = locale === 'en' ? 'en' : 'ar';
   const brandName = BRAND.name[lang];
   const year = new Date().getFullYear();
@@ -169,11 +175,17 @@ export async function InstallmentsLanding() {
             </OpenButton>
           </nav>
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-            <LocaleSwitcher
-              label={t('switch_language')}
-              targetName={t('switch_language')}
+            {/* Full page load on purpose: client-side navigation between rewritten URLs (own domain) keeps the
+                old language's content. */}
+            <a
+              href={otherLocaleHref}
+              hrefLang={otherLocale}
+              lang={otherLocale}
+              aria-label={t('switch_language')}
               className="inline-flex h-10 items-center rounded-full border border-white/15 px-3 text-xs font-bold text-[#E6FAFC]/80 sm:px-4 hover:border-[#7DE6EE]/60 hover:text-white"
-            />
+            >
+              {t('switch_language')}
+            </a>
             <OpenButton tab="apply" className="ov-btn ov-btn-primary h-10! px-4! text-sm sm:px-5!">
               {t('nav_apply')}
             </OpenButton>
@@ -185,7 +197,7 @@ export async function InstallmentsLanding() {
                 { label: t('nav_services'), href: '#services' },
                 { label: t('nav_how'), href: '#how' },
                 { label: t('nav_track'), action: 'track' },
-                { label: t('footer_link_support'), href: '/services/customer-support-request', route: true },
+                { label: t('footer_link_support'), href: supportHref },
               ]}
             />
           </div>
@@ -458,7 +470,7 @@ export async function InstallmentsLanding() {
                 </OpenButton>
               </li>
               <li>
-                <Link href="/services/customer-support-request" className="hover:text-[#7DE6EE]">{t('footer_link_support')}</Link>
+                <a href={supportHref} className="hover:text-[#7DE6EE]">{t('footer_link_support')}</a>
               </li>
             </ul>
           </div>

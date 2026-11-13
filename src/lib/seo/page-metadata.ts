@@ -20,6 +20,8 @@ interface PageMetadataInput {
   image?: ShareImage;
   /** Use `title` as-is (no " - <site name>" suffix), e.g. for an independent brand. */
   absoluteTitle?: boolean;
+  /** Absolute origin when the page lives on another host than metadataBase (e.g. https://ovfle.wafi.sa). */
+  origin?: string | null;
 }
 
 /**
@@ -28,9 +30,10 @@ interface PageMetadataInput {
  * the parent's completely), so every page builds the whole block here instead of relying on the layout's.
  * Relative URLs are resolved against `metadataBase` (NEXT_PUBLIC_SITE_URL) set in app/[locale]/layout.tsx.
  */
-export function pageMetadata({ locale, path, title, description, siteName, image = 'wafi', absoluteTitle = false }: PageMetadataInput): Metadata {
+export function pageMetadata({ locale, path, title, description, siteName, image = 'wafi', absoluteTitle = false, origin }: PageMetadataInput): Metadata {
   const fullTitle = absoluteTitle || title === siteName ? title : `${title} - ${siteName}`;
-  const url = `/${locale}${path}`;
+  const base = origin ?? '';
+  const url = `${base}/${locale}${path}`;
   const imageUrl = `/og/${image}-${locale}.jpg`;
 
   return {
@@ -38,7 +41,7 @@ export function pageMetadata({ locale, path, title, description, siteName, image
     description,
     alternates: {
       canonical: url,
-      languages: { ...Object.fromEntries(routing.locales.map((l) => [l, `/${l}${path}`])), 'x-default': `/${routing.defaultLocale}${path}` },
+      languages: { ...Object.fromEntries(routing.locales.map((l) => [l, `${base}/${l}${path}`])), 'x-default': `${base}/${routing.defaultLocale}${path}` },
     },
     openGraph: {
       type: 'website',
