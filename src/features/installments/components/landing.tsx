@@ -17,7 +17,8 @@ import { ThemeSwitch } from './theme-switch';
 import { Suspense } from 'react';
 import { JourneyPath, Marquee } from './scenes';
 
-function SectionHead({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle?: string }) {
+function SectionHead({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle?: string | string[] }) {
+  const lines = (Array.isArray(subtitle) ? subtitle : subtitle ? [subtitle] : []).filter(Boolean);
   return (
     <div className="mx-auto max-w-2xl text-center" data-ov-reveal="">
       <span className="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-(--ov-accent)">
@@ -26,7 +27,11 @@ function SectionHead({ eyebrow, title, subtitle }: { eyebrow: string; title: str
         <span className="h-px w-6 bg-[#7DE6EE]" />
       </span>
       <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-(--ov-fg) sm:text-4xl">{title}</h2>
-      {subtitle && <p className="mt-3 text-base leading-relaxed text-(--ov-ink)/65">{subtitle}</p>}
+      {lines.map((line, i) => (
+        <p key={i} className={`${i === 0 ? 'mt-3' : 'mt-1.5'} text-base leading-relaxed text-(--ov-ink)/65`}>
+          {line}
+        </p>
+      ))}
     </div>
   );
 }
@@ -132,9 +137,10 @@ export async function InstallmentsLanding({ theme = BRAND.theme }: { theme?: Ovf
   ];
 
   const services = [
-    { type: 'phone' as const, icon: 'phone' as const, image: asset('phones.webp'), label: t('phone_label'), title: t('phone_title'), desc: t('phone_desc'), cta: t('phone_cta') },
-    { type: 'device' as const, icon: 'device' as const, image: asset('devices.webp'), label: t('device_label'), title: t('device_title'), desc: t('device_desc'), cta: t('device_cta') },
-    { type: 'car' as const, icon: 'car' as const, image: asset('car.webp'), label: t('car_label'), title: t('car_title'), desc: t('car_desc'), cta: t('car_cta') },
+    // Phones are CASH only (no Ovfle installments): that card links out to the purchase page instead of the form.
+    { type: 'phone' as const, cash: true, icon: 'phone' as const, image: asset('phones.webp'), label: t('phone_label'), title: t('phone_title'), desc: t('phone_desc'), cta: t('phone_cta') },
+    { type: 'device' as const, cash: false, icon: 'device' as const, image: asset('devices.webp'), label: t('device_label'), title: t('device_title'), desc: t('device_desc'), cta: t('device_cta') },
+    { type: 'car' as const, cash: false, icon: 'car' as const, image: asset('car.webp'), label: t('car_label'), title: t('car_title'), desc: t('car_desc'), cta: t('car_cta') },
   ];
   const reasons = [
     { icon: 'shield' as const, label: t('why_1') },
@@ -269,14 +275,14 @@ export async function InstallmentsLanding({ theme = BRAND.theme }: { theme?: Ovf
         <section id="services" className="ov-texture relative scroll-mt-20 border-t border-(--ov-tint)/5 bg-(--ov-surface-2) py-20">
           <div className="ov-glow -top-40 left-1/2 h-80 w-[40rem] -translate-x-1/2 opacity-40" />
           <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-            <SectionHead eyebrow={t('services_eyebrow')} title={t('services_title')} subtitle={t('services_subtitle')} />
+            <SectionHead eyebrow={t('services_eyebrow')} title={t('services_title')} subtitle={[t('services_subtitle'), t('services_subtitle_2')]} />
             <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {services.map((service, i) => (
                 <article
                   key={service.type}
                   data-ov-reveal=""
                   style={{ ['--ov-delay' as string]: `${0.2 + i * 0.15}s` }}
-                  className="ov-card ov-lift group relative flex flex-col overflow-hidden bg-(--ov-surface)/60 backdrop-blur-sm"
+                  className={`ov-card ov-lift group relative flex flex-col overflow-hidden bg-(--ov-surface)/60 backdrop-blur-sm${service.cash ? ' ov-cash-card' : ''}`}
                 >
                   <div className="relative aspect-[4/3] overflow-hidden border-b border-(--ov-accent)/10 bg-(--ov-surface-2)">
                     <img
@@ -286,18 +292,49 @@ export async function InstallmentsLanding({ theme = BRAND.theme }: { theme?: Ovf
                       className="ov-unveil h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
                     />
                     <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-(--ov-surface) to-transparent" />
-                    <span className="absolute top-4 inline-flex items-center gap-2 rounded-full border border-(--ov-accent)/25 bg-(--ov-surface)/70 px-3 py-1.5 text-xs font-bold text-(--ov-ink) backdrop-blur ltr:left-4 rtl:right-4">
-                      <Icon name={service.icon} className="h-4 w-4 text-(--ov-accent)" />
-                      {service.label}
-                    </span>
+                    {service.cash ? (
+                      // Cash: a diagonal ribbon across the corner (not an installment badge), readable before any text.
+                      <span className="ov-cash-ribbon" aria-hidden="true">
+                        <Icon name="cash" className="h-4 w-4" strokeWidth={2.2} />
+                        {t('phone_cash_badge')}
+                      </span>
+                    ) : (
+                      // Same ribbon shape as "cash", in the brand's sky: the two payment types read as a pair.
+                      <span className="ov-installment-ribbon" aria-hidden="true">
+                        <Icon name="clock" className="h-4 w-4" strokeWidth={2.2} />
+                        {t('installment_badge')}
+                      </span>
+                    )}
                   </div>
                   <div className="relative flex flex-1 flex-col p-7">
+                    <span className="sr-only">{service.cash ? t('phone_cash_badge') : t('installment_badge')}: </span>
                     <h3 className="text-xl font-extrabold text-(--ov-fg)">{service.title}</h3>
+                    {service.cash && (
+                      <ul className="mt-3 flex flex-wrap gap-2" aria-label={t('phone_cash_badge')}>
+                        {[t('phone_point_1'), t('phone_point_2')].map((point) => (
+                          <li key={point} className="ov-cash-chip">
+                            <Icon name="check" className="h-3.5 w-3.5" strokeWidth={2.6} />
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                     <p className="mt-3 flex-1 leading-relaxed text-(--ov-ink)/65">{service.desc}</p>
-                    <OpenButton tab="apply" type={service.type} className="ov-btn ov-btn-primary mt-6 self-start">
-                      {service.cta}
-                      <ForwardArrow />
-                    </OpenButton>
+                    {service.cash ? (
+                      BRAND.phonePurchaseUrl && (
+                        <a href={BRAND.phonePurchaseUrl} target="_blank" rel="noopener noreferrer" className="ov-btn ov-btn-cash mt-6 self-start">
+                          <Icon name="cash" className="h-4 w-4" strokeWidth={2.2} />
+                          {service.cta}
+                          <Icon name="external" className="h-3.5 w-3.5 opacity-80" strokeWidth={2.2} />
+                          <span className="sr-only">({t('phone_cta_new_tab')})</span>
+                        </a>
+                      )
+                    ) : (
+                      <OpenButton tab="apply" type={service.type} className="ov-btn ov-btn-primary mt-6 self-start">
+                        {service.cta}
+                        <ForwardArrow />
+                      </OpenButton>
+                    )}
                   </div>
                 </article>
               ))}

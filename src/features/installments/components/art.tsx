@@ -18,7 +18,7 @@ import { BRAND } from '../brand';
 
 /** Ovfle logo + icons. Animated icons come from animate-ui (Lucide set); car / id / briefcase have no animate-ui version. */
 
-type IconName = 'home' | 'phone' | 'device' | 'car' | 'id' | 'wallet' | 'briefcase' | 'contact' | 'arrow' | 'check' | 'search' | 'spark' | 'x' | 'clock' | 'shield';
+type IconName = 'home' | 'phone' | 'device' | 'car' | 'cash' | 'external' | 'id' | 'wallet' | 'briefcase' | 'contact' | 'arrow' | 'check' | 'search' | 'spark' | 'x' | 'clock' | 'shield';
 
 const ANIMATED: Partial<Record<IconName, ComponentType<IconProps<"default">>>> = {
   phone: Smartphone,
@@ -33,7 +33,11 @@ const ANIMATED: Partial<Record<IconName, ComponentType<IconProps<"default">>>> =
   shield: ShieldCheck,
 };
 
-const STATIC: Record<'car' | 'device' | 'id' | 'briefcase', string> = {
+const STATIC: Record<'car' | 'device' | 'cash' | 'external' | 'id' | 'briefcase', string> = {
+  // Banknote (Lucide "banknote").
+  cash: 'M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zM12 10a2 2 0 1 0 0 4 2 2 0 1 0 0-4M6 12h.01M18 12h.01',
+  // Arrow out of a box (Lucide "external-link").
+  external: 'M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6',
   // Laptop (Lucide "laptop").
   device: 'M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16',
   car: 'M5 17h-1a1 1 0 0 1-1-1v-3.2a2 2 0 0 1 .6-1.4L6 9l1.6-3.2A2 2 0 0 1 9.4 4.7h5.2a2 2 0 0 1 1.8 1.1L18 9l2.4 2.4a2 2 0 0 1 .6 1.4V16a1 1 0 0 1-1 1h-1M9 17h6M6 9h12M7.5 17a1.5 1.5 0 1 0 0 .01M16.5 17a1.5 1.5 0 1 0 0 .01',

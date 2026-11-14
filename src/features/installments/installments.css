@@ -49,6 +49,8 @@
   --ov-btn-shadow: 0 10px 30px -10px rgb(125 230 238 / 0.7);
   --ov-shine: linear-gradient(90deg, #7de6ee 0%, #e6fafc 25%, #7de6ee 50%, #3fc9d6 75%, #7de6ee 100%);
   --ov-scrim: 17 19 26; /* hero fade colour (rgb triplet) */
+  --ov-cash: #34d399; /* cash-only offers (phones): money green, distinct from the installment accent */
+  --ov-cash-ink: #06281c;
   --ov-danger: #fda4af;
   --ov-success: #6ee7b7;
   --ov-warn: #fcd34d;
@@ -84,6 +86,8 @@
   --ov-btn-shadow: 0 12px 30px -12px rgb(15 22 36 / 0.45);
   --ov-shine: linear-gradient(90deg, #0b8c99 0%, #3fc9d6 25%, #0b8c99 50%, #11131a 75%, #0b8c99 100%);
   --ov-scrim: 244 248 250;
+  --ov-cash: #059669;
+  --ov-cash-ink: #ffffff;
   --ov-danger: #be123c;
   --ov-success: #047857;
   --ov-warn: #b45309;
@@ -792,3 +796,62 @@
 
 /* Light hero: no dark halo behind the (now dark) headline. */
 .installments[data-ov-theme='light'] .ov-slide-copy :is(h1, h2) { filter: none; }
+
+/* ------------------------------------------------------------------ */
+/* Cash-only service card (phones): tells the customer "cash, not installments" at a glance.          */
+/* ------------------------------------------------------------------ */
+.installments .ov-cash-card {
+  border-color: color-mix(in oklab, var(--ov-cash) 45%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--ov-cash) 25%, transparent), 0 26px 50px -32px var(--ov-cash);
+}
+.installments .ov-cash-card.ov-lift:hover {
+  border-color: var(--ov-cash);
+  box-shadow: 0 0 0 1px var(--ov-cash), 0 30px 60px -30px var(--ov-cash);
+}
+/* Diagonal ribbon across the image's top corner (start side): green "cash" or brand-sky "installments". */
+.installments .ov-cash-ribbon,
+.installments .ov-installment-ribbon {
+  position: absolute;
+  top: 1.9rem;
+  inset-inline-start: -3.6rem;
+  z-index: 2;
+  display: inline-flex;
+  width: 14rem; /* wide enough for "Installments" across the corner */
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0;
+  background: linear-gradient(90deg, color-mix(in oklab, var(--ov-cash) 85%, #000), var(--ov-cash), color-mix(in oklab, var(--ov-cash) 85%, #000));
+  color: var(--ov-cash-ink);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 20px -8px rgb(0 0 0 / 0.45);
+  transform: rotate(-45deg);
+}
+[dir='rtl'] .installments :is(.ov-cash-ribbon, .ov-installment-ribbon),
+.installments[dir='rtl'] :is(.ov-cash-ribbon, .ov-installment-ribbon) { transform: rotate(45deg); }
+/* Installments ribbon: the brand's sky blue with navy text (same in both themes). */
+.installments .ov-installment-ribbon {
+  background: linear-gradient(90deg, var(--ov-sky-deep), var(--ov-sky), var(--ov-sky-deep));
+  color: var(--ov-navy);
+  box-shadow: 0 8px 20px -8px rgb(63 201 214 / 0.7);
+}
+.installments .ov-cash-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--ov-cash) 35%, transparent);
+  background: color-mix(in oklab, var(--ov-cash) 10%, transparent);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--ov-cash);
+}
+.installments .ov-btn-cash {
+  background: var(--ov-cash);
+  color: var(--ov-cash-ink);
+  box-shadow: 0 12px 30px -12px var(--ov-cash);
+}
+.installments .ov-btn-cash:hover { background: color-mix(in oklab, var(--ov-cash) 88%, #000); }

@@ -245,10 +245,10 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
         <WizardStep index={0}>
           <fieldset>
             <legend className="ov-label">{t('installment_type')}</legend>
-            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            {/* Phones are cash only (bought outside this form), so they are not an installment option here. */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               {(
                 [
-                  ['phone', 'phone', t('type_phone')],
                   ['device', 'device', t('type_device')],
                   ['car', 'car', t('type_car')],
                 ] as const

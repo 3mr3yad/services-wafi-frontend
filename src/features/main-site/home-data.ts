@@ -73,24 +73,25 @@ const CATALOG = {
 const place = (id: keyof typeof CATALOG, wide: boolean): PortalService => ({ ...CATALOG[id], wide });
 
 /**
- * Homepage: 3 narrow cards then 2 wide ones.
+ * Homepage: 2 rows of 2 wide cards, customer support first (2026-11-14).
  * Xleader was removed from the homepage on request (2026-11-09); it is still listed on /services.
+ * The Ovfle (installments) card is hidden on request (2026-11-14): it now lives on its own site (ovfle.wafi.sa).
  */
 export const HOME_SERVICES: PortalService[] = [
-  place('resale', false),
-  place('refund', false),
-  place('installments', false),
-  place('protection', true),
   place('customer_support', true),
+  place('protection', true),
+  place('resale', true),
+  place('refund', true),
+  // place('installments', true),
 ];
 
-/** /services: every service — 3 narrow cards, then two rows of 2 wide cards. */
+/** /services: every service in 2 rows of 3 narrow cards, customer support first (Ovfle hidden, see above). */
 export const ALL_SERVICES: PortalService[] = [
+  place('customer_support', false),
+  place('protection', false),
   place('xleader', false),
   place('resale', false),
   place('refund', false),
-  place('installments', true),
-  place('protection', true),
-  place('customer_support', true),
-  place('follower_gifts', true),
+  place('follower_gifts', false),
+  // place('installments', false),
 ];

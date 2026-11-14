@@ -63,10 +63,10 @@
       "car_title": "Your new or used car… closer than you think",
       "car_desc": "Choose the right car and apply in clear steps, with financing options of up to 60 months (5 years), and cars available through authorised dealers with after-sales services.",
       "car_cta": "Start a car request",
-      "phone_label": "Smartphone installments",
-      "phone_title": "Your new phone… closer to you",
-      "phone_desc": "Choose the right phone and apply for installments in easy online steps, with clear tracking of your request until it is complete.",
-      "phone_cta": "Start a phone request",
+      "phone_label": "Smartphones",
+      "phone_title": "Your new phone… pay cash, take it home",
+      "phone_desc": "Choose the right phone and pay its price in one go, with no installments and no application review.",
+      "phone_cta": "Buy your phone in cash",
       "how_eyebrow": "How it works",
       "how_title": "Three steps to start your journey with Ovfle",
       "step_1_title": "Choose the service",
@@ -152,6 +152,7 @@
       "about_stat_parent": "Wafi World",
       "about_stat_parent_label": "A brand owned by",
       "services_subtitle": "Ovfle makes it easy to submit and track your installment request online, with repayment plans of up to 5 years.",
+      "services_subtitle_2": "You can also get highly flexible installment options and multiple payment methods.",
       "device_label": "Device installments",
       "device_title": "The device you need… at an installment that suits you",
       "device_desc": "Apply for electronic device installments easily and benefit from flexible repayment options to get the right device without hassle.",
@@ -220,7 +221,12 @@
       "track_completed_on": "Completed on",
       "theme_title": "Theme",
       "theme_dark": "Dark",
-      "theme_light": "Light"
+      "theme_light": "Light",
+      "phone_cash_badge": "Cash",
+      "phone_point_1": "One payment",
+      "phone_point_2": "No installments",
+      "phone_cta_new_tab": "opens in a new tab",
+      "installment_badge": "Installments"
     },
     "type_device": "Electronic Device Installment"
   }

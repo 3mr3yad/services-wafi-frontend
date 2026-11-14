@@ -38,8 +38,14 @@ export const BRAND = {
    */
   partners: [
     { id: 'mora', name: { ar: 'مورا', en: 'Mora' }, logo: { ar: '/images/ovfle/partners/mora.png', en: '/images/ovfle/partners/mora.png' } as PartnerLogo },
-    { id: 'alj', name: { ar: 'عبد اللطيف جميل', en: 'Abdul Latif Jameel' }, logo: { ar: '/images/ovfle/partners/alj-ar.png', en: '/images/ovfle/partners/alj-en.png' } as PartnerLogo },
+    { id: 'alj', name: { ar: 'عبد اللطيف جميل للتمويل', en: 'Abdul Latif Jameel' }, logo: { ar: '/images/ovfle/partners/alj-finance-ar.png', en: '/images/ovfle/partners/alj-en.png' } as PartnerLogo },
   ],
+
+  /**
+   * Smartphones are sold for CASH only (decided 2026-11-14) — no Ovfle installments for phones. The phones card
+   * links out to this purchase page (opens in a new tab). TODO: confirm the exact URL with the business.
+   */
+  phonePurchaseUrl: 'https://wafi.sa' as string | null,
 
   /** Footer "company information". null = not provided yet → the row is hidden (never show placeholders). */
   company: {
