@@ -46,6 +46,9 @@ export const BRAND = {
     { id: 'neo', cars: false, name: { ar: 'نيو', en: 'NEO' }, logo: { ar: '/images/ovfle/partners/neo.png', en: '/images/ovfle/partners/neo.png' } as PartnerLogo },
     { id: 'orville', cars: false, name: { ar: 'أورفل', en: 'Orville' }, logo: { ar: '/images/ovfle/partners/orville.png', en: '/images/ovfle/partners/orville.png' } as PartnerLogo },
     { id: 'wafi', cars: false, name: { ar: 'عالم وافي', en: 'Wafi World' }, logo: { ar: '/images/ovfle/partners/wafi.svg', en: '/images/ovfle/partners/wafi.svg' } as PartnerLogo },
+    // From the brand books 4fit.pdf / بتله.pdf (project root), page 1.
+    { id: '4fit', cars: false, name: { ar: '4fit', en: '4fit' }, logo: { ar: '/images/ovfle/partners/4fit.png', en: '/images/ovfle/partners/4fit.png' } as PartnerLogo },
+    { id: 'batla', cars: false, name: { ar: 'بتلة', en: 'Batla' }, logo: { ar: '/images/ovfle/partners/batla.png', en: '/images/ovfle/partners/batla.png' } as PartnerLogo },
   ],
 
   /**

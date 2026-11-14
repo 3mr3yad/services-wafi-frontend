@@ -837,7 +837,8 @@
   color: var(--ov-navy);
   box-shadow: 0 8px 20px -8px rgb(63 201 214 / 0.7);
 }
-.installments .ov-cash-chip {
+.installments .ov-cash-chip,
+.installments .ov-installment-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -877,4 +878,11 @@
   .installments .ov-partner-marquee { -webkit-mask-image: none; mask-image: none; }
   .installments .ov-partner-track { width: auto; flex-wrap: wrap; justify-content: center; animation: none; }
   .installments .ov-partner-copy { display: none; }
+}
+
+/* Installment cards' key points: same chip, in the brand accent. */
+.installments .ov-installment-chip {
+  border-color: color-mix(in oklab, var(--ov-accent) 35%, transparent);
+  background: color-mix(in oklab, var(--ov-accent) 9%, transparent);
+  color: var(--ov-accent);
 }

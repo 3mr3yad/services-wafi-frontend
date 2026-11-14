@@ -139,9 +139,9 @@ export async function InstallmentsLanding({ theme = BRAND.theme }: { theme?: Ovf
 
   const services = [
     // Phones are CASH only (no Ovfle installments): that card links out to the purchase page instead of the form.
-    { type: 'phone' as const, cash: true, icon: 'phone' as const, image: asset('phones.webp'), label: t('phone_label'), title: t('phone_title'), desc: t('phone_desc'), cta: t('phone_cta') },
-    { type: 'device' as const, cash: false, icon: 'device' as const, image: asset('devices.webp'), label: t('device_label'), title: t('device_title'), desc: t('device_desc'), cta: t('device_cta') },
-    { type: 'car' as const, cash: false, icon: 'car' as const, image: asset('car.webp'), label: t('car_label'), title: t('car_title'), desc: t('car_desc'), cta: t('car_cta') },
+    { type: 'phone' as const, cash: true, points: [t('phone_point_1'), t('phone_point_2'), t('phone_point_3'), t('phone_point_4')], icon: 'phone' as const, image: asset('phones.webp'), label: t('phone_label'), title: t('phone_title'), desc: t('phone_desc'), cta: t('phone_cta') },
+    { type: 'device' as const, cash: false, points: [t('device_point_1'), t('device_point_2'), t('device_point_3'), t('device_point_4')], icon: 'device' as const, image: asset('devices.webp'), label: t('device_label'), title: t('device_title'), desc: t('device_desc'), cta: t('device_cta') },
+    { type: 'car' as const, cash: false, points: [t('car_point_1'), t('car_point_2'), t('car_point_3'), t('car_point_4')], icon: 'car' as const, image: asset('car.webp'), label: t('car_label'), title: t('car_title'), desc: t('car_desc'), cta: t('car_cta') },
   ];
   const reasons = [
     { icon: 'shield' as const, label: t('why_1') },
@@ -310,16 +310,15 @@ export async function InstallmentsLanding({ theme = BRAND.theme }: { theme?: Ovf
                   <div className="relative flex flex-1 flex-col p-7">
                     <span className="sr-only">{service.cash ? t('phone_cash_badge') : t('installment_badge')}: </span>
                     <h3 className="text-xl font-extrabold text-(--ov-fg)">{service.title}</h3>
-                    {service.cash && (
-                      <ul className="mt-3 flex flex-wrap gap-2" aria-label={t('phone_cash_badge')}>
-                        {[t('phone_point_1'), t('phone_point_2')].map((point) => (
-                          <li key={point} className="ov-cash-chip">
+                    {/* Key points: green chips for cash, brand-teal chips for installments. */}
+                    <ul className="mt-3 flex flex-wrap gap-2" aria-label={service.cash ? t('phone_cash_badge') : t('installment_badge')}>
+                        {service.points.map((point) => (
+                          <li key={point} className={service.cash ? 'ov-cash-chip' : 'ov-installment-chip'}>
                             <Icon name="check" className="h-3.5 w-3.5" strokeWidth={2.6} />
                             {point}
                           </li>
                         ))}
-                      </ul>
-                    )}
+                    </ul>
                     <p className="mt-3 flex-1 leading-relaxed text-(--ov-ink)/65">{service.desc}</p>
                     {service.cash ? (
                       BRAND.phonePurchaseUrl && (

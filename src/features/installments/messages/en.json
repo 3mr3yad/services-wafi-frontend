@@ -226,7 +226,17 @@
       "phone_point_1": "One payment",
       "phone_point_2": "No installments",
       "phone_cta_new_tab": "opens in a new tab",
-      "installment_badge": "Installments"
+      "installment_badge": "Installments",
+      "phone_point_3": "Instant pickup",
+      "phone_point_4": "Official dealer warranty",
+      "device_point_1": "Up to 60 months",
+      "device_point_2": "Flexible repayment",
+      "device_point_3": "Online application",
+      "device_point_4": "Track by mobile number",
+      "car_point_1": "New or used",
+      "car_point_2": "Up to 60 months",
+      "car_point_3": "From authorised dealers",
+      "car_point_4": "After-sales services"
     },
     "type_device": "Electronic Device Installment"
   }
