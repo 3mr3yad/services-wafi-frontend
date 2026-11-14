@@ -57,6 +57,10 @@ export const BRAND = {
    */
   phonePurchaseUrl: 'https://wafi.sa' as string | null,
 
+  /** "السياسات العامة والشروط والأحكام" (footer link, opens in a new tab). Same page as the Wafi portal footer. */
+  termsUrl:
+    'https://wafi.sa/ar/%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B3%D8%A7%D8%AA-%D8%A7%D9%84%D8%B9%D8%A7%D9%85%D8%A9-%D9%88%D8%A7%D9%84%D8%B4%D8%B1%D9%88%D8%B7-%D9%88%D8%A7%D9%84%D8%A3%D8%AD%D9%83%D8%A7%D9%85' as string | null,
+
   /** Footer "company information". null = not provided yet → the row is hidden (never show placeholders). */
   company: {
     commercialRegistration: null as string | null,

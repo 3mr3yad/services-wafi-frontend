@@ -530,6 +530,13 @@ export async function InstallmentsLanding({ theme = BRAND.theme }: { theme?: Ovf
               <li>
                 <a href={supportHref} className="hover:text-(--ov-accent)">{t('footer_link_support')}</a>
               </li>
+              {BRAND.termsUrl && (
+                <li>
+                  <a href={BRAND.termsUrl} target="_blank" rel="noopener noreferrer" className="hover:text-(--ov-accent)">
+                    {t('footer_link_terms')}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
 
