@@ -52,12 +52,12 @@ function PartnerMark({ name, logo }: { name: string; logo: string | null }) {
   return (
     // Partner logos are drawn for light backgrounds, so they sit on a white card (with a soft brand glow).
     <div
-      className={`ov-lift flex h-28 min-w-56 flex-1 items-center justify-center rounded-3xl px-8 sm:h-32 ${
+      className={`ov-lift flex h-24 w-48 shrink-0 items-center justify-center rounded-3xl px-7 sm:h-28 sm:w-56 ${
         logo ? 'bg-white shadow-[0_20px_60px_-25px_rgb(125_230_238/0.45)] ring-1 ring-(--ov-accent)/30' : 'ov-card bg-(--ov-tint)/[0.04]'
       }`}
     >
       {logo ? (
-        <img src={logo} alt={name} className="max-h-16 w-auto max-w-full object-contain" loading="lazy" />
+        <img src={logo} alt={name} className="max-h-14 w-auto max-w-full object-contain sm:max-h-16" loading="lazy" />
       ) : (
         <span className="text-2xl font-extrabold tracking-tight text-(--ov-fg) sm:text-3xl">{name}</span>
       )}
@@ -84,7 +84,8 @@ export async function InstallmentsLanding({ theme = BRAND.theme }: { theme?: Ovf
   const year = new Date().getFullYear();
   // Each image has a daylight twin in /images/ovfle/light (same framing) for the light theme.
   const asset = (name: string) => (theme === 'light' ? '/images/ovfle/light/' + name : '/images/ovfle/' + name);
-  const partnerItems = BRAND.partners.map((p) => ({ name: p.name[lang], logo: p.logo?.[lang] ?? null }));
+  // The cars slide only lists the car financing partners.
+  const partnerItems = BRAND.partners.filter((p) => p.cars).map((p) => ({ name: p.name[lang], logo: p.logo?.[lang] ?? null }));
 
   const slides: HeroSlide[] = [
     {
@@ -370,11 +371,19 @@ export async function InstallmentsLanding({ theme = BRAND.theme }: { theme?: Ovf
         <section id="partners" className="relative scroll-mt-20 border-t border-(--ov-tint)/5 bg-(--ov-surface-2) py-20">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <SectionHead eyebrow={t('partners_eyebrow')} title={t('partners_title')} subtitle={t('partners_subtitle')} />
-            <div className="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-4" data-ov-reveal="zoom">
-              {BRAND.partners.map((partner) => (
-                <PartnerMark key={partner.id} name={partner.name[lang]} logo={partner.logo?.[lang] ?? null} />
-              ))}
-            </div>
+          </div>
+          {/* Auto-scrolling logo strip (full width). The list is rendered twice for a seamless loop; the copy is
+              hidden from screen readers. Keeps moving on hover; static and wrapped under prefers-reduced-motion. */}
+          <div className="ov-partner-marquee mt-10" dir="ltr" data-ov-reveal="zoom">
+            <ul className="ov-partner-track" aria-label={t('partners_eyebrow')}>
+              {[0, 1].map((copy) =>
+                BRAND.partners.map((partner) => (
+                  <li key={`${copy}-${partner.id}`} className={copy === 1 ? 'ov-partner-copy' : undefined} aria-hidden={copy === 1 || undefined}>
+                    <PartnerMark name={partner.name[lang]} logo={partner.logo?.[lang] ?? null} />
+                  </li>
+                )),
+              )}
+            </ul>
           </div>
         </section>
 

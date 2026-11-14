@@ -855,3 +855,26 @@
   box-shadow: 0 12px 30px -12px var(--ov-cash);
 }
 .installments .ov-btn-cash:hover { background: color-mix(in oklab, var(--ov-cash) 88%, #000); }
+
+/* ------------------------------------------------------------------ */
+/* Financing partners: auto-scrolling logo strip.                      */
+/* ------------------------------------------------------------------ */
+.installments .ov-partner-marquee {
+  overflow: hidden;
+  padding-block: 0.75rem 1.25rem; /* room for the cards' shadow and hover lift */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.installments .ov-partner-track {
+  display: flex;
+  width: max-content;
+  gap: 1.25rem;
+  padding-inline: 0.625rem;
+  animation: ov-marquee 34s linear infinite;
+}
+/* Keeps moving on hover (requested 2026-11-14). */
+@media (prefers-reduced-motion: reduce) {
+  .installments .ov-partner-marquee { -webkit-mask-image: none; mask-image: none; }
+  .installments .ov-partner-track { width: auto; flex-wrap: wrap; justify-content: center; animation: none; }
+  .installments .ov-partner-copy { display: none; }
+}

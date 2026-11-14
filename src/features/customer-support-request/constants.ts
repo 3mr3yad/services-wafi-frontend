@@ -9,6 +9,9 @@ export const ISSUE_TYPES = [
   'الشحن والتوصيل',
   'اشتباه / بلاغ احتيال',
   'استعلام عن الفوترة',
+  // Ovfle (installments brand) categories — keep in sync with CustomerSupportRequest::ISSUE_TYPES (Laravel).
+  'البيع النقدي (أوفل)',
+  'تقسيط السيارات (أوفل)',
 ] as const;
 
 export type IssueType = (typeof ISSUE_TYPES)[number];

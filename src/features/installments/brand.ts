@@ -37,8 +37,15 @@ export const BRAND = {
    * English lockup). Source: Mora = its X profile image; ALJ = the user-provided SVG, split into its two lines.
    */
   partners: [
-    { id: 'mora', name: { ar: 'مورا', en: 'Mora' }, logo: { ar: '/images/ovfle/partners/mora.png', en: '/images/ovfle/partners/mora.png' } as PartnerLogo },
-    { id: 'alj', name: { ar: 'عبد اللطيف جميل للتمويل', en: 'Abdul Latif Jameel' }, logo: { ar: '/images/ovfle/partners/alj-finance-ar.png', en: '/images/ovfle/partners/alj-en.png' } as PartnerLogo },
+    // cars: true = car financing partner (also shown on the cars slide). Others appear in the partners strip only.
+    { id: 'mora', cars: true, name: { ar: 'مورا', en: 'Mora' }, logo: { ar: '/images/ovfle/partners/mora.png', en: '/images/ovfle/partners/mora.png' } as PartnerLogo },
+    { id: 'alj', cars: true, name: { ar: 'عبد اللطيف جميل للتمويل', en: 'Abdul Latif Jameel' }, logo: { ar: '/images/ovfle/partners/alj-finance-ar.png', en: '/images/ovfle/partners/alj-en.png' } as PartnerLogo },
+    { id: 'tabby', cars: false, name: { ar: 'تابي', en: 'Tabby' }, logo: { ar: '/images/ovfle/partners/tabby.png', en: '/images/ovfle/partners/tabby.png' } as PartnerLogo },
+    { id: 'tamara', cars: false, name: { ar: 'تمارا', en: 'Tamara' }, logo: { ar: '/images/ovfle/partners/tamara.png', en: '/images/ovfle/partners/tamara.png' } as PartnerLogo },
+    { id: 'emkan', cars: false, name: { ar: 'إمكان للتمويل', en: 'Emkan Finance' }, logo: { ar: '/images/ovfle/partners/emkan.png', en: '/images/ovfle/partners/emkan.png' } as PartnerLogo },
+    { id: 'neo', cars: false, name: { ar: 'نيو', en: 'NEO' }, logo: { ar: '/images/ovfle/partners/neo.png', en: '/images/ovfle/partners/neo.png' } as PartnerLogo },
+    { id: 'orville', cars: false, name: { ar: 'أورفل', en: 'Orville' }, logo: { ar: '/images/ovfle/partners/orville.png', en: '/images/ovfle/partners/orville.png' } as PartnerLogo },
+    { id: 'wafi', cars: false, name: { ar: 'عالم وافي', en: 'Wafi World' }, logo: { ar: '/images/ovfle/partners/wafi.svg', en: '/images/ovfle/partners/wafi.svg' } as PartnerLogo },
   ],
 
   /**

@@ -42,7 +42,9 @@
       "خدمات الضمان": "Warranty services",
       "الشحن والتوصيل": "Shipping & delivery",
       "اشتباه / بلاغ احتيال": "Fraud suspicion / report",
-      "استعلام عن الفوترة": "Billing inquiry"
+      "استعلام عن الفوترة": "Billing inquiry",
+      "البيع النقدي (أوفل)": "Cash sales (Ovfle)",
+      "تقسيط السيارات (أوفل)": "Car installments (Ovfle)"
     },
     "submission_unavailable": "Submitting requests from this page is not available yet — it will be enabled soon. Please try again later.",
     "submission_failed": "Could not submit your request. Please try again.",
