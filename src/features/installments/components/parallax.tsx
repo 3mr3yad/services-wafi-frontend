@@ -6,7 +6,7 @@ import { type ReactNode, useEffect, useRef } from 'react';
  * Mouse parallax: writes --px / --py (-1..1) on its root; `.ov-layer` children move by `--depth` px.
  * rAF-throttled, pointer devices only, and off under prefers-reduced-motion.
  */
-export function Parallax({ className, children }: { className?: string; children: ReactNode }) {
+export function Parallax({ className, children, ...rest }: { className?: string; children: ReactNode; 'data-ov-theme'?: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export function Parallax({ className, children }: { className?: string; children
   }, []);
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={className} {...rest}>
       {children}
     </div>
   );

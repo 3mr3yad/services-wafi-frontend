@@ -217,7 +217,10 @@
       "track_delivery_shipping": "Shipping",
       "track_delivery_delivered": "Delivered",
       "track_completed_title": "Your request is complete",
-      "track_completed_on": "Completed on"
+      "track_completed_on": "Completed on",
+      "theme_title": "Theme",
+      "theme_dark": "Dark",
+      "theme_light": "Light"
     },
     "type_device": "Electronic Device Installment"
   }

@@ -13,18 +13,20 @@ import { OpenButton } from './open-button';
 import { Parallax } from './parallax';
 import { RequestDialog } from './request-dialog';
 import { ScrollReveal } from './reveal';
+import { ThemeSwitch } from './theme-switch';
+import { Suspense } from 'react';
 import { JourneyPath, Marquee } from './scenes';
 
 function SectionHead({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle?: string }) {
   return (
     <div className="mx-auto max-w-2xl text-center" data-ov-reveal="">
-      <span className="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-[#7DE6EE]">
+      <span className="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-(--ov-accent)">
         <span className="h-px w-6 bg-[#7DE6EE]" />
         {eyebrow}
         <span className="h-px w-6 bg-[#7DE6EE]" />
       </span>
-      <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">{title}</h2>
-      {subtitle && <p className="mt-3 text-base leading-relaxed text-[#E6FAFC]/65">{subtitle}</p>}
+      <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-(--ov-fg) sm:text-4xl">{title}</h2>
+      {subtitle && <p className="mt-3 text-base leading-relaxed text-(--ov-ink)/65">{subtitle}</p>}
     </div>
   );
 }
@@ -33,8 +35,8 @@ function SectionHead({ eyebrow, title, subtitle }: { eyebrow: string; title: str
 function Disclaimer({ text, className = '' }: { text: string; className?: string }) {
   if (!BRAND.showApprovalDisclaimer) return null;
   return (
-    <p className={`flex items-start gap-2 text-xs leading-relaxed text-[#E6FAFC]/55 ${className}`}>
-      <Icon name="shield" className="mt-0.5 h-4 w-4 shrink-0 text-[#7DE6EE]/80" />
+    <p className={`flex items-start gap-2 text-xs leading-relaxed text-(--ov-ink)/55 ${className}`}>
+      <Icon name="shield" className="mt-0.5 h-4 w-4 shrink-0 text-(--ov-accent)/80" />
       <span>{text}</span>
     </p>
   );
@@ -46,13 +48,13 @@ function PartnerMark({ name, logo }: { name: string; logo: string | null }) {
     // Partner logos are drawn for light backgrounds, so they sit on a white card (with a soft brand glow).
     <div
       className={`ov-lift flex h-28 min-w-56 flex-1 items-center justify-center rounded-3xl px-8 sm:h-32 ${
-        logo ? 'bg-white shadow-[0_20px_60px_-25px_rgb(125_230_238/0.45)] ring-1 ring-[#7DE6EE]/30' : 'ov-card bg-white/[0.04]'
+        logo ? 'bg-white shadow-[0_20px_60px_-25px_rgb(125_230_238/0.45)] ring-1 ring-(--ov-accent)/30' : 'ov-card bg-(--ov-tint)/[0.04]'
       }`}
     >
       {logo ? (
         <img src={logo} alt={name} className="max-h-16 w-auto max-w-full object-contain" loading="lazy" />
       ) : (
-        <span className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">{name}</span>
+        <span className="text-2xl font-extrabold tracking-tight text-(--ov-fg) sm:text-3xl">{name}</span>
       )}
     </div>
   );
@@ -62,7 +64,9 @@ function PartnerMark({ name, logo }: { name: string; logo: string | null }) {
  * Ovfle landing page: car, smartphone and electronic-device installments.
  * Copy follows the "صفحة الهبوط أوفل" brief; commercial settings live in ../brand.ts and the message files.
  */
-export async function InstallmentsLanding() {
+export type OvfleTheme = 'dark' | 'light';
+
+export async function InstallmentsLanding({ theme = BRAND.theme }: { theme?: OvfleTheme } = {}) {
   const [t, locale, requestHeaders] = await Promise.all([getTranslations('Installments.landing'), getLocale(), headers()]);
   // Served on its own (sub)domain? Then the page is the site root (/ar, /en) and portal pages live on the portal host.
   const onOwnDomain = isOvfleHost(requestHeaders.get('host'));
@@ -73,13 +77,17 @@ export async function InstallmentsLanding() {
   const lang = locale === 'en' ? 'en' : 'ar';
   const brandName = BRAND.name[lang];
   const year = new Date().getFullYear();
+  // Each image has a daylight twin in /images/ovfle/light (same framing) for the light theme.
+  const asset = (name: string) => (theme === 'light' ? '/images/ovfle/light/' + name : '/images/ovfle/' + name);
   const partnerItems = BRAND.partners.map((p) => ({ name: p.name[lang], logo: p.logo?.[lang] ?? null }));
 
   const slides: HeroSlide[] = [
     {
       id: 'ovfle',
-      image: '/images/ovfle/hero.webp',
-      lights: true,
+      image: asset('hero.webp'),
+      // The light layer is tuned to the night photo only.
+      lights: theme === 'dark',
+      ...(theme === 'light' ? { focusX: 0 } : {}),
       eyebrow: t('s1_eyebrow'),
       title1: t('s1_title_1'),
       title2: t('s1_title_2'),
@@ -89,7 +97,7 @@ export async function InstallmentsLanding() {
     },
     {
       id: 'cars',
-      image: '/images/ovfle/slide-showroom.webp',
+      image: asset('slide-showroom.webp'),
       focusX: 0, // subject sits on the photo's left half
       eyebrow: t('s2_eyebrow'),
       title1: t('s2_title_1'),
@@ -101,7 +109,7 @@ export async function InstallmentsLanding() {
     },
     {
       id: 'devices',
-      image: '/images/ovfle/slide-devices.webp',
+      image: asset('slide-devices.webp'),
       focusX: 0, // subject sits on the photo's left half
       eyebrow: t('s3_eyebrow'),
       title1: t('s3_title_1'),
@@ -112,7 +120,7 @@ export async function InstallmentsLanding() {
     },
     {
       id: 'flex',
-      image: '/images/ovfle/slide-flex.webp',
+      image: asset('slide-flex.webp'),
       focusX: 0, // subject sits on the photo's left half
       eyebrow: t('s4_eyebrow'),
       title1: t('s4_title_1'),
@@ -124,9 +132,9 @@ export async function InstallmentsLanding() {
   ];
 
   const services = [
-    { type: 'phone' as const, icon: 'phone' as const, image: '/images/ovfle/phones.webp', label: t('phone_label'), title: t('phone_title'), desc: t('phone_desc'), cta: t('phone_cta') },
-    { type: 'device' as const, icon: 'device' as const, image: '/images/ovfle/devices.webp', label: t('device_label'), title: t('device_title'), desc: t('device_desc'), cta: t('device_cta') },
-    { type: 'car' as const, icon: 'car' as const, image: '/images/ovfle/car.webp', label: t('car_label'), title: t('car_title'), desc: t('car_desc'), cta: t('car_cta') },
+    { type: 'phone' as const, icon: 'phone' as const, image: asset('phones.webp'), label: t('phone_label'), title: t('phone_title'), desc: t('phone_desc'), cta: t('phone_cta') },
+    { type: 'device' as const, icon: 'device' as const, image: asset('devices.webp'), label: t('device_label'), title: t('device_title'), desc: t('device_desc'), cta: t('device_cta') },
+    { type: 'car' as const, icon: 'car' as const, image: asset('car.webp'), label: t('car_label'), title: t('car_title'), desc: t('car_desc'), cta: t('car_cta') },
   ];
   const reasons = [
     { icon: 'shield' as const, label: t('why_1') },
@@ -160,20 +168,20 @@ export async function InstallmentsLanding() {
 
   return (
     <MotionProvider>
-    <div className={`installments ${brandLatin.variable} ${brandArabic.variable}`} data-service="installments">
+    <div className={`installments ${brandLatin.variable} ${brandArabic.variable}`} data-service="installments" data-ov-theme={theme}>
       <div className="ov-scroll-progress" aria-hidden="true" />
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-white/5 bg-[#11131A]/85 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-(--ov-tint)/5 bg-(--ov-surface)/85 backdrop-blur-xl">
         <div className="mx-auto flex h-18 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <a href="#top" className="min-w-0" aria-label={brandName}>
             <BrandLogo className="text-[1.6rem] sm:text-[1.9rem]" />
           </a>
-          <nav className="hidden items-center gap-6 text-sm font-bold text-[#E6FAFC]/70 lg:flex">
-            <a href="#top" className="hover:text-white">{t('nav_home')}</a>
-            <a href="#about" className="hover:text-white">{t('nav_about')}</a>
-            <a href="#services" className="hover:text-white">{t('nav_services')}</a>
-            <a href="#how" className="hover:text-white">{t('nav_how')}</a>
-            <OpenButton tab="track" className="hover:text-white">
+          <nav className="hidden items-center gap-6 text-sm font-bold text-(--ov-ink)/70 lg:flex">
+            <a href="#top" className="hover:text-(--ov-fg)">{t('nav_home')}</a>
+            <a href="#about" className="hover:text-(--ov-fg)">{t('nav_about')}</a>
+            <a href="#services" className="hover:text-(--ov-fg)">{t('nav_services')}</a>
+            <a href="#how" className="hover:text-(--ov-fg)">{t('nav_how')}</a>
+            <OpenButton tab="track" className="hover:text-(--ov-fg)">
               {t('nav_track')}
             </OpenButton>
           </nav>
@@ -185,7 +193,7 @@ export async function InstallmentsLanding() {
               hrefLang={otherLocale}
               lang={otherLocale}
               aria-label={t('switch_language')}
-              className="inline-flex h-10 items-center rounded-full border border-white/15 px-3 text-xs font-bold text-[#E6FAFC]/80 sm:px-4 hover:border-[#7DE6EE]/60 hover:text-white"
+              className="inline-flex h-10 items-center rounded-full border border-(--ov-tint)/15 px-3 text-xs font-bold text-(--ov-ink)/80 sm:px-4 hover:border-(--ov-accent)/60 hover:text-(--ov-fg)"
             >
               {t('switch_language')}
             </a>
@@ -209,7 +217,8 @@ export async function InstallmentsLanding() {
 
       <main id="top">
         {/* Hero: 4-slide carousel (Ovfle / cars from dealers / phones & devices / up to 5 years) */}
-        <Parallax className="relative isolate overflow-hidden">
+        {/* The hero follows the theme: night photos in dark, their daylight twins in light. */}
+        <Parallax className="relative isolate overflow-hidden" data-ov-theme={theme}>
           <HeroSlider
             slides={slides}
             labels={{ region: t('slides_label'), prev: t('slide_prev'), next: t('slide_next'), go: t.raw('slide_go') as string, pause: t('slide_pause'), play: t('slide_play') }}
@@ -218,16 +227,16 @@ export async function InstallmentsLanding() {
         </Parallax>
 
         {/* About Ovfle */}
-        <section id="about" className="ov-texture relative scroll-mt-20 border-t border-white/5 py-20">
+        <section id="about" className="ov-texture relative scroll-mt-20 border-t border-(--ov-tint)/5 py-20">
           <div className="ov-glow -top-40 left-1/2 h-80 w-[40rem] -translate-x-1/2 opacity-30" />
           <div className="relative mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center">
             <div className="ov-from-start" data-ov-reveal="">
-              <span className="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-[#7DE6EE]">
+              <span className="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-(--ov-accent)">
                 <span className="h-px w-6 bg-[#7DE6EE]" />
                 {t('about_eyebrow')}
               </span>
-              <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">{t('about_title')}</h2>
-              <div className="mt-6 space-y-4 text-base leading-relaxed text-[#E6FAFC]/70">
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-(--ov-fg) sm:text-4xl">{t('about_title')}</h2>
+              <div className="mt-6 space-y-4 text-base leading-relaxed text-(--ov-ink)/70">
                 <p>{t('about_p1')}</p>
                 <p>{t('about_p2')}</p>
                 <p>{t('about_p3')}</p>
@@ -240,15 +249,15 @@ export async function InstallmentsLanding() {
                   key={stat.value}
                   data-ov-reveal="zoom"
                   style={{ ['--ov-delay' as string]: `${0.1 + i * 0.12}s` }}
-                  className="ov-card ov-lift flex items-center gap-4 bg-[#11131A]/70 p-5"
+                  className="ov-card ov-lift flex items-center gap-4 bg-(--ov-surface)/70 p-5"
                 >
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#7DE6EE]/10 text-[#7DE6EE]">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-(--ov-accent)/10 text-(--ov-accent)">
                     <Icon name={stat.icon} className="h-6 w-6" />
                   </span>
                   <div className="flex flex-col">
-                    {'labelFirst' in stat && <span className="text-xs text-[#E6FAFC]/55">{stat.label}</span>}
-                    <span className="text-2xl font-extrabold text-white">{stat.value}</span>
-                    {!('labelFirst' in stat) && <span className="text-xs text-[#E6FAFC]/55">{stat.label}</span>}
+                    {'labelFirst' in stat && <span className="text-xs text-(--ov-ink)/55">{stat.label}</span>}
+                    <span className="text-2xl font-extrabold text-(--ov-fg)">{stat.value}</span>
+                    {!('labelFirst' in stat) && <span className="text-xs text-(--ov-ink)/55">{stat.label}</span>}
                   </div>
                 </li>
               ))}
@@ -257,7 +266,7 @@ export async function InstallmentsLanding() {
         </section>
 
         {/* The three services */}
-        <section id="services" className="ov-texture relative scroll-mt-20 border-t border-white/5 bg-[#0e1016] py-20">
+        <section id="services" className="ov-texture relative scroll-mt-20 border-t border-(--ov-tint)/5 bg-(--ov-surface-2) py-20">
           <div className="ov-glow -top-40 left-1/2 h-80 w-[40rem] -translate-x-1/2 opacity-40" />
           <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
             <SectionHead eyebrow={t('services_eyebrow')} title={t('services_title')} subtitle={t('services_subtitle')} />
@@ -267,24 +276,24 @@ export async function InstallmentsLanding() {
                   key={service.type}
                   data-ov-reveal=""
                   style={{ ['--ov-delay' as string]: `${0.2 + i * 0.15}s` }}
-                  className="ov-card ov-lift group relative flex flex-col overflow-hidden bg-[#11131A]/60 backdrop-blur-sm"
+                  className="ov-card ov-lift group relative flex flex-col overflow-hidden bg-(--ov-surface)/60 backdrop-blur-sm"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden border-b border-[#7DE6EE]/10 bg-[#0c0e13]">
+                  <div className="relative aspect-[4/3] overflow-hidden border-b border-(--ov-accent)/10 bg-(--ov-surface-2)">
                     <img
                       src={service.image}
                       alt={service.label}
                       loading="lazy"
                       className="ov-unveil h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
                     />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#11131A] to-transparent" />
-                    <span className="absolute top-4 inline-flex items-center gap-2 rounded-full border border-[#7DE6EE]/25 bg-[#11131A]/70 px-3 py-1.5 text-xs font-bold text-[#E6FAFC] backdrop-blur ltr:left-4 rtl:right-4">
-                      <Icon name={service.icon} className="h-4 w-4 text-[#7DE6EE]" />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-(--ov-surface) to-transparent" />
+                    <span className="absolute top-4 inline-flex items-center gap-2 rounded-full border border-(--ov-accent)/25 bg-(--ov-surface)/70 px-3 py-1.5 text-xs font-bold text-(--ov-ink) backdrop-blur ltr:left-4 rtl:right-4">
+                      <Icon name={service.icon} className="h-4 w-4 text-(--ov-accent)" />
                       {service.label}
                     </span>
                   </div>
                   <div className="relative flex flex-1 flex-col p-7">
-                    <h3 className="text-xl font-extrabold text-white">{service.title}</h3>
-                    <p className="mt-3 flex-1 leading-relaxed text-[#E6FAFC]/65">{service.desc}</p>
+                    <h3 className="text-xl font-extrabold text-(--ov-fg)">{service.title}</h3>
+                    <p className="mt-3 flex-1 leading-relaxed text-(--ov-ink)/65">{service.desc}</p>
                     <OpenButton tab="apply" type={service.type} className="ov-btn ov-btn-primary mt-6 self-start">
                       {service.cta}
                       <ForwardArrow />
@@ -308,12 +317,12 @@ export async function InstallmentsLanding() {
                   key={reason.label}
                   data-ov-reveal="zoom"
                   style={{ ['--ov-delay' as string]: `${0.1 + i * 0.1}s` }}
-                  className={`ov-card ov-lift flex flex-col items-center gap-4 bg-[#11131A]/60 px-4 py-7 text-center${i === reasons.length - 1 ? ' col-span-2 md:col-span-1' : ''}`}
+                  className={`ov-card ov-lift flex flex-col items-center gap-4 bg-(--ov-surface)/60 px-4 py-7 text-center${i === reasons.length - 1 ? ' col-span-2 md:col-span-1' : ''}`}
                 >
-                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#7DE6EE]/30 bg-[#7DE6EE]/10 text-[#7DE6EE] shadow-[0_0_30px_-10px_rgb(125_230_238/0.6)]">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-(--ov-accent)/30 bg-(--ov-accent)/10 text-(--ov-accent) shadow-[0_0_30px_-10px_rgb(125_230_238/0.6)]">
                     <Icon name={reason.icon} className="h-7 w-7" />
                   </span>
-                  <span className="text-sm leading-relaxed font-bold text-[#E6FAFC]/85">{reason.label}</span>
+                  <span className="text-sm leading-relaxed font-bold text-(--ov-ink)/85">{reason.label}</span>
                 </li>
               ))}
             </ul>
@@ -321,7 +330,7 @@ export async function InstallmentsLanding() {
         </section>
 
         {/* Financing partners (cars) */}
-        <section id="partners" className="relative scroll-mt-20 border-t border-white/5 bg-[#0e1016] py-20">
+        <section id="partners" className="relative scroll-mt-20 border-t border-(--ov-tint)/5 bg-(--ov-surface-2) py-20">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <SectionHead eyebrow={t('partners_eyebrow')} title={t('partners_title')} subtitle={t('partners_subtitle')} />
             <div className="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-4" data-ov-reveal="zoom">
@@ -333,7 +342,7 @@ export async function InstallmentsLanding() {
         </section>
 
         {/* How it works + requirements */}
-        <section id="how" className="ov-texture scroll-mt-20 border-t border-white/5 bg-[#171a24] py-20">
+        <section id="how" className="ov-texture scroll-mt-20 border-t border-(--ov-tint)/5 bg-(--ov-surface-3) py-20">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <SectionHead eyebrow={t('how_eyebrow')} title={t('how_title')} />
             <ol className="relative mt-12 grid gap-5 md:grid-cols-3 md:pt-24" data-ov-reveal="">
@@ -344,32 +353,32 @@ export async function InstallmentsLanding() {
                   key={step.n}
                   data-ov-reveal=""
                   // Solid background so the path runs only through the gaps between cards.
-                  style={{ ['--ov-delay' as string]: `${0.15 + i * 0.18}s`, background: 'linear-gradient(180deg, #1c1f2a, #171a24)' }}
+                  style={{ ['--ov-delay' as string]: `${0.15 + i * 0.18}s`, background: 'linear-gradient(180deg, var(--ov-surface-4), var(--ov-surface-3))' }}
                   className="ov-card ov-lift relative z-10 p-7"
                 >
                   <span className="ov-wordmark text-5xl opacity-25" dir="ltr">
                     {step.n}
                   </span>
-                  <span className="absolute top-7 flex h-11 w-11 items-center justify-center rounded-xl border border-[#7DE6EE]/30 text-[#7DE6EE] ltr:right-7 rtl:left-7">
+                  <span className="absolute top-7 flex h-11 w-11 items-center justify-center rounded-xl border border-(--ov-accent)/30 text-(--ov-accent) ltr:right-7 rtl:left-7">
                     <Icon name={step.icon} />
                   </span>
-                  <h3 className="mt-5 text-lg font-extrabold text-white">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[#E6FAFC]/60">{step.desc}</p>
+                  <h3 className="mt-5 text-lg font-extrabold text-(--ov-fg)">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-(--ov-ink)/60">{step.desc}</p>
                 </li>
               ))}
             </ol>
 
-            <div className="ov-from-end mt-10 rounded-3xl border border-[#7DE6EE]/20 bg-[#11131A] p-6 sm:p-8" data-ov-reveal="">
-              <h3 className="text-base font-extrabold text-white">{t('req_title')}</h3>
+            <div className="ov-from-end mt-10 rounded-3xl border border-(--ov-accent)/20 bg-(--ov-surface) p-6 sm:p-8" data-ov-reveal="">
+              <h3 className="text-base font-extrabold text-(--ov-fg)">{t('req_title')}</h3>
               <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
                 {requirements.map((req, i) => (
                   <li
                     key={req.label}
                     data-ov-reveal="zoom"
                     style={{ ['--ov-delay' as string]: `${0.1 + i * 0.08}s` }}
-                    className="ov-lift flex items-center gap-3 rounded-2xl border border-transparent bg-white/[0.04] px-4 py-3 text-sm text-[#E6FAFC]/85"
+                    className="ov-lift flex items-center gap-3 rounded-2xl border border-transparent bg-(--ov-tint)/[0.04] px-4 py-3 text-sm text-(--ov-ink)/85"
                   >
-                    <Icon name={req.icon} className="h-5 w-5 shrink-0 text-[#7DE6EE]" />
+                    <Icon name={req.icon} className="h-5 w-5 shrink-0 text-(--ov-accent)" />
                     {req.label}
                   </li>
                 ))}
@@ -380,22 +389,22 @@ export async function InstallmentsLanding() {
         </section>
 
         {/* Ready to start: fireworks behind, the request form inline (same form as the dialog) */}
-        <section id="apply" className="relative scroll-mt-20 overflow-hidden border-t border-white/5 bg-[#0e1016] py-20">
+        <section id="apply" className="relative scroll-mt-20 overflow-hidden border-t border-(--ov-tint)/5 bg-(--ov-surface-2) py-20">
           <FireworksBackground
             className="absolute! inset-0 opacity-70"
             population={0.6}
-            color={['#7DE6EE', '#3FC9D6', '#E6FAFC', '#A5F0F5']}
+            color={theme === 'light' ? ['#0B8C99', '#3FC9D6', '#11131A', '#5FCFD9'] : ['#7DE6EE', '#3FC9D6', '#E6FAFC', '#A5F0F5']}
             particleSize={{ min: 1, max: 3 }}
           />
           <div className="ov-glow -bottom-32 left-1/2 h-80 w-[40rem] -translate-x-1/2 opacity-50" />
           <div className="pointer-events-none relative z-10 mx-auto grid max-w-6xl items-start gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
             <div className="ov-from-start pointer-events-auto text-center lg:sticky lg:top-28 lg:text-start" data-ov-reveal="">
-              <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl">{t('cta_title')}</h2>
-              <p className="mt-4 leading-relaxed text-[#E6FAFC]/65">{t('cta_subtitle')}</p>
-              <ul className="mt-8 space-y-3 text-sm text-[#E6FAFC]/80">
+              <h2 className="text-3xl font-extrabold tracking-tight text-(--ov-fg) sm:text-5xl">{t('cta_title')}</h2>
+              <p className="mt-4 leading-relaxed text-(--ov-ink)/65">{t('cta_subtitle')}</p>
+              <ul className="mt-8 space-y-3 text-sm text-(--ov-ink)/80">
                 {[t('why_3'), t('step_1_desc'), t('step_3_desc')].map((point) => (
                   <li key={point} className="flex items-center justify-center gap-3 lg:justify-start">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#7DE6EE]/15 text-[#7DE6EE]">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-(--ov-accent)/15 text-(--ov-accent)">
                       <Icon name="check" className="h-3.5 w-3.5" strokeWidth={3} />
                     </span>
                     {point}
@@ -409,14 +418,14 @@ export async function InstallmentsLanding() {
             </div>
 
             <div className="ov-zoom-in pointer-events-auto" data-ov-reveal="zoom">
-              <div className="ov-card ov-neon-border relative z-10 overflow-hidden bg-[#11131A] p-6 sm:p-8">
+              <div className="ov-card ov-neon-border relative z-10 overflow-hidden bg-(--ov-surface) p-6 sm:p-8">
                 <div className="mb-6 flex items-center gap-3">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#7DE6EE]/10 text-[#7DE6EE]">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-(--ov-accent)/10 text-(--ov-accent)">
                     <Icon name="spark" className="h-5 w-5" loop />
                   </span>
                   <div>
-                    <h3 className="text-xl font-extrabold text-white">{t('form_section_title')}</h3>
-                    <p className="mt-0.5 text-xs text-[#E6FAFC]/55">{t('form_section_subtitle')}</p>
+                    <h3 className="text-xl font-extrabold text-(--ov-fg)">{t('form_section_title')}</h3>
+                    <p className="mt-0.5 text-xs text-(--ov-ink)/55">{t('form_section_subtitle')}</p>
                   </div>
                 </div>
                 <ApplyForm idPrefix="ov-inline" listenToOpen={false} />
@@ -427,25 +436,26 @@ export async function InstallmentsLanding() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 bg-[#0c0e13]">
+      {/* Dark footer in both themes (anchors the light page). */}
+      <footer className="border-t border-(--ov-tint)/5 bg-(--ov-surface-2)" data-ov-theme="dark">
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 lg:grid-cols-[minmax(0,5fr)_repeat(3,minmax(0,3fr))]">
           <div>
             <BrandLogo className="text-3xl" />
-            <p className="mt-4 text-sm leading-relaxed text-[#E6FAFC]/60">
+            <p className="mt-4 text-sm leading-relaxed text-(--ov-ink)/60">
               {BRAND.showParentAttribution ? t('footer_about') : t('footer_tagline')}
             </p>
           </div>
 
           {company.length > 0 && (
             <div>
-              <h2 className="text-sm font-extrabold text-white">{t('footer_company')}</h2>
+              <h2 className="text-sm font-extrabold text-(--ov-fg)">{t('footer_company')}</h2>
               <dl className="mt-4 space-y-3 text-sm">
                 {company.map((row) => (
                   <div key={row.label}>
-                    <dt className="text-xs text-[#E6FAFC]/50">{row.label}</dt>
-                    <dd className="mt-0.5 font-bold text-[#E6FAFC]/85">
+                    <dt className="text-xs text-(--ov-ink)/50">{row.label}</dt>
+                    <dd className="mt-0.5 font-bold text-(--ov-ink)/85">
                       {row.tel ? (
-                        <a href={`tel:${row.value}`} className="hover:text-[#7DE6EE]" dir="ltr">
+                        <a href={`tel:${row.value}`} className="hover:text-(--ov-accent)" dir="ltr">
                           {row.value}
                         </a>
                       ) : (
@@ -459,32 +469,32 @@ export async function InstallmentsLanding() {
           )}
 
           <div>
-            <h2 className="text-sm font-extrabold text-white">{t('footer_links')}</h2>
-            <ul className="mt-4 space-y-2.5 text-sm text-[#E6FAFC]/65">
+            <h2 className="text-sm font-extrabold text-(--ov-fg)">{t('footer_links')}</h2>
+            <ul className="mt-4 space-y-2.5 text-sm text-(--ov-ink)/65">
               <li>
-                <a href="#top" className="hover:text-[#7DE6EE]">{t('footer_link_home')}</a>
+                <a href="#top" className="hover:text-(--ov-accent)">{t('footer_link_home')}</a>
               </li>
               <li>
-                <a href="#services" className="hover:text-[#7DE6EE]">{t('footer_link_services')}</a>
+                <a href="#services" className="hover:text-(--ov-accent)">{t('footer_link_services')}</a>
               </li>
               <li>
-                <OpenButton tab="track" className="hover:text-[#7DE6EE]">
+                <OpenButton tab="track" className="hover:text-(--ov-accent)">
                   {t('footer_link_track')}
                 </OpenButton>
               </li>
               <li>
-                <a href={supportHref} className="hover:text-[#7DE6EE]">{t('footer_link_support')}</a>
+                <a href={supportHref} className="hover:text-(--ov-accent)">{t('footer_link_support')}</a>
               </li>
             </ul>
           </div>
 
           <div>
-            <h2 className="text-sm font-extrabold text-white">{t('footer_contact')}</h2>
-            <p className="mt-4 text-sm leading-relaxed text-[#E6FAFC]/60">{t('footer_contact_text')}</p>
+            <h2 className="text-sm font-extrabold text-(--ov-fg)">{t('footer_contact')}</h2>
+            <p className="mt-4 text-sm leading-relaxed text-(--ov-ink)/60">{t('footer_contact_text')}</p>
             {BRAND.company.unifiedNumber && (
               <a
                 href={`tel:${BRAND.company.unifiedNumber}`}
-                className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#7DE6EE]/30 px-4 py-2 text-sm font-extrabold text-[#7DE6EE] hover:bg-[#7DE6EE]/10"
+                className="mt-4 inline-flex items-center gap-2 rounded-full border border-(--ov-accent)/30 px-4 py-2 text-sm font-extrabold text-(--ov-accent) hover:bg-(--ov-accent)/10"
                 dir="ltr"
               >
                 <Icon name="phone" className="h-4 w-4" />
@@ -494,8 +504,8 @@ export async function InstallmentsLanding() {
           </div>
         </div>
         <div className="mx-auto max-w-6xl px-4 pb-10 sm:px-6">
-          <Disclaimer text={t('disclaimer_full')} className="border-t border-white/5 pt-6" />
-          <div className="mt-4 text-xs text-[#E6FAFC]/40">
+          <Disclaimer text={t('disclaimer_full')} className="border-t border-(--ov-tint)/5 pt-6" />
+          <div className="mt-4 text-xs text-(--ov-ink)/40">
             © {year} {brandName} · {t('footer_rights')}
           </div>
         </div>
@@ -503,6 +513,11 @@ export async function InstallmentsLanding() {
 
       <RequestDialog />
       <ScrollReveal />
+      {BRAND.themePreview && (
+        <Suspense>
+          <ThemeSwitch current={theme} labels={{ title: t('theme_title'), dark: t('theme_dark'), light: t('theme_light') }} />
+        </Suspense>
+      )}
     </div>
     </MotionProvider>
   );

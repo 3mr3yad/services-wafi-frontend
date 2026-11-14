@@ -24,7 +24,7 @@ const IdPrefix = createContext('ov');
 
 function FieldError({ errors, name }: { errors: FieldErrors; name: string }) {
   const message = errors[name]?.[0];
-  return message ? <p className="wafi-field-error mt-1.5 text-xs font-medium text-rose-300">{message}</p> : null;
+  return message ? <p className="wafi-field-error mt-1.5 text-xs font-medium text-(--ov-danger)">{message}</p> : null;
 }
 
 function Field({ name, label, errors, children, className }: { name: string; label: string; errors: FieldErrors; children: ReactNode; className?: string }) {
@@ -44,13 +44,13 @@ function StepHeader({ labels }: { labels: string[] }) {
   const t = useTranslations('Installments.landing');
   return (
     <div className="mb-7">
-      <div className="flex items-center justify-between text-xs font-bold text-[#E6FAFC]/55">
+      <div className="flex items-center justify-between text-xs font-bold text-(--ov-ink)/55">
         <span>{t('step_counter', { current: current + 1, total })}</span>
-        <span className="text-[#7DE6EE]">{labels[current]}</span>
+        <span className="text-(--ov-accent)">{labels[current]}</span>
       </div>
       <div className="mt-3 grid grid-cols-3 gap-2">
         {labels.map((label, i) => (
-          <span key={label} className={`h-1.5 rounded-full transition-colors duration-300 ${i <= current ? 'bg-[#7DE6EE] shadow-[0_0_12px_rgb(125_230_238/0.6)]' : 'bg-white/10'}`} />
+          <span key={label} className={`h-1.5 rounded-full transition-colors duration-300 ${i <= current ? 'bg-[#7DE6EE] shadow-[0_0_12px_rgb(125_230_238/0.6)]' : 'bg-(--ov-tint)/10'}`} />
         ))}
       </div>
     </div>
@@ -64,7 +64,7 @@ function StepNav({ submitting, last }: { submitting: boolean; last?: boolean }) 
   return (
     <div className="mt-8 flex items-center justify-between gap-3">
       {current > 0 ? (
-        <button type="button" onClick={prev} className="inline-flex h-12 items-center gap-2 rounded-full px-5 text-sm font-bold text-[#E6FAFC]/70 hover:bg-white/5 hover:text-white">
+        <button type="button" onClick={prev} className="inline-flex h-12 items-center gap-2 rounded-full px-5 text-sm font-bold text-(--ov-ink)/70 hover:bg-(--ov-tint)/5 hover:text-(--ov-fg)">
           <Icon name="arrow" className="h-4 w-4 rtl:rotate-180" strokeWidth={2.2} />
           {tl('previous')}
         </button>
@@ -201,19 +201,19 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
       <div className="flex flex-col items-center py-6 text-center" role="status">
         <SuccessMark accent="#7DE6EE" ink="#11131A" />
         <AfterReveal delay={0.85}>
-          <h3 className="mt-5 text-2xl font-extrabold text-white">{tl('success_title')}</h3>
-          <p className="mt-2 max-w-sm text-sm text-[#E6FAFC]/55">{success.message}</p>
+          <h3 className="mt-5 text-2xl font-extrabold text-(--ov-fg)">{tl('success_title')}</h3>
+          <p className="mt-2 max-w-sm text-sm text-(--ov-ink)/55">{success.message}</p>
         </AfterReveal>
-        <div className="mt-6 w-full max-w-xs rounded-2xl border border-dashed border-[#7DE6EE]/60 bg-[#7DE6EE]/[0.06] px-5 py-4 shadow-[0_0_40px_-12px_rgb(125_230_238/0.5)]">
-          <div className="text-xs font-bold text-[#E6FAFC]/55">{tl('success_number')}</div>
-          <RevealNumber value={success.number} className="mt-1 block text-4xl font-semibold tracking-tight text-[#7DE6EE] select-all" />
+        <div className="mt-6 w-full max-w-xs rounded-2xl border border-dashed border-(--ov-accent)/60 bg-(--ov-accent)/[0.06] px-5 py-4 shadow-[0_0_40px_-12px_rgb(125_230_238/0.5)]">
+          <div className="text-xs font-bold text-(--ov-ink)/55">{tl('success_number')}</div>
+          <RevealNumber value={success.number} className="mt-1 block text-4xl font-semibold tracking-tight text-(--ov-accent) select-all" />
         </div>
         <AfterReveal delay={1 + success.number.length * 0.07} className="flex flex-col items-center">
-          <p className="mt-3 text-xs text-[#E6FAFC]/55">{tl('success_hint')}</p>
+          <p className="mt-3 text-xs text-(--ov-ink)/55">{tl('success_hint')}</p>
           {BRAND.showApprovalDisclaimer && (
-            <p className="mt-4 max-w-sm rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xs leading-relaxed text-[#E6FAFC]/65">{tl('disclaimer_short')}</p>
+            <p className="mt-4 max-w-sm rounded-xl border border-(--ov-tint)/10 bg-(--ov-tint)/[0.04] px-4 py-3 text-xs leading-relaxed text-(--ov-ink)/65">{tl('disclaimer_short')}</p>
           )}
-          <button type="button" onClick={startOver} className="mt-7 text-sm font-bold text-white underline decoration-[#7DE6EE] decoration-2 underline-offset-4">
+          <button type="button" onClick={startOver} className="mt-7 text-sm font-bold text-(--ov-fg) underline decoration-(--ov-accent) decoration-2 underline-offset-4">
             {tl('success_again')}
           </button>
         </AfterReveal>
@@ -232,10 +232,10 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
         <StepHeader labels={stepLabels} />
 
         {formError && (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200" role="alert">
+          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-(--ov-danger)" role="alert">
             <Icon name="x" className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2.4} />
             <div>
-              <div className="font-bold text-rose-100">{tl('error_title')}</div>
+              <div className="font-bold text-(--ov-danger)">{tl('error_title')}</div>
               {formError}
             </div>
           </div>
@@ -263,11 +263,11 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
                     checked={type === value}
                     onChange={() => setType(value)}
                   />
-                  <span className="ov-choice-body flex flex-col items-center gap-3 rounded-2xl border-[1.5px] border-[#7DE6EE]/15 bg-white/[0.03] px-2 py-5 hover:border-[#7DE6EE]/40 text-center transition sm:px-3 sm:py-6">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#7DE6EE]/10 text-[#7DE6EE]">
+                  <span className="ov-choice-body flex flex-col items-center gap-3 rounded-2xl border-[1.5px] border-(--ov-accent)/15 bg-(--ov-tint)/[0.03] px-2 py-5 hover:border-(--ov-accent)/40 text-center transition sm:px-3 sm:py-6">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-(--ov-accent)/10 text-(--ov-accent)">
                       <Icon name={icon} className="h-6 w-6" />
                     </span>
-                    <span className="text-xs leading-snug font-extrabold text-white sm:text-sm">{label}</span>
+                    <span className="text-xs leading-snug font-extrabold text-(--ov-fg) sm:text-sm">{label}</span>
                   </span>
                 </label>
               ))}
@@ -276,9 +276,9 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
           </fieldset>
 
           {type === 'car' && (
-            <div className="mt-6 rounded-2xl border border-[#7DE6EE]/15 bg-white/[0.03] p-4">
-              <div className="mb-4 flex items-center gap-2 text-sm font-extrabold text-white">
-                <Icon name="car" className="h-5 w-5 text-[#7DE6EE]" />
+            <div className="mt-6 rounded-2xl border border-(--ov-accent)/15 bg-(--ov-tint)/[0.03] p-4">
+              <div className="mb-4 flex items-center gap-2 text-sm font-extrabold text-(--ov-fg)">
+                <Icon name="car" className="h-5 w-5 text-(--ov-accent)" />
                 {tl('car_details')}
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -308,7 +308,7 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
             </Field>
             <Field name="phone" label={t('phone')} errors={errors}>
               <PhoneInput ref={phoneRef} id={`${idPrefix}-phone`} name="phone" errorId={`${idPrefix}-phone-error`} required dropdownInBody locale={phoneLocale} className="ov-field" />
-              <p id={`${idPrefix}-phone-error`} className="mt-1.5 hidden text-xs font-medium text-rose-300">
+              <p id={`${idPrefix}-phone-error`} className="mt-1.5 hidden text-xs font-medium text-(--ov-danger)">
                 {t('phone_invalid')}
               </p>
             </Field>
@@ -370,18 +370,18 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
           </div>
 
           {showNet && (
-            <div className="mt-6 rounded-2xl border border-[#7DE6EE]/20 bg-[#7DE6EE]/[0.06] px-5 py-4 text-[#E6FAFC]">
+            <div className="mt-6 rounded-2xl border border-(--ov-accent)/20 bg-(--ov-accent)/[0.06] px-5 py-4 text-(--ov-ink)">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <div className="text-xs font-bold text-[#E6FAFC]/70">{tl('net_income_label')}</div>
-                  <div className="mt-0.5 text-[11px] text-[#E6FAFC]/45">{tl('net_income_note')}</div>
+                  <div className="text-xs font-bold text-(--ov-ink)/70">{tl('net_income_label')}</div>
+                  <div className="mt-0.5 text-[11px] text-(--ov-ink)/45">{tl('net_income_note')}</div>
                 </div>
                 <div className="text-end">
-                  <div className={`text-2xl font-semibold whitespace-nowrap ${net < 0 ? 'text-rose-300' : 'text-[#7DE6EE]'}`}>
-                    {money.format(net)} <span className="text-xs text-[#E6FAFC]/60">{tl('currency')}</span>
+                  <div className={`text-2xl font-semibold whitespace-nowrap ${net < 0 ? 'text-(--ov-danger)' : 'text-(--ov-accent)'}`}>
+                    {money.format(net)} <span className="text-xs text-(--ov-ink)/60">{tl('currency')}</span>
                   </div>
                   {netShare !== null && (
-                    <div className={`mt-0.5 text-xs font-bold whitespace-nowrap ${net < 0 ? 'text-rose-300' : 'text-[#E6FAFC]/70'}`}>
+                    <div className={`mt-0.5 text-xs font-bold whitespace-nowrap ${net < 0 ? 'text-(--ov-danger)' : 'text-(--ov-ink)/70'}`}>
                       {tl('net_income_share', { percent: percent.format(netShare) })}
                     </div>
                   )}
@@ -389,7 +389,7 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
               </div>
               {netShare !== null && (
                 <div
-                  className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10"
+                  className="mt-3 h-1.5 overflow-hidden rounded-full bg-(--ov-tint)/10"
                   role="meter"
                   aria-valuemin={0}
                   aria-valuemax={100}
@@ -405,8 +405,8 @@ export function ApplyForm({ idPrefix = 'ov', listenToOpen = true }: { idPrefix?:
             </div>
           )}
           {BRAND.showApprovalDisclaimer && (
-            <p className="mt-6 flex items-start gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs leading-relaxed text-[#E6FAFC]/60">
-              <Icon name="shield" className="mt-0.5 h-4 w-4 shrink-0 text-[#7DE6EE]" />
+            <p className="mt-6 flex items-start gap-2 rounded-xl border border-(--ov-tint)/10 bg-(--ov-tint)/[0.03] px-4 py-3 text-xs leading-relaxed text-(--ov-ink)/60">
+              <Icon name="shield" className="mt-0.5 h-4 w-4 shrink-0 text-(--ov-accent)" />
               {tl('disclaimer_full')}
             </p>
           )}

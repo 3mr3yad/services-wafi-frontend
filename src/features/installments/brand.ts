@@ -19,6 +19,15 @@ export const BRAND = {
   /** "A brand owned by عالم وافي" — confirmed by the 2026-11-12 brief (about section, "why Ovfle", footer). */
   showParentAttribution: true,
 
+  /**
+   * Page theme (light chosen 2026-11-14). "dark" = the original navy look with the night photos; "light" = light
+   * surfaces with the daylight photos in /images/ovfle/light (footer stays dark).
+   * Any visitor can preview the other one with ?theme=light / ?theme=dark while `themePreview` is on.
+   */
+  theme: 'light' as 'dark' | 'light',
+  /** Shows a small floating dark/light switch (for choosing the theme). Turn off once decided. */
+  themePreview: false,
+
   /** Shows the "submitting an application is not a financing approval" notices across the page. Keep true. */
   showApprovalDisclaimer: true,
 

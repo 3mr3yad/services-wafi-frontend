@@ -53,11 +53,11 @@ export function RequestDialog() {
 
   return (
     <div className={`fixed inset-0 z-50 ${open ? '' : 'hidden'}`} role="dialog" aria-modal="true" aria-label={tl('dialog_label')}>
-      <div className="absolute inset-0 bg-[#0b0d12]/80 backdrop-blur-md" onClick={() => setOpen(false)} />
+      <div className="absolute inset-0 bg-(--ov-surface-2)/80 backdrop-blur-md" onClick={() => setOpen(false)} />
       <div className="relative flex min-h-full items-end justify-center sm:items-center sm:p-6">
-        <div className="ov-pop relative flex max-h-[94dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[2rem] border border-[#7DE6EE]/20 bg-[#11131A] shadow-[0_40px_120px_-30px_rgb(0_0_0/0.8),0_0_60px_-20px_rgb(125_230_238/0.35)] sm:rounded-[2rem]">
+        <div className="ov-pop relative flex max-h-[94dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[2rem] border border-(--ov-accent)/20 bg-(--ov-surface) shadow-[0_40px_120px_-30px_rgb(0_0_0/0.8),0_0_60px_-20px_rgb(125_230_238/0.35)] sm:rounded-[2rem]">
           {/* Brand header + tabs */}
-          <div className="ov-texture relative shrink-0 border-b border-white/5 bg-[#11131A] px-5 pt-5 pb-4 sm:px-8 sm:pt-6">
+          <div className="ov-texture relative shrink-0 border-b border-(--ov-tint)/5 bg-(--ov-surface) px-5 pt-5 pb-4 sm:px-8 sm:pt-6">
             <div className="flex items-center justify-between gap-3">
               <BrandLogo className="text-3xl" />
               <button
@@ -65,12 +65,12 @@ export function RequestDialog() {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label={tl('dialog_close')}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-[#E6FAFC]/80 hover:border-[#7DE6EE]/60 hover:text-white"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-(--ov-tint)/15 text-(--ov-ink)/80 hover:border-(--ov-accent)/60 hover:text-(--ov-fg)"
               >
                 <Icon name="x" className="h-4 w-4" strokeWidth={2.4} />
               </button>
             </div>
-            <div className="mt-5 grid grid-cols-2 gap-1.5 rounded-full bg-white/[0.06] p-1.5" role="tablist">
+            <div className="mt-5 grid grid-cols-2 gap-1.5 rounded-full bg-(--ov-tint)/[0.06] p-1.5" role="tablist">
               {tabs.map((item) => (
                 <button
                   key={item.id}
@@ -79,7 +79,7 @@ export function RequestDialog() {
                   aria-selected={tab === item.id}
                   onClick={() => setTab(item.id)}
                   className={`flex h-10 items-center justify-center gap-2 rounded-full text-sm font-bold transition ${
-                    tab === item.id ? 'bg-[#7DE6EE] text-[#11131A]' : 'text-[#E6FAFC]/70 hover:text-white'
+                    tab === item.id ? 'bg-[#7DE6EE] text-[#11131A]' : 'text-(--ov-ink)/70 hover:text-(--ov-fg)'
                   }`}
                 >
                   <Icon name={item.icon} className="h-4 w-4" />
@@ -90,12 +90,12 @@ export function RequestDialog() {
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto">
-            <div className={tab === 'apply' ? 'ov-texture min-h-full bg-[#11131A] p-5 sm:p-8' : 'hidden'} role="tabpanel">
+            <div className={tab === 'apply' ? 'ov-texture min-h-full bg-(--ov-surface) p-5 sm:p-8' : 'hidden'} role="tabpanel">
               <ApplyForm />
             </div>
-            <div className={tab === 'track' ? 'ov-texture min-h-full bg-[#11131A] p-5 sm:p-8' : 'hidden'} role="tabpanel">
-              <h3 className="text-xl font-extrabold text-white">{tl('track_title')}</h3>
-              <p className="mt-1.5 mb-6 text-sm text-[#E6FAFC]/60">{tl('track_subtitle')}</p>
+            <div className={tab === 'track' ? 'ov-texture min-h-full bg-(--ov-surface) p-5 sm:p-8' : 'hidden'} role="tabpanel">
+              <h3 className="text-xl font-extrabold text-(--ov-fg)">{tl('track_title')}</h3>
+              <p className="mt-1.5 mb-6 text-sm text-(--ov-ink)/60">{tl('track_subtitle')}</p>
               <RequestTracker />
             </div>
           </div>

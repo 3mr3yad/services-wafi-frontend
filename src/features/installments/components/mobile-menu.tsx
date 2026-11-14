@@ -48,14 +48,14 @@ export function MobileMenu({ items, labels }: { items: MobileMenuItem[]; labels:
 
   const close = () => setOpen(false);
   const itemClass =
-    'flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-3.5 text-start text-base font-bold text-[#E6FAFC]/85 transition hover:bg-[#7DE6EE]/10 hover:text-white';
+    'flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-3.5 text-start text-base font-bold text-(--ov-ink)/85 transition hover:bg-(--ov-accent)/10 hover:text-(--ov-fg)';
 
   return (
     <div ref={root} className="lg:hidden">
       <button
         ref={button}
         type="button"
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-[#E6FAFC] transition hover:border-[#7DE6EE]/60"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--ov-tint)/15 text-(--ov-ink) transition hover:border-(--ov-accent)/60"
         aria-expanded={open}
         aria-controls={panelId}
         aria-label={open ? labels.close : labels.open}
@@ -70,7 +70,7 @@ export function MobileMenu({ items, labels }: { items: MobileMenuItem[]; labels:
       <div
         id={panelId}
         hidden={!open}
-        className="ov-menu-panel fixed inset-x-0 top-18 z-50 border-b border-[#7DE6EE]/15 bg-[#11131A] px-4 pt-3 pb-5 shadow-[0_30px_60px_-20px_rgb(0_0_0/0.7)]"
+        className="ov-menu-panel fixed inset-x-0 top-18 z-50 border-b border-(--ov-accent)/15 bg-(--ov-surface) px-4 pt-3 pb-5 shadow-[0_30px_60px_-20px_rgb(0_0_0/0.7)]"
       >
         <nav className="mx-auto max-w-6xl">
           <ul className="flex flex-col gap-1">
@@ -87,7 +87,7 @@ export function MobileMenu({ items, labels }: { items: MobileMenuItem[]; labels:
                     }}
                   >
                     {item.label}
-                    <Icon name="search" className="h-4 w-4 text-[#7DE6EE]" />
+                    <Icon name="search" className="h-4 w-4 text-(--ov-accent)" />
                   </button>
                 ) : item.route ? (
                   <Link href={item.href ?? '/'} className={itemClass} onClick={close}>

@@ -3,6 +3,7 @@
  * Palette: navy #11131A · sky #7DE6EE · ice #E6FAFC · white. Dark surfaces, fine vertical-line texture, soft cyan glows.
  */
 .installments {
+  /* Brand constants (same in both themes). */
   --ov-navy: #11131a;
   --ov-navy-2: #171a24;
   --ov-navy-3: #1f2330;
@@ -10,19 +11,96 @@
   --ov-sky-deep: #3fc9d6;
   --ov-ice: #e6fafc;
   --ov-white: #ffffff;
-  --ov-line: rgb(125 230 238 / 0.14);
-  --ov-muted: rgb(230 250 252 / 0.62);
 
   font-family: var(--font-brand-latin), var(--font-brand-arabic), Tahoma, Arial, sans-serif;
-  background-color: var(--ov-navy);
-  color: var(--ov-ice);
+  background-color: var(--ov-page);
+  color: var(--ov-ink);
   min-height: 100dvh;
   overflow-x: clip;
 }
 
+/*
+ * Theme tokens. Components use these (text-(--ov-fg), bg-(--ov-surface)…), never raw colours, so both themes stay
+ * in sync. Dark = the original navy look. A [data-ov-theme="dark"] island inside the light page (hero, footer)
+ * re-declares the dark set for its subtree.
+ */
+.installments,
+.installments [data-ov-theme='dark'] {
+  --ov-page: #11131a;
+  --ov-surface: #11131a; /* cards, dialog, header */
+  --ov-surface-2: #0e1016; /* alternate sections, footer */
+  --ov-surface-3: #171a24; /* "how it works" section */
+  --ov-surface-4: #1c1f2a;
+  --ov-fg: #ffffff; /* headings, strong text */
+  --ov-ink: #e6fafc; /* body text (used with opacity) */
+  --ov-tint: #ffffff; /* hairlines and faint fills (used with opacity) */
+  --ov-accent: #7de6ee; /* brand accent for text, borders, tints */
+  --ov-line: rgb(125 230 238 / 0.14);
+  --ov-card-bg: linear-gradient(180deg, rgb(255 255 255 / 0.045), rgb(255 255 255 / 0.015));
+  --ov-texture-line: rgb(255 255 255 / 0.022);
+  --ov-glow: rgb(125 230 238 / 0.35);
+  --ov-field-bg: rgb(255 255 255 / 0.04);
+  --ov-field-bg-focus: rgb(255 255 255 / 0.07);
+  --ov-field-border: rgb(125 230 238 / 0.16);
+  --ov-placeholder: rgb(230 250 252 / 0.35);
+  --ov-btn-bg: var(--ov-sky);
+  --ov-btn-fg: var(--ov-navy);
+  --ov-btn-hover: #a3eef3;
+  --ov-btn-shadow: 0 10px 30px -10px rgb(125 230 238 / 0.7);
+  --ov-shine: linear-gradient(90deg, #7de6ee 0%, #e6fafc 25%, #7de6ee 50%, #3fc9d6 75%, #7de6ee 100%);
+  --ov-scrim: 17 19 26; /* hero fade colour (rgb triplet) */
+  --ov-danger: #fda4af;
+  --ov-success: #6ee7b7;
+  --ov-warn: #fcd34d;
+  --ov-pink: #f9a8d4;
+  color-scheme: dark;
+}
+.installments [data-ov-theme='dark'] {
+  color: var(--ov-ink);
+}
+
+/* Light: white/ice surfaces, navy text; the accent darkens to a readable teal for text and lines. */
+.installments[data-ov-theme='light'] {
+  --ov-page: #f4f8fa;
+  --ov-surface: #ffffff;
+  --ov-surface-2: #eaf2f5;
+  --ov-surface-3: #f4f8fa;
+  --ov-surface-4: #ffffff;
+  --ov-fg: #0f1624;
+  --ov-ink: #1d2a3a;
+  --ov-tint: #0f1624;
+  --ov-accent: #0b8c99;
+  --ov-line: rgb(11 140 153 / 0.18);
+  --ov-card-bg: linear-gradient(180deg, #ffffff, #fbfdfe);
+  --ov-texture-line: rgb(15 22 36 / 0.025);
+  --ov-glow: rgb(125 230 238 / 0.45);
+  --ov-field-bg: #ffffff;
+  --ov-field-bg-focus: #ffffff;
+  --ov-field-border: rgb(15 22 36 / 0.14);
+  --ov-placeholder: rgb(29 42 58 / 0.4);
+  --ov-btn-bg: var(--ov-navy);
+  --ov-btn-fg: #ffffff;
+  --ov-btn-hover: #1f2a3d;
+  --ov-btn-shadow: 0 12px 30px -12px rgb(15 22 36 / 0.45);
+  --ov-shine: linear-gradient(90deg, #0b8c99 0%, #3fc9d6 25%, #0b8c99 50%, #11131a 75%, #0b8c99 100%);
+  --ov-scrim: 244 248 250;
+  --ov-danger: #be123c;
+  --ov-success: #047857;
+  --ov-warn: #b45309;
+  --ov-pink: #be185d;
+  color-scheme: light;
+}
+/* Cards get a soft shadow on light (they have no glow to separate them from the page). */
+.installments[data-ov-theme='light'] .ov-card {
+  box-shadow: 0 1px 2px rgb(15 22 36 / 0.04), 0 18px 40px -28px rgb(15 22 36 / 0.25);
+}
+.installments[data-ov-theme='light'] [data-ov-theme='dark'] .ov-card {
+  box-shadow: none;
+}
+
 /* The brand's fine vertical-line texture. */
 .installments .ov-texture {
-  background-image: repeating-linear-gradient(90deg, rgb(255 255 255 / 0.022) 0 1px, transparent 1px 5px);
+  background-image: repeating-linear-gradient(90deg, var(--ov-texture-line) 0 1px, transparent 1px 5px);
 }
 
 .installments .ov-glow {
@@ -30,7 +108,7 @@
   border-radius: 9999px;
   filter: blur(90px);
   pointer-events: none;
-  background: radial-gradient(circle, rgb(125 230 238 / 0.35), transparent 70%);
+  background: radial-gradient(circle, var(--ov-glow), transparent 70%);
 }
 
 /* Ovfle wordmark (brand book: rounded geometric sans, sky blue on navy). */
@@ -53,7 +131,7 @@
 }
 
 .installments .ov-card {
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.045), rgb(255 255 255 / 0.015));
+  background: var(--ov-card-bg);
   border: 1px solid var(--ov-line);
   border-radius: 1.5rem;
 }
@@ -74,23 +152,23 @@
   transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 .installments .ov-btn-primary {
-  background: var(--ov-sky);
-  color: var(--ov-navy);
-  box-shadow: 0 10px 30px -10px rgb(125 230 238 / 0.7);
+  background: var(--ov-btn-bg);
+  color: var(--ov-btn-fg);
+  box-shadow: var(--ov-btn-shadow);
 }
 .installments .ov-btn-primary:hover {
-  background: #a3eef3;
+  background: var(--ov-btn-hover);
 }
 .installments .ov-btn-primary:disabled {
   opacity: 0.55;
   cursor: progress;
 }
 .installments .ov-btn-ghost {
-  border: 1px solid rgb(125 230 238 / 0.35);
-  color: var(--ov-ice);
+  border: 1px solid color-mix(in oklab, var(--ov-accent) 40%, transparent);
+  color: var(--ov-fg);
 }
 .installments .ov-btn-ghost:hover {
-  background: rgb(125 230 238 / 0.08);
+  background: color-mix(in oklab, var(--ov-accent) 10%, transparent);
 }
 
 /* Form controls (dark, on the navy dialog and the inline form card). */
@@ -98,29 +176,29 @@
   width: 100%;
   height: 3.25rem;
   border-radius: 0.9rem;
-  border: 1.5px solid rgb(125 230 238 / 0.16);
-  background: rgb(255 255 255 / 0.04);
+  border: 1.5px solid var(--ov-field-border);
+  background: var(--ov-field-bg);
   padding-inline: 1rem;
-  color: var(--ov-ice);
+  color: var(--ov-fg);
   font-size: 0.95rem;
   transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 .installments .ov-field:focus {
   outline: none;
-  border-color: var(--ov-sky);
-  background: rgb(255 255 255 / 0.07);
-  box-shadow: 0 0 0 4px rgb(125 230 238 / 0.14);
+  border-color: var(--ov-accent);
+  background: var(--ov-field-bg-focus);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ov-accent) 16%, transparent);
 }
 .installments .ov-field::placeholder {
-  color: rgb(230 250 252 / 0.35);
+  color: var(--ov-placeholder);
 }
 .installments .ov-field option {
-  background: var(--ov-navy-2);
-  color: var(--ov-ice);
+  background: var(--ov-surface);
+  color: var(--ov-fg);
 }
 .installments .ov-field:-webkit-autofill {
-  -webkit-text-fill-color: var(--ov-ice);
-  box-shadow: 0 0 0 100px var(--ov-navy-3) inset;
+  -webkit-text-fill-color: var(--ov-fg);
+  box-shadow: 0 0 0 100px var(--ov-surface) inset;
 }
 .installments select.ov-field {
   appearance: none;
@@ -137,7 +215,7 @@
   margin-bottom: 0.45rem;
   font-size: 0.875rem;
   font-weight: 700;
-  color: rgb(230 250 252 / 0.85);
+  color: color-mix(in oklab, var(--ov-ink) 85%, transparent);
 }
 
 /* intl-tel-input inside the brand form. */
@@ -148,9 +226,9 @@
 
 /* Choice cards (phone / car) inside the form. */
 .installments .ov-choice input:checked + .ov-choice-body {
-  border-color: var(--ov-sky);
-  background: rgb(125 230 238 / 0.1);
-  box-shadow: 0 0 0 4px rgb(125 230 238 / 0.12), 0 0 30px -6px rgb(125 230 238 / 0.45);
+  border-color: var(--ov-accent);
+  background: color-mix(in oklab, var(--ov-accent) 10%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ov-accent) 14%, transparent), 0 0 30px -6px rgb(125 230 238 / 0.45);
 }
 .installments .ov-choice input:focus-visible + .ov-choice-body {
   outline: 3px solid var(--ov-sky-deep);
@@ -183,14 +261,14 @@
 }
 .installments .iti__selected-dial-code,
 .installments .iti__arrow {
-  color: var(--ov-ice);
+  color: var(--ov-fg);
 }
 .installments .iti__arrow {
-  border-top-color: var(--ov-sky);
+  border-top-color: var(--ov-accent);
 }
 .installments .iti__selected-country:hover,
 .installments .iti__selected-country-primary:hover {
-  background: rgb(255 255 255 / 0.06);
+  background: color-mix(in oklab, var(--ov-tint) 6%, transparent);
 }
 
 /* Request dialog entrance. */
@@ -224,7 +302,7 @@
 /* Shimmering gradient text. */
 @keyframes ov-shine { to { background-position: 200% center; } }
 .installments .ov-shine-text {
-  background: linear-gradient(90deg, #7de6ee 0%, #e6fafc 25%, #7de6ee 50%, #3fc9d6 75%, #7de6ee 100%);
+  background: var(--ov-shine);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -295,7 +373,7 @@
     box-shadow 0.35s,
     opacity 0.8s cubic-bezier(.16,.8,.3,1) var(--ov-delay, 0s);
 }
-.installments .ov-lift:hover { transform: translateY(-6px); border-color: rgb(125 230 238 / 0.45); box-shadow: 0 30px 60px -30px rgb(125 230 238 / 0.35); }
+.installments .ov-lift:hover { transform: translateY(-6px); border-color: color-mix(in oklab, var(--ov-accent) 45%, transparent); box-shadow: 0 30px 60px -30px rgb(125 230 238 / 0.35); }
 
 /* CTA: rotating neon border. */
 @property --ov-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
@@ -308,7 +386,7 @@
   z-index: -1;
   border-radius: inherit;
   padding: 1px;
-  background: conic-gradient(from var(--ov-angle), transparent 0 60%, #7de6ee 75%, transparent 90%);
+  background: conic-gradient(from var(--ov-angle), transparent 0 60%, var(--ov-accent) 75%, transparent 90%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -407,21 +485,21 @@
 /* Mobile: photo on top, fade into the copy below. */
 .installments .ov-hero-scrim {
   background:
-    linear-gradient(0deg, var(--ov-navy) 0%, rgb(17 19 26 / 0.55) 30%, transparent 60%),
-    linear-gradient(180deg, rgb(17 19 26 / 0.6) 0%, transparent 25%);
+    linear-gradient(0deg, rgb(var(--ov-scrim)) 0%, rgb(var(--ov-scrim) / 0.55) 30%, transparent 60%),
+    linear-gradient(180deg, rgb(var(--ov-scrim) / 0.6) 0%, transparent 25%);
 }
 /* Desktop: copy sits on the start side, so darken that side. */
 @media (min-width: 64rem) {
   .installments .ov-hero-scrim {
     background:
-      linear-gradient(0deg, var(--ov-navy) 0%, transparent 28%),
-      linear-gradient(90deg, rgb(17 19 26 / 0.95) 0%, rgb(17 19 26 / 0.82) 40%, rgb(17 19 26 / 0.35) 58%, transparent 72%);
+      linear-gradient(0deg, rgb(var(--ov-scrim)) 0%, transparent 28%),
+      linear-gradient(90deg, rgb(var(--ov-scrim) / 0.95) 0%, rgb(var(--ov-scrim) / 0.82) 40%, rgb(var(--ov-scrim) / 0.35) 58%, transparent 72%);
   }
   .installments[dir='rtl'] .ov-hero-scrim,
   [dir='rtl'] .installments .ov-hero-scrim {
     background:
-      linear-gradient(0deg, var(--ov-navy) 0%, transparent 28%),
-      linear-gradient(270deg, rgb(17 19 26 / 0.95) 0%, rgb(17 19 26 / 0.82) 40%, rgb(17 19 26 / 0.35) 58%, transparent 72%);
+      linear-gradient(0deg, rgb(var(--ov-scrim)) 0%, transparent 28%),
+      linear-gradient(270deg, rgb(var(--ov-scrim) / 0.95) 0%, rgb(var(--ov-scrim) / 0.82) 40%, rgb(var(--ov-scrim) / 0.35) 58%, transparent 72%);
   }
 }
 /* A thin aqua light sweeping along the road. */
@@ -472,17 +550,17 @@
 .installments .ov-slide-copy.is-active > :nth-child(5) { animation-delay: 0.42s; }
 .installments .ov-slider-arrow {
   display: inline-flex; height: 2.5rem; width: 2.5rem; align-items: center; justify-content: center;
-  border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.15); color: var(--ov-ice);
-  background: rgb(17 19 26 / 0.5); backdrop-filter: blur(8px); transition: border-color .2s, color .2s;
+  border-radius: 999px; border: 1px solid color-mix(in oklab, var(--ov-tint) 15%, transparent); color: var(--ov-fg);
+  background: rgb(var(--ov-scrim) / 0.5); backdrop-filter: blur(8px); transition: border-color .2s, color .2s;
 }
-.installments .ov-slider-arrow:hover { border-color: rgb(125 230 238 / 0.6); color: var(--ov-sky); }
+.installments .ov-slider-arrow:hover { border-color: color-mix(in oklab, var(--ov-accent) 60%, transparent); color: var(--ov-accent); }
 .installments .ov-slider-dot {
   position: relative; height: 0.5rem; width: 0.5rem; overflow: hidden; border-radius: 999px;
-  background: rgb(255 255 255 / 0.25); transition: width .35s ease, background .35s;
+  background: color-mix(in oklab, var(--ov-tint) 25%, transparent); transition: width .35s ease, background .35s;
 }
-.installments .ov-slider-dot.is-active { width: 2.75rem; background: rgb(125 230 238 / 0.25); }
+.installments .ov-slider-dot.is-active { width: 2.75rem; background: color-mix(in oklab, var(--ov-accent) 25%, transparent); }
 .installments .ov-slider-progress {
-  position: absolute; inset: 0; transform-origin: 0 50%; background: var(--ov-sky); box-shadow: 0 0 10px var(--ov-sky);
+  position: absolute; inset: 0; transform-origin: 0 50%; background: var(--ov-accent); box-shadow: 0 0 10px var(--ov-accent);
   animation: ov-slide-progress var(--ov-slide-s, 7s) linear forwards;
 }
 [dir='rtl'] .installments .ov-slider-progress, .installments[dir='rtl'] .ov-slider-progress { transform-origin: 100% 50%; }
@@ -697,3 +775,20 @@
 @keyframes ov-from-end { from { opacity: 0; transform: translateX(calc(var(--ov-slide, -80px) * -1)); } to { opacity: 1; transform: none; } }
 [dir='rtl'] .installments { --ov-slide: 80px; }
 @keyframes ov-zoom-in { from { opacity: 0; transform: scale(0.88) translateY(40px); } to { opacity: 1; transform: none; } }
+
+/* ------------------------------------------------------------------ */
+/* Light theme details that aren't plain token swaps.                  */
+/* ------------------------------------------------------------------ */
+/* Wordmark: navy on light surfaces (the brand's second colour); dark islands keep the sky wordmark. */
+.installments[data-ov-theme='light'] .ov-brandname { color: var(--ov-navy); }
+.installments[data-ov-theme='light'] [data-ov-theme='dark'] .ov-brandname { color: var(--ov-sky); }
+.installments[data-ov-theme='light'] .ov-wordmark { color: var(--ov-accent); }
+/* Select arrow drawn in the teal accent. */
+.installments[data-ov-theme='light'] select.ov-field {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b8c99' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+/* Header on light: white glass with a hairline. */
+.installments[data-ov-theme='light'] > header { box-shadow: 0 1px 0 rgb(15 22 36 / 0.06); }
+
+/* Light hero: no dark halo behind the (now dark) headline. */
+.installments[data-ov-theme='light'] .ov-slide-copy :is(h1, h2) { filter: none; }

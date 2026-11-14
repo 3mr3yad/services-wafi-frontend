@@ -304,7 +304,7 @@ export function SkyBackdrop() {
         <City buildings={NEAR} base={320} fill="#0f1219" stroke={0.14} windows className="h-[34vh] min-h-52 w-full" />
       </div>
       {/* readability: darken behind the text column */}
-      <div className="absolute inset-0 from-[#0b0d12]/90 via-[#0b0d12]/40 to-transparent ltr:bg-gradient-to-r rtl:bg-gradient-to-l" />
+      <div className="absolute inset-0 from-(--ov-surface-2)/90 via-(--ov-surface-2)/40 to-transparent ltr:bg-gradient-to-r rtl:bg-gradient-to-l" />
       {/* horizon haze + bottom fade into the next section */}
       <div className="absolute inset-x-0 bottom-[10%] h-64 bg-[radial-gradient(55%_50%_at_50%_50%,rgb(125_230_238/0.14),transparent)]" />
       <div className="absolute inset-x-0 bottom-0 h-72 bg-[linear-gradient(to_top,#11131A_0%,rgb(17_19_26/0.85)_30%,rgb(17_19_26/0)_100%)]" />
@@ -330,27 +330,27 @@ export function HoloPhone({ labels, className = '' }: { labels: StatusLabels; cl
     { label: labels.result, state: 'todo' as const },
   ];
   return (
-    <div className={`ov-holo relative w-48 rounded-[2rem] border border-[#7DE6EE]/40 bg-[#11131A]/60 p-2 backdrop-blur-md ${className}`}>
-      <div className="ov-scan relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-gradient-to-b from-[#7DE6EE]/10 to-transparent px-4 pt-6 pb-4">
-        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-white/20" />
+    <div className={`ov-holo relative w-48 rounded-[2rem] border border-(--ov-accent)/40 bg-(--ov-surface)/60 p-2 backdrop-blur-md ${className}`}>
+      <div className="ov-scan relative overflow-hidden rounded-[1.6rem] border border-(--ov-tint)/10 bg-gradient-to-b from-(--ov-accent)/10 to-transparent px-4 pt-6 pb-4">
+        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-(--ov-tint)/20" />
         <BrandLogo className="text-xl" />
-        <div className="mt-4 text-[11px] font-bold text-white">{labels.title}</div>
+        <div className="mt-4 text-[11px] font-bold text-(--ov-fg)">{labels.title}</div>
         <ol className="mt-3 space-y-2.5">
           {rows.map((row) => (
             <li key={row.label} className="flex items-center gap-2.5">
               <span
                 className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
-                  row.state === 'done' ? 'bg-[#7DE6EE] text-[#11131A]' : row.state === 'active' ? 'ov-dot-active border border-[#7DE6EE] text-[#7DE6EE]' : 'border border-white/20 text-white/30'
+                  row.state === 'done' ? 'bg-[#7DE6EE] text-[#11131A]' : row.state === 'active' ? 'ov-dot-active border border-(--ov-accent) text-(--ov-accent)' : 'border border-(--ov-tint)/20 text-(--ov-fg)/30'
                 }`}
               >
                 {row.state === 'done' ? <Icon name="check" className="h-3 w-3" strokeWidth={3} /> : <span className="h-1.5 w-1.5 rounded-full bg-current" />}
               </span>
-              <span className={`text-[10px] font-bold ${row.state === 'todo' ? 'text-white/35' : 'text-[#E6FAFC]'}`}>{row.label}</span>
+              <span className={`text-[10px] font-bold ${row.state === 'todo' ? 'text-(--ov-fg)/35' : 'text-(--ov-ink)'}`}>{row.label}</span>
             </li>
           ))}
         </ol>
-        <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
-          <span className="ov-progress-bar block h-full rounded-full bg-gradient-to-r from-[#7DE6EE] to-[#E6FAFC]" />
+        <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-(--ov-tint)/10">
+          <span className="ov-progress-bar block h-full rounded-full bg-gradient-to-r from-(--ov-accent) to-(--ov-ink)" />
         </div>
       </div>
       <div className="absolute -bottom-10 left-1/2 h-12 w-28 -translate-x-1/2 bg-[radial-gradient(50%_100%_at_50%_0%,rgb(125_230_238/0.45),transparent)] blur-sm" />
@@ -371,7 +371,7 @@ export function CarShowcaseArt() {
         {[70, 40, 90, 55].map((w, i) => (
           <span
             key={i}
-            className="ov-speed block h-px bg-gradient-to-l from-[#7DE6EE]/70 to-transparent"
+            className="ov-speed block h-px bg-gradient-to-l from-(--ov-accent)/70 to-transparent"
             style={{ width: `${w}%`, animationDelay: `${i * 0.3}s`, marginLeft: `${(i * 17) % 40}%` }}
           />
         ))}
@@ -389,7 +389,7 @@ export function CarShowcaseArt() {
 export function PhoneShowcaseArt({ labels }: { labels: StatusLabels }) {
   return (
     <div className="relative flex h-56 w-full items-center justify-center overflow-hidden sm:h-64" aria-hidden="true">
-      <div className="absolute h-48 w-48 rounded-full bg-[#7DE6EE]/15 blur-3xl" />
+      <div className="absolute h-48 w-48 rounded-full bg-(--ov-accent)/15 blur-3xl" />
       <svg viewBox="0 0 220 220" className="ov-spin-slow absolute h-60 w-60">
         <circle cx="110" cy="110" r="100" fill="none" stroke={SKY} strokeOpacity="0.25" strokeDasharray="2 8" />
         <circle cx="110" cy="10" r="4" fill={SKY} />
@@ -425,7 +425,7 @@ export function JourneyPath() {
       </defs>
       <path id="ov-journey" d="M60 90 C 220 -10, 340 -10, 500 60 S 800 130, 940 30" stroke="url(#ov-path-grad)" strokeWidth="1.5" strokeDasharray="4 8" fill="none" className="ov-path-draw" />
       <g className="ov-lane-dot">
-        <circle r="4" fill="#ffffff" />
+        <circle r="4" style={{ fill: 'var(--ov-fg)' }} />
         <circle r="14" fill={SKY} opacity="0.3" />
         <animateMotion dur="6s" repeatCount="indefinite" rotate="auto">
           <mpath href="#ov-journey" />
@@ -442,14 +442,14 @@ export function JourneyPath() {
 export function Marquee({ items }: { items: string[] }) {
   const row = [...items, ...items];
   return (
-    <div className="relative overflow-hidden border-y border-[#7DE6EE]/10 bg-[#0d0f14] py-5" dir="ltr" aria-hidden="true">
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#0d0f14] to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#0d0f14] to-transparent" />
+    <div className="relative overflow-hidden border-y border-(--ov-accent)/10 bg-(--ov-surface-2) py-5" dir="ltr" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-(--ov-surface-2) to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-(--ov-surface-2) to-transparent" />
       <div className="ov-marquee flex w-max items-center gap-10">
         {[0, 1].map((copy) => (
           <div key={copy} className="flex items-center gap-10">
             {row.map((item, i) => (
-              <span key={`${copy}-${i}`} className="flex items-center gap-10 text-lg font-bold whitespace-nowrap text-[#E6FAFC]/70 sm:text-xl">
+              <span key={`${copy}-${i}`} className="flex items-center gap-10 text-lg font-bold whitespace-nowrap text-(--ov-ink)/70 sm:text-xl">
                 {item}
                 <BrandLogo className="text-base opacity-80" />
               </span>

@@ -17,11 +17,11 @@ const STATUS_KEYS = {
 } as const;
 
 const STATUS_STYLES: Record<string, string> = {
-  processing: 'bg-amber-400/15 text-amber-300 ring-amber-300/30',
-  accepted: 'bg-emerald-400/15 text-emerald-300 ring-emerald-300/30',
-  rejected: 'bg-rose-400/15 text-rose-300 ring-rose-300/30',
-  offer_accepted: 'bg-[#7DE6EE]/15 text-[#7DE6EE] ring-[#7DE6EE]/30',
-  offer_rejected: 'bg-pink-400/15 text-pink-300 ring-pink-300/30',
+  processing: 'bg-amber-400/15 text-(--ov-warn) ring-amber-300/30',
+  accepted: 'bg-emerald-400/15 text-(--ov-success) ring-emerald-300/30',
+  rejected: 'bg-rose-400/15 text-(--ov-danger) ring-rose-300/30',
+  offer_accepted: 'bg-(--ov-accent)/15 text-(--ov-accent) ring-(--ov-accent)/30',
+  offer_rejected: 'bg-pink-400/15 text-(--ov-pink) ring-pink-300/30',
 };
 
 type StageState = 'done' | 'current' | 'failed' | 'todo';
@@ -46,9 +46,9 @@ function stagesFor(status: string): [StageState, StageState, StageState] {
 
 const DOT: Record<StageState, string> = {
   done: 'bg-[#7DE6EE] text-[#11131A]',
-  current: 'bg-[#11131A] text-[#7DE6EE] ring-2 ring-[#7DE6EE] animate-pulse',
+  current: 'bg-(--ov-surface) text-(--ov-accent) ring-2 ring-(--ov-accent) animate-pulse',
   failed: 'bg-rose-400 text-[#11131A]',
-  todo: 'bg-white/10 text-white/40',
+  todo: 'bg-(--ov-tint)/10 text-(--ov-fg)/40',
 };
 
 export function TrackResult({ record, onRefresh, refreshing }: { record: InstallmentLookupRecord; onRefresh: () => void; refreshing: boolean }) {
@@ -63,25 +63,25 @@ export function TrackResult({ record, onRefresh, refreshing }: { record: Install
   const postOffer = record.status === 'offer_accepted' || record.completedAt !== null;
 
   return (
-    <div className="mt-6 rounded-2xl border border-[#7DE6EE]/20 bg-[#11131A]/60 p-5" aria-live="polite">
+    <div className="mt-6 rounded-2xl border border-(--ov-accent)/20 bg-(--ov-surface)/60 p-5" aria-live="polite">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="text-xs text-[#E6FAFC]/55">{t('lookup_full_name')}</div>
-          <div className="mt-0.5 text-lg font-extrabold text-white">{record.fullName}</div>
+          <div className="text-xs text-(--ov-ink)/55">{t('lookup_full_name')}</div>
+          <div className="mt-0.5 text-lg font-extrabold text-(--ov-fg)">{record.fullName}</div>
         </div>
-        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ring-1 ${STATUS_STYLES[record.status] ?? 'bg-white/10 text-white ring-white/20'}`}>
+        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ring-1 ${STATUS_STYLES[record.status] ?? 'bg-(--ov-tint)/10 text-(--ov-fg) ring-(--ov-tint)/20'}`}>
           {statusKey ? t(statusKey) : record.status}
         </span>
       </div>
 
       <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
-        <div className="rounded-xl bg-white/[0.04] px-3 py-2.5">
-          <dt className="text-xs text-[#E6FAFC]/55">{t('lookup_type')}</dt>
-          <dd className="mt-0.5 font-bold text-white">{typeLabel}</dd>
+        <div className="rounded-xl bg-(--ov-tint)/[0.04] px-3 py-2.5">
+          <dt className="text-xs text-(--ov-ink)/55">{t('lookup_type')}</dt>
+          <dd className="mt-0.5 font-bold text-(--ov-fg)">{typeLabel}</dd>
         </div>
-        <div className="rounded-xl bg-white/[0.04] px-3 py-2.5">
-          <dt className="text-xs text-[#E6FAFC]/55">{t('lookup_submitted_at')}</dt>
-          <dd className="mt-0.5 font-bold text-white" dir="ltr">
+        <div className="rounded-xl bg-(--ov-tint)/[0.04] px-3 py-2.5">
+          <dt className="text-xs text-(--ov-ink)/55">{t('lookup_submitted_at')}</dt>
+          <dd className="mt-0.5 font-bold text-(--ov-fg)" dir="ltr">
             {record.submittedAt}
           </dd>
         </div>
@@ -101,16 +101,16 @@ export function TrackResult({ record, onRefresh, refreshing }: { record: Install
                   <Icon name="clock" className="h-4 w-4" />
                 )}
               </span>
-              <span className={`text-xs font-bold ${state === 'todo' ? 'text-white/40' : 'text-[#E6FAFC]'}`}>{label}</span>
+              <span className={`text-xs font-bold ${state === 'todo' ? 'text-(--ov-fg)/40' : 'text-(--ov-ink)'}`}>{label}</span>
             </li>
           );
         })}
       </ol>
 
       {record.adminNote ? (
-        <div className="mt-5 border-t border-white/10 pt-4">
-          <div className="text-xs text-[#E6FAFC]/55">{t('lookup_note_label')}</div>
-          <p className="mt-1 text-sm leading-relaxed text-[#E6FAFC]">{record.adminNote}</p>
+        <div className="mt-5 border-t border-(--ov-tint)/10 pt-4">
+          <div className="text-xs text-(--ov-ink)/55">{t('lookup_note_label')}</div>
+          <p className="mt-1 text-sm leading-relaxed text-(--ov-ink)">{record.adminNote}</p>
         </div>
       ) : null}
 
@@ -126,7 +126,7 @@ export function TrackResult({ record, onRefresh, refreshing }: { record: Install
           type="button"
           onClick={onRefresh}
           disabled={refreshing}
-          className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-[#7DE6EE] hover:underline disabled:opacity-60"
+          className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-(--ov-accent) hover:underline disabled:opacity-60"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-3.5 w-3.5${refreshing ? ' animate-spin' : ''}`} aria-hidden="true">
             <path d="M21 12a9 9 0 1 1-2.64-6.36M21 4v5h-5" />
@@ -195,10 +195,10 @@ export function RequestTracker() {
           {loading ? tl('track_searching') : t('lookup_button')}
         </button>
       </form>
-      <p id="ov-track-phone-error" className="mt-2 hidden text-xs font-medium text-rose-300">
+      <p id="ov-track-phone-error" className="mt-2 hidden text-xs font-medium text-(--ov-danger)">
         {t('phone_invalid')}
       </p>
-      {notFound && <p className="mt-3 text-sm font-medium text-rose-300">{t('lookup_not_found')}</p>}
+      {notFound && <p className="mt-3 text-sm font-medium text-(--ov-danger)">{t('lookup_not_found')}</p>}
       {record && <TrackResult record={record} onRefresh={refresh} refreshing={refreshing} />}
     </div>
   );

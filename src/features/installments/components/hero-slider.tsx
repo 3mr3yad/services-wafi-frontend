@@ -165,25 +165,25 @@ export function HeroSlider({
                   aria-hidden={!active}
                   inert={!active}
                 >
-                  <span className="inline-flex items-center gap-2 rounded-full border border-[#7DE6EE]/30 bg-[#7DE6EE]/10 px-4 py-1.5 text-xs font-bold text-[#7DE6EE]">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-(--ov-accent)/30 bg-(--ov-accent)/10 px-4 py-1.5 text-xs font-bold text-(--ov-accent)">
                     <Icon name="spark" className="h-3.5 w-3.5" />
                     {slide.eyebrow}
                   </span>
-                  <Title className="mt-6 text-4xl leading-[1.25] font-extrabold tracking-tight text-white drop-shadow-[0_2px_24px_rgb(17_19_26/0.8)] sm:text-5xl lg:text-[3.4rem]">
+                  <Title className="mt-6 text-4xl leading-[1.25] font-extrabold tracking-tight text-(--ov-fg) drop-shadow-[0_2px_24px_rgb(17_19_26/0.8)] sm:text-5xl lg:text-[3.4rem]">
                     <span className="block">{slide.title1}</span>
                     <span className="ov-shine-text mt-2 block">{slide.title2}</span>
                   </Title>
-                  <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[#E6FAFC]/70 lg:mx-0">{slide.subtitle}</p>
+                  <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-(--ov-ink)/70 lg:mx-0">{slide.subtitle}</p>
                   {slide.partners && (
                     <div className="mt-5 flex flex-wrap items-center justify-center gap-2 lg:justify-start">
-                      <span className="text-xs font-bold text-[#E6FAFC]/55">{slide.partners.label}:</span>
+                      <span className="text-xs font-bold text-(--ov-ink)/55">{slide.partners.label}:</span>
                       {slide.partners.items.map((partner) =>
                         partner.logo ? (
                           <span key={partner.name} className="inline-flex h-9 items-center rounded-full bg-white px-3.5 shadow-[0_8px_24px_-12px_rgb(125_230_238/0.6)]">
                             <img src={partner.logo} alt={partner.name} className="h-6 w-auto max-w-28 object-contain" />
                           </span>
                         ) : (
-                          <span key={partner.name} className="rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-xs font-extrabold text-white backdrop-blur">
+                          <span key={partner.name} className="rounded-full border border-(--ov-tint)/15 bg-(--ov-tint)/[0.06] px-3 py-1 text-xs font-extrabold text-(--ov-fg) backdrop-blur">
                             {partner.name}
                           </span>
                         ),

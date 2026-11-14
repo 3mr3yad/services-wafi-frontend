@@ -217,7 +217,10 @@
       "track_delivery_shipping": "قيد الشحن",
       "track_delivery_delivered": "تم التسليم",
       "track_completed_title": "اكتمل طلبك",
-      "track_completed_on": "تم الانتهاء من طلبك بتاريخ"
+      "track_completed_on": "تم الانتهاء من طلبك بتاريخ",
+      "theme_title": "الثيم",
+      "theme_dark": "غامق",
+      "theme_light": "فاتح"
     },
     "type_device": "تقسيط أجهزة إلكترونية"
   }

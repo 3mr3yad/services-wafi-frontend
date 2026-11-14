@@ -24,7 +24,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   });
 }
 
-export const viewport: Viewport = { themeColor: '#11131A' };
+// Browser UI colour matches the light page header.
+export const viewport: Viewport = { themeColor: '#FFFFFF' };
 
 // The installments brand has its own identity, so it doesn't use the wafiservices PortalShell.
 export default async function InstallmentsLayout({ children, params }: { children: ReactNode; params: Promise<{ locale: string }> }) {
